@@ -3,6 +3,7 @@ package com.example.bootproject.system.util;
 import com.example.bootproject.entity.Member;
 import com.example.bootproject.repository.mapper.AuthMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,10 @@ public class AuthCheck {
         if(session != null){
             String ip = IpAnalyzer.getClientIp(req);
             String memberId = (String)session.getAttribute("member_id");
-            Member findMember = sqlSessionFactory.openSession().getMapper(AuthMapper.class).authCheck(memberId, ip);
-            return findMember;
+            try(SqlSession sqlSession = sqlSessionFactory.openSession()){
+                Member findMember = sqlSession.getMapper(AuthMapper.class).authCheck(memberId, ip);
+                return findMember;
+            }
         }
         return null;
     }
@@ -29,8 +32,10 @@ public class AuthCheck {
         if(session != null){
             String ip = IpAnalyzer.getClientIp(req);
             String memberId = (String)session.getAttribute("member_id");
-            Member findMember = sqlSessionFactory.openSession().getMapper(AuthMapper.class).authCheck(memberId, ip);
-            return findMember.getAuth();
+            try(SqlSession sqlSession = sqlSessionFactory.openSession()){
+                Member findMember = sqlSession.getMapper(AuthMapper.class).authCheck(memberId, ip);
+                return findMember.getAuth();
+            }
         }
         return false;
     }
