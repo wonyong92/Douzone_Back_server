@@ -10,7 +10,7 @@ public class Employee {
     String email;
     boolean manager = false;
 
-    public boolean getAuth() {
+    public boolean isManager() {
         return manager;
     }
 }

@@ -34,7 +34,7 @@ public class AuthCheck {
             String employeeId = (String)session.getAttribute("employeeId");
             try(SqlSession sqlSession = sqlSessionFactory.openSession()){
                 Employee findEmployee = sqlSession.getMapper(AuthMapper.class).authCheck(employeeId, ip);
-                return findEmployee.getAuth();
+                return findEmployee.isManager();
             }
         }
         return false;
