@@ -23,4 +23,15 @@ public class AuthCheck {
         }
         return null;
     }
+
+    public boolean checkManager(HttpServletRequest req){
+        HttpSession session = req.getSession(false);
+        if(session != null){
+            String ip = IpAnalyzer.getClientIp(req);
+            String memberId = (String)session.getAttribute("member_id");
+            Member findMember = sqlSessionFactory.openSession().getMapper(AuthMapper.class).authCheck(memberId, ip);
+            return findMember.getAuth();
+        }
+        return false;
+    }
 }

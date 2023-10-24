@@ -8,4 +8,9 @@ public class Member {
     String name;
     String pwd;
     String email;
+    boolean manager = false;
+
+    public boolean getAuth() {
+        return manager;
+    }
 }
