@@ -3,8 +3,8 @@ package com.example.bootproject.entity;
 import lombok.Data;
 
 @Data
-public class Member {
-    String member_id;
+public class Employee {
+    String employee_id;
     String name;
     String pwd;
     String email;

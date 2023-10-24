@@ -1,6 +1,6 @@
 package com.example.bootproject.system.util;
 
-import com.example.bootproject.entity.Member;
+import com.example.bootproject.entity.Employee;
 import com.example.bootproject.repository.mapper.AuthMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.SqlSession;
@@ -14,14 +14,14 @@ import javax.servlet.http.HttpSession;
 public class AuthCheck {
 
     private final SqlSessionFactory sqlSessionFactory;
-    public Member getPrincipal(HttpServletRequest req){
+    public Employee getPrincipal(HttpServletRequest req){
         HttpSession session = req.getSession(false);
         if(session != null){
             String ip = IpAnalyzer.getClientIp(req);
-            String memberId = (String)session.getAttribute("member_id");
+            String employeeId = (String)session.getAttribute("employeeId");
             try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-                Member findMember = sqlSession.getMapper(AuthMapper.class).authCheck(memberId, ip);
-                return findMember;
+                Employee findEmployee = sqlSession.getMapper(AuthMapper.class).authCheck(employeeId, ip);
+                return findEmployee;
             }
         }
         return null;
@@ -31,10 +31,10 @@ public class AuthCheck {
         HttpSession session = req.getSession(false);
         if(session != null){
             String ip = IpAnalyzer.getClientIp(req);
-            String memberId = (String)session.getAttribute("member_id");
+            String employeeId = (String)session.getAttribute("employeeId");
             try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-                Member findMember = sqlSession.getMapper(AuthMapper.class).authCheck(memberId, ip);
-                return findMember.getAuth();
+                Employee findEmployee = sqlSession.getMapper(AuthMapper.class).authCheck(employeeId, ip);
+                return findEmployee.getAuth();
             }
         }
         return false;
