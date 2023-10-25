@@ -5,10 +5,28 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ManagerController1 {
 
+    @GetMapping("/manager/employees")
+    public String getEmployeeList() {
+        return "getEmployeeList";
+    }
+
+    // 사원/사원번호 검색기능(63)
+    @GetMapping("/search")
+    public String searchEmployeeByIdOrNumber(@RequestParam(name = "data") String data) {
+        return "사원/사원번호 검색기능";
+    }
+
     @GetMapping("/manager/setting_information/work_time")
     public String settingWorkTime() {
         return "settingWorkTime";
     }
+
+
+    @PostMapping("/manager/setting/work_time")
+    public String setWorkTime() {
+        return "setWorkTime";
+    }
+
 
     @GetMapping("/manager/vacation/reject/{employee_id}")
     public String getHistoryOfRejectedVacationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
@@ -25,21 +43,6 @@ public class ManagerController1 {
         return "getRequestVacationInformationOfEmployee";
     }
 
-    @GetMapping("/manager/employees")
-    public String getEmployeeList() {
-        return "getEmployeeList";
-    }
-
-    @GetMapping("/manager/vacation/setting_history/vacation_default")
-    public String getHistoryOfvacationDefaultSetting() {
-        return "getHistoryOfvacationDefaultSetting";
-    }
-
-    @PostMapping("/manager/setting/work_time")
-    public String setWorkTime() {
-        return "setWorkTime";
-    }
-
     @PostMapping("/manager/vacation/process")
     public String processVacationRequest() {
         return "processVacationRequest";
@@ -50,6 +53,17 @@ public class ManagerController1 {
         return "modifyVacationQuantityOfEmployee";
     }
 
+
+    @PostMapping("/manager/setting/vacation_default")  //40
+    public String setDefaultVacation() {
+        // 적용 날짜가 내일 이후인지 확인
+        return "근속연수에따른 기본부여 연차갯수 설정.";
+    }
+
+    @GetMapping("/manager/vacation/setting_history/vacation_default")
+    public String getHistoryOfvacationDefaultSetting() {
+        return "getHistoryOfvacationDefaultSetting";
+    }
 
 
     @PostMapping("/manager/appeal/process") //39
@@ -62,10 +76,8 @@ public class ManagerController1 {
         return "근태이상조정요청처리";
     }
 
-    @PostMapping("/manager/setting/vacation_default")  //40
-    public String setDefaultVacation() {
-        // 적용 날짜가 내일 이후인지 확인
-        return "근속연수에따른 기본부여 연차갯수 설정.";
+    @GetMapping("/manager/appeal/requests/{employee_id}")
+    public String getAppealHistoryOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
+        return "getAppealHistoryOfEmployee";
     }
-
 }

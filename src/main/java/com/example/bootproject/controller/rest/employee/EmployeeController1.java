@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmployeeController1 {
 
 
-    @GetMapping("/employee/attendence_info")
+    @GetMapping("/employee/attendance_info")
     public String getAttendanceInfoOfMineByDay(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
 //        @GetMapping("/employee/attendence_info")
 //        public String getAttendanceInfoOfMineByMonth(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month) {
@@ -16,8 +16,7 @@ public class EmployeeController1 {
     }
 
 
-
-    @GetMapping("/employee/attendence_info/{employee_id}")
+    @GetMapping("/employee/attendance_info/{employee_id}")
     public String getAttendanceInfoOfEmployeeByDay(@PathVariable(name = "employee_id") String employeeId, @RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
 //        @GetMapping("/employee/attendence_info/{employee_id}")
 //        public String getAttendanceInfoOfEmployeeByMonth(@PathVariable(name = "employee_id") String employeeId, @RequestParam(name = "year") int year, @RequestParam(name = "month") int month) {
@@ -25,8 +24,6 @@ public class EmployeeController1 {
 //        }
         return "getAttendanceInfoOfEmployeeByMonth";
     }
-
-
 
     @GetMapping("/employee/information/{employee_id}")
     public String getInformationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
@@ -38,6 +35,13 @@ public class EmployeeController1 {
         return "getInformationOfMine";
     }
 
+    @PostMapping("/employee/information")
+    public String modifyEmployeeInformationOfMine() {
+        return "modifyEmployeeInformationOfMine";
+    }
+
+    // 기본 기능
+
     @PostMapping("/login")
     public String login() {
         return "login";
@@ -47,14 +51,26 @@ public class EmployeeController1 {
     public String logout() {
         return "logout";
     }
+
+    @GetMapping("/employee/leave")
+    public String makeLeaveInformation() {
+        return "makeLeaveInformation";
+    }
+
+
+    @GetMapping("/employee/attendance")
+    public String makeAttendanceInfo() {
+        return "makeAttendanceInfo";
+    }
+
     //승인
     @GetMapping("/employee/approve/{employee_id}")
-    public String getHistoryOfApproveOfEmployee(@PathVariable(name = "employee_id") String employeeId ,  @RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
+    public String getHistoryOfApproveOfEmployee(@PathVariable(name = "employee_id") String employeeId, @RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
         return "getHistoryOfApproveOfEmployee";
     }
 
     @GetMapping("/employee/approves")
-    public String getHistoryOfApproveOfMine( @RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
+    public String getHistoryOfApproveOfMine(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
         return "getHistoryOfApproveOfMine";
     }
 
@@ -95,26 +111,6 @@ public class EmployeeController1 {
     }
 
 
-    @GetMapping("/employee/leave")
-    public String makeLeaveInformation() {
-        return "makeLeaveInformation";
-    }
-
-
-
-    @GetMapping("/employee/attendance")
-    public String makeAttendanceInfo() {
-        return "makeAttendanceInfo";
-    }
-
-
-
-
-    @PostMapping("/employee/information")
-    public String modifyEmployeeInformationOfMine() {
-        return "modifyEmployeeInformationOfMine";
-    }
-
     //조정
 
     @PostMapping("/employee/appeal")
@@ -122,29 +118,9 @@ public class EmployeeController1 {
         return "makeAppealRequest";
     }
 
-    // 사원/사원번호 검색기능(63)
-    @GetMapping("/search")
-    public String searchEmployeeByIdOrNumber(@RequestParam(name="data") String data){
-        return "사원/사원번호 검색기능";
+    @PostMapping("/employee/appeal/requests")
+    public String getAppealRequestHistoryOfMine() {
+        return "getAppealRequestHistoryOfMine";
     }
-
-
-    @GetMapping("/employee/attendance_info") //50
-    public String getAttendanceRecordByDay(
-            @RequestParam(name = "year") int year,
-            @RequestParam(name = "month") int month,
-            @RequestParam(name = "day") int day) {
-
-//        @GetMapping("/employee/attendance_info") //55
-//        public String getAttendanceRecordByMonth(
-//        @RequestParam(name = "year") int year,
-//        @RequestParam(name = "month") int month) {
-//
-//            return "사원의 월단위 근태 기록 조회";
-//        }
-        return "사원의 일단위 근태 기록 조회";
-    }
-
-
 
 }
