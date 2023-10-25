@@ -8,6 +8,6 @@ public class AdminController2 {
     @GetMapping("/admin/employee/information")
     public String getEmployeesInformation() {
         return "employee_Information";
-    }// 주석
+    }// 주석22
 
 }
