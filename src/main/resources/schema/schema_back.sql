@@ -42,8 +42,8 @@ CREATE TABLE attendance_info
     attendance_info_id         BIGINT NOT NULL AUTO_INCREMENT,
     attendance_status_category VARCHAR(10) NOT NULL,
     employee_id                VARCHAR(10) NOT NULL,
-    start_time                 DATETIME,
-    end_time                   DATETIME,
+    start_time                 timestamp,
+    end_time                   timestamp,
     attendance_date            DATE DEFAULT (CURRENT_DATE) NOT NULL,
     PRIMARY KEY (employee_id, attendance_date),
     UNIQUE (attendance_info_id),
@@ -58,10 +58,10 @@ create table attendance_appeal_request
     status                         varchar(10)              not null,
     reason                         text                     not null,
     attendance_info_id             bigint                   not null,
-    appealed_start_time            datetime                 not null,
-    appealed_end_time              datetime                 not null,
+    appealed_start_time            timestamp                 not null,
+    appealed_end_time              timestamp                 not null,
     employee_id                    varchar(10)              not null,
-    attendance_appeal_request_time datetime default (now()) not null,
+    attendance_appeal_request_time timestamp default (now()) not null,
     reason_for_rejection text,
     constraint attendance_appeal_request_ibfk_1
         foreign key (attendance_info_id) references attendance_info (attendance_info_id),
@@ -74,7 +74,7 @@ create table attendance_approval
     attendance_approval_id   bigint      not null
         primary key auto_increment,
     attendance_info_id       bigint      not null,
-    attendance_approval_date datetime    not null,
+    attendance_approval_date timestamp    not null,
     employee_id              varchar(10) not null,
     constraint attendance_approval_ibfk_1
         foreign key (attendance_info_id) references attendance_info (attendance_info_id),
@@ -89,7 +89,7 @@ create table image
     employee_id varchar(10)              not null,
     file_name   varchar(255)             not null,
     uuid        varchar(255)             not null,
-    upload_date datetime default (now()) not null,
+    upload_date timestamp default (now()) not null,
     constraint image_ibfk_1
         foreign key (employee_id) references employee (employee_id)
 );
@@ -100,7 +100,7 @@ create table vacation_adjusted_history
         primary key auto_increment,
     employee_id                  varchar(10) null,
     adjust_type                  varchar(10) not null,
-    adjust_time                  datetime    not null,
+    adjust_time                  timestamp    not null,
     adjust_quantity              int         not null,
     reason                       text        not null,
     constraint vacation_adjusted_history_ibfk_1
@@ -120,7 +120,7 @@ create table vacation_quantity_setting
         primary key auto_increment,
     freshman     int      not null,
     senior       int      not null,
-    setting_time datetime default Now() not null
+    setting_time timestamp default Now() not null
 );
 
 create table vacation_request
@@ -131,12 +131,12 @@ create table vacation_request
     employee_id                 varchar(10) not null,
     result                      varchar(10) not null,
     vacation_quantity           int         not null,
-    vacation_start_time         datetime    not null,
-    vacation_end_time           datetime    not null,
-    vacation_related_start_time datetime    not null,
-    vacation_related_end_time   datetime    not null,
+    vacation_start_time         timestamp    not null,
+    vacation_end_time           timestamp    not null,
+    vacation_related_start_time timestamp    not null,
+    vacation_related_end_time   timestamp    not null,
     reason                      text        not null,
-    vacation_request_time datetime default(now()),
+    vacation_request_time timestamp default(now()),
     reason_for_rejection text,
     constraint vacation_request_ibfk_1
         foreign key (vacation_category_key) references vacation_category (vacation_category_key),
@@ -152,5 +152,5 @@ CREATE TABLE `regular_time_adjustment_history`
     `adjusted_start_time`                TIME NOT NULL,
     `adjusted_end_time`                  TIME NOT NULL,
     `reason`                             TEXT     NOT NULL,
-    `regular_time_adjustment_time`       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `regular_time_adjustment_time`       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

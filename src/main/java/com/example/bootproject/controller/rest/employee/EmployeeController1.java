@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Time;
+import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/employee")
@@ -16,7 +18,7 @@ public class EmployeeController1 {
     private EmployeeService1 employeeService1;
 
 
-//    @GetMapping("/update-start-time")
+//    @GetMapping("/attendance")
 //    public ResponseEntity<Void> makeAttendanceInfo(HttpSession session) {
 //        String employee_id = (String) session.getAttribute("employee_id");
 //        if (employee_id == null || employee_id.trim().isEmpty()) {
@@ -26,10 +28,27 @@ public class EmployeeController1 {
 //        return ResponseEntity.ok().build();
 //    }
 
+//    @GetMapping("/leave")
+//    public ResponseEntity<Void> makeLeaveInformation(HttpSession session){
+//        String employeeId = (String) session.getAttribute("employee_id");
+//        if (employeeId == null || employeeId.trim().isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        employeeService1.updateEndTime(employeeId);
+//        return ResponseEntity.ok().build();
+//    }
+
     @GetMapping("/attendance")
     public ResponseEntity<Void> makeAttendanceInfo() {
         String employee_id = "emp001";
         employeeService1.updateStartTime(employee_id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/leave")
+    public ResponseEntity<Void> makeLeaveInformation(){
+        String employee_id = "emp02";
+        employeeService1.updateEndTime(employee_id);
         return ResponseEntity.ok().build();
     }
 
