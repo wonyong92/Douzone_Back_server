@@ -36,7 +36,7 @@ create table employee
     name               varchar(10)                    not null,
     attendance_manager boolean                     not null,
     hire_year          DATE DEFAULT (DATE_FORMAT(CURDATE(), '%Y-01-01')) NOT NULL
-    # 올해 년도를 가져와 올해 연도 1월 1일로 default 값 생성
+    -- 올해 년도를 가져와 올해 연도 1월 1일로 default 값 생성
 );
 
 create table attendance_info
