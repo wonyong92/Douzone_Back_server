@@ -2,7 +2,11 @@ package com.example.bootproject.controller.rest.manager;
 
 import com.example.bootproject.service.service2.ManagerService2;
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
+
+import com.example.bootproject.vo.vo2.response.SettingWorkTimeDto;
+
 import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
+
 import com.example.bootproject.vo.vo2.response.VacationRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +34,10 @@ public class ManagerController2 {
         return manService2.getEmpReqVacationHistory(employeeId);
     }
 
+    @GetMapping("/manager/setting_history/work_time")
+    public List<SettingWorkTimeDto> settingWorkTime() {
+        return manService2.getSettingWorkTime();
+    }
 
     @GetMapping("/manager/vacation/setting_history/vacation_default")
     public List<VacationQuantitySettingDto>  getHistoryOfvacationDefaultSetting() {
