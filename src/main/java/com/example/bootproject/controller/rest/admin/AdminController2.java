@@ -18,7 +18,7 @@ public class AdminController2 {
     @GetMapping("/admin/employee/information")
     public List<EmployeeDto> getEmployeesInformation() {
         return adminService.getEmpInfo();
-    }// 주석22
+    }
 
     @GetMapping("/admin/employee/information/{employee_id}")
     public EmployeeDto getEmployeeInformationByEmployeeId(@PathVariable(name = "employee_id") String employeeId) {
