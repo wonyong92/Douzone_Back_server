@@ -2,6 +2,7 @@ package com.example.bootproject.service.service2;
 
 import com.example.bootproject.repository.mapper.mapper2.ManagerMapper2;
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
+import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
 import com.example.bootproject.vo.vo2.response.VacationRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,10 @@ public class ManagerService2Impl implements  ManagerService2{
     @Override
     public VacationRequestDto getEmpReqVacationHistory(String employeeId) {
         return manMapper2.getEmpReqVacationHistory(employeeId);
+    }
+
+    @Override
+    public List<VacationQuantitySettingDto> getVacationSettingHistory() {
+        return manMapper2.getVacationSettingHistory();
     }
 }

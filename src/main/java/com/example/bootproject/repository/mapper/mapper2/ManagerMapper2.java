@@ -1,6 +1,7 @@
 package com.example.bootproject.repository.mapper.mapper2;
 
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
+import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
 import com.example.bootproject.vo.vo2.response.VacationRequestDto;
 import org.apache.ibatis.annotations.Select;
 
@@ -16,4 +17,7 @@ public interface ManagerMapper2 {
 
     @Select("SELECT* FROM vacation_request WHERE employee_id=#{employeeId}")
     public VacationRequestDto getEmpReqVacationHistory(String employeeId);
+
+    @Select("SELECT* FROM vacation_quantity_setting")
+    public List<VacationQuantitySettingDto> getVacationSettingHistory();
 }
