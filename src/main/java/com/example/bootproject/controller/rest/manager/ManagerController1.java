@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ManagerController1 {
 
-    @GetMapping("/manager/employees")
+    /*@GetMapping("/manager/employees")
     public String getEmployeeList() {
         return "getEmployeeList";
     }
@@ -79,5 +79,5 @@ public class ManagerController1 {
     @GetMapping("/manager/appeal/requests/{employee_id}")
     public String getAppealHistoryOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
         return "getAppealHistoryOfEmployee";
-    }
+    }*/
 }

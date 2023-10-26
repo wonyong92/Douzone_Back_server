@@ -4,9 +4,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
-public class AdminController1{
+public class AdminController1 {
 
-    @GetMapping("/admin/employee/information")
+   /* @GetMapping("/admin/employee/information")
     public String getEmployeesInformation() {
         return "employee_Information";
     }
@@ -49,4 +49,5 @@ public class AdminController1{
     public String uploadEmployeePhoto(){
         return "사원의 사진 파일 업로드";
     }
+}*/
 }

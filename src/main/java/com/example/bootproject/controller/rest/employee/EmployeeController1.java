@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmployeeController1 {
 
 
-    @GetMapping("/employee/attendance_info")
+/*    @GetMapping("/employee/attendance_info")
     public String getAttendanceInfoOfMineByDay(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
 //        @GetMapping("/employee/attendence_info")
 //        public String getAttendanceInfoOfMineByMonth(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month) {
@@ -121,6 +121,6 @@ public class EmployeeController1 {
     @PostMapping("/employee/appeal/requests")
     public String getAppealRequestHistoryOfMine() {
         return "getAppealRequestHistoryOfMine";
-    }
+    }*/
 
 }
