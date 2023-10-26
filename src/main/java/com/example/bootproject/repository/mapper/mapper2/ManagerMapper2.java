@@ -13,4 +13,7 @@ public interface ManagerMapper2 {
 
     @Select("SELECT* FROM vacation_request WHERE DATE_FORMAT(vacation_request_time,'%Y-%m-%d') =#{date};")
     public List<VacationRequestDto> getAllVacationHistory(String date);
+
+    @Select("SELECT* FROM vacation_request WHERE employee_id=#{employeeId}")
+    public VacationRequestDto getEmpReqVacationHistory(String employeeId);
 }

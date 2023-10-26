@@ -19,4 +19,9 @@ public class ManagerService2Impl implements  ManagerService2{
     public List<VacationRequestDto> getAllVacationHistory(String date) {
         return manMapper2.getAllVacationHistory(date);
     }
+
+    @Override
+    public VacationRequestDto getEmpReqVacationHistory(String employeeId) {
+        return manMapper2.getEmpReqVacationHistory(employeeId);
+    }
 }
