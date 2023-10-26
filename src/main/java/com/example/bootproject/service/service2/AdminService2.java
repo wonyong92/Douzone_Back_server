@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AdminService2 {
     public List<EmployeeDto> getEmpInfo();
+    public EmployeeDto getOneEmpInfo(String employeeId);
 }

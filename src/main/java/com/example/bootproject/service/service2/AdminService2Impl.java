@@ -12,9 +12,13 @@ public class AdminService2Impl implements AdminService2 {
     @Autowired
     private AdminMapper2 mapper;
 
-
     @Override
     public List<EmployeeDto> getEmpInfo() {
         return mapper.getEmpInfo();
+    }
+
+    @Override
+    public EmployeeDto getOneEmpInfo(String employeeId) {
+        return mapper.getOneEmpInfo(employeeId);
     }
 }

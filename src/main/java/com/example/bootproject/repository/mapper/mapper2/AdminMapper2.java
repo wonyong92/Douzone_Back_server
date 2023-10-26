@@ -14,4 +14,7 @@ public interface AdminMapper2 {
     @Select("SELECT * FROM employee")
     public List<EmployeeDto> getEmpInfo();
 
+    @Select("SELECT * FROM employee where employee_id= #{employeeId}")
+    public EmployeeDto getOneEmpInfo(String employeeId);
+
 }
