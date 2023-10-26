@@ -1,7 +1,7 @@
 package com.example.bootproject.controller.rest;
 
 import com.example.bootproject.entity.Employee;
-import com.example.bootproject.repository.mapper.EmployeeMapper;
+import com.example.bootproject.repository.mapper.EmployeeMapper1;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
@@ -22,7 +22,7 @@ public class MybatisTestController {
         log.info("test");
         Employee result;
         try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-            result = sqlSession.getMapper(EmployeeMapper.class).findMemberByMemberId("test");
+            result = sqlSession.getMapper(EmployeeMapper1.class).findMemberByMemberId("test");
             return result;
         }
     }
@@ -33,7 +33,7 @@ public class MybatisTestController {
         log.info(data);
         Employee result;
         try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-            result = sqlSession.getMapper(EmployeeMapper.class).findMemberByMemberId("test");
+            result = sqlSession.getMapper(EmployeeMapper1.class).findMemberByMemberId("test");
             return result;
         }
     }

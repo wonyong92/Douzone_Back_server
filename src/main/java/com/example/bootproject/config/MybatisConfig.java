@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan("com.example.bootproject.repository.mapper")
+@MapperScan("com.example.bootproject.repository")
 public class MybatisConfig {
     public SqlSessionFactory getSessionFactory(DataSource dataSource) {
         TransactionFactory transactionFactory = new JdbcTransactionFactory();
