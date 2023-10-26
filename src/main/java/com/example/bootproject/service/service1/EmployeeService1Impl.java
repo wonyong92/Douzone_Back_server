@@ -40,13 +40,13 @@ public class EmployeeService1Impl implements EmployeeService1{
         }
 
 
-        //타사원 년,월,일 사원근태정보검색
+        //사원 년,월,일 사원근태정보검색
         @Override
         public List<Attendance_Info> getAttendanceByDateAndEmployee(LocalDate attendance_date, String employee_id) {
                 return employeeMapper1.selectAttendanceByDate(attendance_date,employee_id);
         }
 
-        //타사원 년,월 사원근태정보검색
+        //사원 년,월 사원근태정보검색
         @Override
         public List<Attendance_Info> getAttendanceByMonthAndEmployee(LocalDate startDate, LocalDate endDate, String employeeId) {
                 return employeeMapper1.selectAttendanceByMonthAndEmployee(startDate,endDate,employeeId);

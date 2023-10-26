@@ -80,4 +80,30 @@ public class EmployeeController1 {
         }
     }
 
+
+    //년월일 자신의 근태정보조회 년월만 입력하면 년월만 입력데이터 적용되게 구현
+    @GetMapping("/attendance_info/")
+    public ResponseEntity<List<Attendance_Info>> getAttendanceInfoOfMineByDay(
+
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            @RequestParam(value = "day", required = false) Integer day) {
+
+        // 임시로 사원 ID를 설정합니다. 이 부분은 실제 로그인 구현에 따라 변경해야 할 수 있습니다.
+        String tempEmployeeId = "emp01";
+
+        if (day != null) {
+            // 일 데이터가 있으면 해당 날짜로 검색
+            LocalDate attendanceDate = LocalDate.of(year, month, day);
+            List<Attendance_Info> attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, tempEmployeeId);
+            return ResponseEntity.ok(attendanceInfo);
+        } else {
+            // 일 데이터가 없으면 해당 월로 검색
+            LocalDate startDate = LocalDate.of(year, month, 1);
+            LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+            List<Attendance_Info> attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, tempEmployeeId);
+            return ResponseEntity.ok(attendanceInfo);
+        }
+    }
+
 }
