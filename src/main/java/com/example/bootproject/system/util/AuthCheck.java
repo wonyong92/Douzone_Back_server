@@ -13,30 +13,30 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class AuthCheck {
 
-    private final SqlSessionFactory sqlSessionFactory;
-    public Employee getPrincipal(HttpServletRequest req){
-        HttpSession session = req.getSession(false);
-        if(session != null){
-            String ip = IpAnalyzer.getClientIp(req);
-            String employeeId = (String)session.getAttribute("employeeId");
-            try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-                Employee findEmployee = sqlSession.getMapper(AuthMapper.class).authCheck(employeeId, ip);
-                return findEmployee;
-            }
-        }
-        return null;
-    }
-
-    public boolean checkManager(HttpServletRequest req){
-        HttpSession session = req.getSession(false);
-        if(session != null){
-            String ip = IpAnalyzer.getClientIp(req);
-            String employeeId = (String)session.getAttribute("employeeId");
-            try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-                Employee findEmployee = sqlSession.getMapper(AuthMapper.class).authCheck(employeeId, ip);
-                return findEmployee.isManager();
-            }
-        }
-        return false;
-    }
+//    private final SqlSessionFactory sqlSessionFactory;
+//    public Employee getPrincipal(HttpServletRequest req){
+//        HttpSession session = req.getSession(false);
+//        if(session != null){
+//            String ip = IpAnalyzer.getClientIp(req);
+//            String employeeId = (String)session.getAttribute("employeeId");
+//            try(SqlSession sqlSession = sqlSessionFactory.openSession()){
+//                Employee findEmployee = sqlSession.getMapper(AuthMapper.class).authCheck(employeeId, ip);
+//                return findEmployee;
+//            }
+//        }
+//        return null;
+//    }
+//
+//    public boolean checkManager(HttpServletRequest req){
+//        HttpSession session = req.getSession(false);
+//        if(session != null){
+//            String ip = IpAnalyzer.getClientIp(req);
+//            String employeeId = (String)session.getAttribute("employeeId");
+//            try(SqlSession sqlSession = sqlSessionFactory.openSession()){
+//                Employee findEmployee = sqlSession.getMapper(AuthMapper.class).authCheck(employeeId, ip);
+//                return findEmployee.isManager();
+//            }
+//        }
+//        return false;
+//    }
 }
