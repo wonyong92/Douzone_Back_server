@@ -25,10 +25,6 @@ public class AdminController2 {
         return adminService.getOneEmpInfo(employeeId);
     }
 
-    @GetMapping("/employee/vacation/requests")
-    public String getRequestVacationInformationOfMine(@RequestParam (name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(required = false, name = "day") int day) {
-        return "getRequestVacationInformationOfMine";
-    }
 
 
 
