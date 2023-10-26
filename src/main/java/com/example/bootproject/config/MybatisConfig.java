@@ -5,6 +5,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.ibatis.type.LocalDateTimeTypeHandler;
+import org.apache.ibatis.type.LocalDateTypeHandler;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,7 +22,7 @@ public class MybatisConfig {
 
         org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration(environment);
         configuration.setMapUnderscoreToCamelCase(true);
-
+        configuration.getTypeHandlerRegistry().register(LocalDateTimeTypeHandler.class, LocalDateTypeHandler.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 }
