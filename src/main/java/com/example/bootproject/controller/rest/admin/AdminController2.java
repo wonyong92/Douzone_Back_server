@@ -24,4 +24,6 @@ public class AdminController2 {
         return adminService.getOneEmpInfo(employeeId);
     }
 
+
+
 }
