@@ -147,10 +147,12 @@ create table vacation_request
 
 CREATE TABLE `regular_time_adjustment_history`
 (
-    `regular_time_adjustment_history_id` BIGINT   NOT NULL PRIMARY KEY auto_increment,
-    `target_date`                        DATE     NOT NULL DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY)),
-    `adjusted_start_time`                TIME NOT NULL,
-    `adjusted_end_time`                  TIME NOT NULL,
-    `reason`                             TEXT     NOT NULL,
-    `regular_time_adjustment_time`       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `regular_time_adjustment_history_id` BIGINT      NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `target_date`                        DATE        NOT NULL DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY)),
+    `adjusted_start_time`                TIME        NOT NULL,
+    `adjusted_end_time`                  TIME        NOT NULL,
+    `reason`                             TEXT        NOT NULL,
+    `regular_time_adjustment_time`       TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `employee_id`                        CHAR(10)    NOT NULL
 );
+

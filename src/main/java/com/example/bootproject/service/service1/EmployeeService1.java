@@ -1,11 +1,10 @@
 package com.example.bootproject.service.service1;
 
 
-import com.example.bootproject.vo.vo1.request.Attendance_Info;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
 
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public interface EmployeeService1 {
@@ -18,9 +17,9 @@ public interface EmployeeService1 {
     void updateEndTime(String employee_id);
 
     //타사원년월일
-    List<Attendance_Info> getAttendanceByDateAndEmployee(LocalDate attendance_date, String employee_id);
+    List<AttendanceInfoDto> getAttendanceByDateAndEmployee(LocalDate attendance_date, String employee_id);
 
     //타사원월일
-    List<Attendance_Info> getAttendanceByMonthAndEmployee(LocalDate startDate, LocalDate endDate, String employeeId);
+    List<AttendanceInfoDto> getAttendanceByMonthAndEmployee(LocalDate startDate, LocalDate endDate, String employeeId);
 
 }

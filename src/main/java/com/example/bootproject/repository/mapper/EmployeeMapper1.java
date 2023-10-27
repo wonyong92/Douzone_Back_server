@@ -1,7 +1,7 @@
 package com.example.bootproject.repository.mapper;
 
 import com.example.bootproject.entity.Employee;
-import com.example.bootproject.vo.vo1.request.Attendance_Info;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -32,7 +32,7 @@ public interface EmployeeMapper1 {
             "FROM attendance_info " +
             "WHERE attendance_date = #{attendance_date} AND employee_id = #{employee_id} " +
             "ORDER BY employee_id")
-    List<Attendance_Info> selectAttendanceByDate(@Param("attendance_date") LocalDate attendance_date, @Param("employee_id")String employee_id);
+    List<AttendanceInfoDto> selectAttendanceByDate(@Param("attendance_date") LocalDate attendance_date, @Param("employee_id")String employee_id);
 
     //타사원년월 사원근태정보검색
     @Select("SELECT " +
@@ -46,7 +46,7 @@ public interface EmployeeMapper1 {
             "AND attendance_date >= #{startDate} " +
             "AND attendance_date <= #{endDate} " +
             "ORDER BY attendance_date")
-    List<Attendance_Info> selectAttendanceByMonthAndEmployee(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("employeeId") String employeeId);
+    List<AttendanceInfoDto> selectAttendanceByMonthAndEmployee(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("employeeId") String employeeId);
 
 
 

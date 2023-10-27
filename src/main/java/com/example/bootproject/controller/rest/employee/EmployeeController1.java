@@ -1,6 +1,6 @@
 package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
-import com.example.bootproject.vo.vo1.request.Attendance_Info;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +60,7 @@ public class EmployeeController1 {
 
     //년월일 타사원정보검색 년월만 입력하면 년월만 입력데이터 적용되게 구현
     @GetMapping("/attendance_info/{employee_id}/")
-    public ResponseEntity<List<Attendance_Info>> getAttendanceInfoOfEmployeeByDay(
+    public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfEmployeeByDay(
             @PathVariable("employee_id") String employeeId,
             @RequestParam("year") int year,
             @RequestParam("month") int month,
@@ -69,13 +69,13 @@ public class EmployeeController1 {
         if (day != null) {
             // 일 데이터가 있으면 해당 날짜로 검색
             LocalDate attendanceDate = LocalDate.of(year, month, day);
-            List<Attendance_Info> attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
+            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
             return ResponseEntity.ok(attendanceInfo);
         } else {
             // 일 데이터가 없으면 해당 월로 검색
             LocalDate startDate = LocalDate.of(year, month, 1);
             LocalDate endDate = startDate.plusMonths(1).minusDays(1);
-            List<Attendance_Info> attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, employeeId);
+            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, employeeId);
             return ResponseEntity.ok(attendanceInfo);
         }
     }
@@ -83,7 +83,7 @@ public class EmployeeController1 {
 
     //년월일 자신의 근태정보조회 년월만 입력하면 년월만 입력데이터 적용되게 구현
     @GetMapping("/attendance_info/")
-    public ResponseEntity<List<Attendance_Info>> getAttendanceInfoOfMineByDay(
+    public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfMineByDay(
 
             @RequestParam("year") int year,
             @RequestParam("month") int month,
@@ -95,15 +95,17 @@ public class EmployeeController1 {
         if (day != null) {
             // 일 데이터가 있으면 해당 날짜로 검색
             LocalDate attendanceDate = LocalDate.of(year, month, day);
-            List<Attendance_Info> attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, tempEmployeeId);
+            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, tempEmployeeId);
             return ResponseEntity.ok(attendanceInfo);
         } else {
             // 일 데이터가 없으면 해당 월로 검색
             LocalDate startDate = LocalDate.of(year, month, 1);
             LocalDate endDate = startDate.plusMonths(1).minusDays(1);
-            List<Attendance_Info> attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, tempEmployeeId);
+            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, tempEmployeeId);
             return ResponseEntity.ok(attendanceInfo);
         }
     }
+
+
 
 }
