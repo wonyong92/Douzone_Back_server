@@ -23,4 +23,12 @@ public class EmployeeController2 {
         String id="testid";
         return empService2.getHistoryOfUsedVacationOfMine(id);
     }
+
+    // 본인의 반려된 연차 이력 조회 메서드
+    @GetMapping("/employee/vacation/reject")
+    public List<VacationRequestDto> getHistoryOfRejectedVacationOfMine() {
+        // id값은 원래 session에서 가져와야 하나, 아직 작성 전이므로 하드코딩으로 id 지정
+        String id="testid";
+        return empService2.getHistoryOfRejectedVacationOfMine(id);
+    }
 }

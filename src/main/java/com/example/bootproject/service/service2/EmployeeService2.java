@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface EmployeeService2 {
     public List<VacationRequestDto> getHistoryOfUsedVacationOfMine(String id);
+    public List<VacationRequestDto> getHistoryOfRejectedVacationOfMine(String id);
 }
