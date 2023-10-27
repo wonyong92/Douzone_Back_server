@@ -12,7 +12,7 @@ import java.util.List;
 public interface EmployeeMapper2 {
 
     // result 값이 완료 이면서, 본인의 연차 사용 이력 데이터를 가져와 반환함
-    @Select("SELECT* FROM VACATION_REQUEST WHERE RESULT='완료' AND EMPLOYEE_ID=#{id}")
+    @Select("SELECT* FROM VACATION_REQUEST WHERE RESULT='승인' AND EMPLOYEE_ID=#{id}")
     public List<VacationRequestDto> getHistoryOfUsedVacationOfMine(String id);
 
     @Select("SELECT* FROM VACATION_REQUEST WHERE RESULT='반려' AND EMPLOYEE_ID=#{id}")
