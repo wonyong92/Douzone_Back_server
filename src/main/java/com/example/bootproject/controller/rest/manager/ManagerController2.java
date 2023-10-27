@@ -43,7 +43,4 @@ public class ManagerController2 {
     public List<VacationQuantitySettingDto>  getHistoryOfvacationDefaultSetting() {
         return manService2.getVacationSettingHistory();
     }
-
-
-
 }

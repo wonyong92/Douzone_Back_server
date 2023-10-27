@@ -34,6 +34,7 @@ public class ManagerService2Impl implements  ManagerService2{
 
     public List<SettingWorkTimeDto> getSettingWorkTime() {
         return manMapper2.getSettingWorkTime();
+    }
 
     public List<VacationQuantitySettingDto> getVacationSettingHistory() {
         return manMapper2.getVacationSettingHistory();

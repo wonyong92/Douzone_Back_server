@@ -22,7 +22,6 @@ public interface ManagerMapper2 {
     @Select("SELECT* FROM vacation_request WHERE employee_id=#{employeeId}")
     public VacationRequestDto getEmpReqVacationHistory(String employeeId);
 
-
     @Select("SELECT* FROM regular_time_adjustment_history;")
     public List<SettingWorkTimeDto> getSettingWorkTime();
 
