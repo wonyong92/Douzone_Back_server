@@ -11,9 +11,12 @@ import java.util.List;
 @Repository
 @Mapper
 public interface AdminMapper2 {
+
+    // 사원의 정보를 전체 select함
     @Select("SELECT * FROM employee")
     public List<EmployeeDto> getEmpInfo();
 
+    // 특정 사원 번호를 가진 사원의 정보를 select함
     @Select("SELECT * FROM employee WHERE employee_id= #{employeeId}")
     public EmployeeDto getOneEmpInfo(String employeeId);
 

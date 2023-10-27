@@ -114,13 +114,14 @@ create table vacation_category
     admit_time            int         not null
 );
 
-create table vacation_quantity_setting
+CREATE TABLE vacation_quantity_setting
 (
-    setting_key  int      not null
-        primary key auto_increment,
-    freshman     int      not null,
-    senior       int      not null,
-    setting_time timestamp default Now() not null
+    setting_key  INT PRIMARY KEY AUTO_INCREMENT,
+    freshman     INT NOT NULL,
+    senior       INT NOT NULL,
+    setting_time TIMESTAMP DEFAULT NOW() NOT NULL,
+    target_date  TIMESTAMP DEFAULT (CONCAT(YEAR(NOW()) + 1, '-01-01 00:00:00')) NOT NULL,
+    employee_id  VARCHAR(10) NOT NULL
 );
 
 create table vacation_request
@@ -152,5 +153,6 @@ CREATE TABLE `regular_time_adjustment_history`
     `adjusted_start_time`                TIME NOT NULL,
     `adjusted_end_time`                  TIME NOT NULL,
     `reason`                             TEXT     NOT NULL,
-    `regular_time_adjustment_time`       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `regular_time_adjustment_time`       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    employee_id varchar(10) NOT NULL
 );

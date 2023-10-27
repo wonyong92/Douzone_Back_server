@@ -15,11 +15,16 @@ public class AdminController2 {
 
     @Autowired
     private AdminService2 adminService;
+
+
+    //전체사원 정보 조회 메서드
     @GetMapping("/admin/employee/information")
     public List<EmployeeDto> getEmployeesInformation() {
         return adminService.getEmpInfo();
     }
 
+
+    //특정 사원의 정보 조회 메서드
     @GetMapping("/admin/employee/information/{employee_id}")
     public EmployeeDto getEmployeeInformationByEmployeeId(@PathVariable(name = "employee_id") String employeeId) {
         return adminService.getOneEmpInfo(employeeId);

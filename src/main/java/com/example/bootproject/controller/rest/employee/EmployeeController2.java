@@ -16,7 +16,7 @@ public class EmployeeController2 {
     @Autowired
     private EmployeeService2 empService2;
 
-    // 본인의 연차 사용 이력 조회
+    // 본인의 연차 사용 이력 조회 메서드
     @GetMapping("/employee/vacation/use")
     public List<VacationRequestDto> getHistoryOfUsedVacationOfMine() {
         // id값은 원래 session에서 가져와야 하나, 아직 작성 전이므로 하드코딩으로 id 지정

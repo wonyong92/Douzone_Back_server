@@ -6,10 +6,10 @@ import java.util.Date;
 
 @Data
 public class EmployeeDto {
-    private String employee_id;
-    private String password;
-    private String name;
-    private int attendance_manager;
-    private Date hire_year;
+    private String employee_id; //사원번호
+    private String password; //비밀번호
+    private String name; //이름
+    private boolean attendance_manager; //근태 담당자 여부
+    private Date hire_year; // 입사 연도
 
 }
