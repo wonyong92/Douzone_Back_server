@@ -109,9 +109,8 @@ create table vacation_adjusted_history
 
 create table vacation_category
 (
-    vacation_category_key varchar(10) not null
-        primary key,
-    admit_time            int         not null
+    vacation_category_key varchar(10) not null primary key,
+        admit_time            int         not null
 );
 
 CREATE TABLE vacation_quantity_setting
@@ -150,9 +149,18 @@ CREATE TABLE `regular_time_adjustment_history`
 (
     `regular_time_adjustment_history_id` BIGINT   NOT NULL PRIMARY KEY auto_increment,
     `target_date`                        DATE     NOT NULL DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY)),
-    `adjusted_start_time`                TIME NOT NULL,
-    `adjusted_end_time`                  TIME NOT NULL,
+    `adjusted_start_time`                timestamp NOT NULL,
+    `adjusted_end_time`                  timestamp NOT NULL,
     `reason`                             TEXT     NOT NULL,
     `regular_time_adjustment_time`       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     employee_id varchar(10) NOT NULL
+);
+
+create table `auth`
+(
+    login_id    varchar(30) not null,
+    ip          varchar(30) not null,
+    login_time  datetime    null,
+    logout_time datetime    null,
+    primary key (login_id, ip)
 );
