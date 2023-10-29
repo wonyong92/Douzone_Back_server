@@ -31,4 +31,8 @@ public interface ManagerMapper2 {
     @Select("SELECT* FROM vacation_quantity_setting")
     public List<VacationQuantitySettingDto> getVacationSettingHistory();
 
+    //vacation_request 테이블에서 특정 사원의 result 컬럼의 값이 '반려'인 데이터를 select함
+    @Select("SELECT * FROM vacation_request WHERE employee_id=#{employeeId} and result='반려';")
+    public List<VacationRequestDto> getHistoryOfRejectedVacationOfEmployee(String employeeId);
+
 }

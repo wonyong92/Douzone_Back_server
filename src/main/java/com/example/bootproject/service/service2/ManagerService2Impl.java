@@ -24,20 +24,21 @@ public class ManagerService2Impl implements  ManagerService2{
     public List<VacationRequestDto> getAllVacationHistory(String date) {
         return manMapper2.getAllVacationHistory(date);
     }
-
     @Override
     public VacationRequestDto getEmpReqVacationHistory(String employeeId) {
         return manMapper2.getEmpReqVacationHistory(employeeId);
     }
-
     @Override
-
     public List<SettingWorkTimeDto> getSettingWorkTime() {
         return manMapper2.getSettingWorkTime();
     }
-
+    @Override
     public List<VacationQuantitySettingDto> getVacationSettingHistory() {
         return manMapper2.getVacationSettingHistory();
+    }
 
+    @Override
+    public List<VacationRequestDto> getHistoryOfRejectedVacationOfEmployee(String employeeId) {
+        return manMapper2.getHistoryOfRejectedVacationOfEmployee(employeeId);
     }
 }

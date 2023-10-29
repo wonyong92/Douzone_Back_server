@@ -51,5 +51,10 @@ public class ManagerController2 {
         return manService2.getVacationSettingHistory();
     }
 
-
+    // 타 사원의 반려된 연차 이력 조회 메서드
+    // 경로 변수로 사원의 사원 번호 데이터를 전달받음
+    @GetMapping("/manager/vacation/reject/{employee_id}")
+    public List<VacationRequestDto> getHistoryOfRejectedVacationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
+        return manService2.getHistoryOfRejectedVacationOfEmployee(employeeId);
+    }
 }
