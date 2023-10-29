@@ -1,15 +1,11 @@
 package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.repository.mapper3.login.AdminLoginMapper;
-import com.example.bootproject.repository.mapper3.login.AuthMapper;
 import com.example.bootproject.repository.mapper3.login.EmployeeLoginMapper;
 import com.example.bootproject.repository.mapper3.login.SessionLoginMapper;
-import com.example.bootproject.repository.repository3.LoginRepository;
 import com.example.bootproject.service.service3.api.LoginService;
-import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.request.LoginRequestDto;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
-import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
@@ -17,9 +13,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
@@ -28,7 +21,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Transactional
 public class LoginServiceImpl implements LoginService {
-    private final LoginRepository loginRepository;
+
     private final SqlSessionFactory sqlSessionFactory;
     private final EmployeeLoginMapper employeeLoginMapper;
     private final AdminLoginMapper adminLoginMapper;
@@ -100,7 +93,6 @@ public class LoginServiceImpl implements LoginService {
             return loginResult;
         }
     }
-
 
 
     private LoginResponseDto employeeLogin(LoginRequestDto dto) {
