@@ -9,15 +9,14 @@ import java.util.Date;
 @NoArgsConstructor
 public class EmployeeDto {
 
-    private String employee_id;
 
     private String password;
 
     private String name;
 
-    private boolean attendance_manager;
+    private boolean attendanceManager;
 
-    private Date hire_year;
+    private Date hireYear;
 
 
 

@@ -13,17 +13,17 @@ import java.util.Date;
 @NoArgsConstructor
 public class RegularTimeAdjustmentHistoryDto {
 
-    Date target_date;
+    Date targetDate;
 
-    Time adjusted_start_time;
+    Time adjustedStartTime;
 
-    Time Adjusted_end_time;
+    Time AdjustedEndTime;
 
     String reason;
 
-    LocalDateTime regular_time_adjustment_time;
+    LocalDateTime regularTimeAdjustmentTime;
 
-    String employee_id;
+    String employeeId;
 
 
 

@@ -2,6 +2,8 @@ package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
@@ -44,7 +46,7 @@ public class EmployeeController1 {
     //출근기록
     @GetMapping("/attendance")
     public ResponseEntity<Void> makeAttendanceInfo() {
-        String employee_id = "emp001";
+        String employee_id = "emp01";
         employeeService1.updateStartTime(employee_id);
         return ResponseEntity.ok().build();
     }
@@ -107,5 +109,27 @@ public class EmployeeController1 {
     }
 
 
-
+    //자신의 근태 승인요청
+    @PostMapping("/approve/{employeeId}")
+    public ResponseEntity<String> makeApproveRequest(
+            @PathVariable String employeeId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate attendanceDate) {
+        try {
+            employeeService1.approveAttendance(employeeId, attendanceDate);
+            return new ResponseEntity<>("Attendance approved successfully", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

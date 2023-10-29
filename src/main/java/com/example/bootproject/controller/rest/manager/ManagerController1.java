@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/manager")
 public class ManagerController1 {
 
-    private final ManagerMapper1 managerMapper1;
+
 
     private final ManagerService1 managerService1;
 
     @Autowired
-    public ManagerController1(ManagerMapper1 managerMapper1, ManagerService1 managerService1) {
-        this.managerMapper1 = managerMapper1;
+    public ManagerController1( ManagerService1 managerService1) {
         this.managerService1 = managerService1;
     }
 

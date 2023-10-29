@@ -9,7 +9,7 @@
         </encoder>
     </appender>
     <!-- Root 로거 설정 -->
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
 

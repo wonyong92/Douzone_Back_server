@@ -41,11 +41,11 @@ public class ManagerService1Impl implements ManagerService1{
         // 대상 사원이 출석 관리자인지 확인
         EmployeeRequest targetEmployee = managerMapper1.findattendancemanager(employee_id, true);
 
-        if (targetEmployee != null && targetEmployee.isAttendance_manager()) {
+        if (targetEmployee != null && targetEmployee.isAttendanceManager()) {
             // 대상 사원의 employee_id를 설정
-            dto.setEmployee_id(employee_id);
+            dto.setEmployeeId(employee_id);
             // 현재 시간을 설정
-            dto.setRegular_time_adjustment_time(regularTimeAdjustmentTime);
+            dto.setRegularTimeAdjustmentTime(regularTimeAdjustmentTime);
 
             // DB에 데이터 삽입
             managerMapper1.insertregulartimeadjustmenthistory(dto);

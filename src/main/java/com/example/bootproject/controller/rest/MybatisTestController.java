@@ -17,24 +17,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class MybatisTestController {
     private final SqlSessionFactory sqlSessionFactory;
-    @GetMapping("/test")
-    public Employee getMemberTest(){
-        log.info("test");
-        Employee result;
-        try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-            result = sqlSession.getMapper(EmployeeMapper1.class).findMemberByMemberId("test");
-            return result;
-        }
+//    @GetMapping("/test")
+//    public Employee getMemberTest(){
+//        log.info("test");
+//        Employee result;
+//        try(SqlSession sqlSession = sqlSessionFactory.openSession()){
+//            result = sqlSession.getMapper(EmployeeMapper1.class).findMemberByMemberId("test");
+//            return result;
+//        }
+//    }
+
+//    @GetMapping("/test2")
+//    public Employee getMemberTest2(@RequestParam(name="data") String data){
+//        log.info("test");
+//        log.info(data);
+//        Employee result;
+//        try(SqlSession sqlSession = sqlSessionFactory.openSession()){
+//            result = sqlSession.getMapper(EmployeeMapper1.class).findMemberByMemberId("test");
+//            return result;
+//        }
     }
 
-    @GetMapping("/test2")
-    public Employee getMemberTest2(@RequestParam(name="data") String data){
-        log.info("test");
-        log.info(data);
-        Employee result;
-        try(SqlSession sqlSession = sqlSessionFactory.openSession()){
-            result = sqlSession.getMapper(EmployeeMapper1.class).findMemberByMemberId("test");
-            return result;
-        }
-    }
-}

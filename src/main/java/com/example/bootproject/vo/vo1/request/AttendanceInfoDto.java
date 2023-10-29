@@ -9,16 +9,18 @@ import java.sql.Time;
 @Data
 @NoArgsConstructor
 public class AttendanceInfoDto {
-    private String attendance_info_id; //근태상태표현저장
 
-    private String attendance_status_category;//상태지정
-    private String employee_id;//사원번호
+    private Long attendanceInfoId;
 
-    private Time start_time;//출근시간
+    private String attendanceStatusCategory;//상태지정
 
-    private Time end_time;//퇴근시간
+    private String employeeId;//사원번호
 
-    private Date attendance_date;//날짜
+    private Time startTime;//출근시간
+
+    private Time endTime;//퇴근시간
+
+    private Date attendanceDate;//날짜
 
 }
 
