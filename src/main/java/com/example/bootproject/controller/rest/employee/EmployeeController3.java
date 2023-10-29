@@ -1,9 +1,11 @@
 package com.example.bootproject.controller.rest.employee;
 
 import com.example.bootproject.service.service3.api.LoginService;
+import com.example.bootproject.service.service3.api.LogoutService;
 import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.request.LoginRequestDto;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
+import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 public class EmployeeController3 {
 
     private final LoginService loginService;
+    private final LogoutService logoutService;
     @GetMapping("/employee/information/{employee_id}")
     public String getInformationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
         return "getInformationOfEmployee";
@@ -63,8 +66,13 @@ public class EmployeeController3 {
     }
 
     @GetMapping("/logout")
-    public String logout() {
-        return "logout";
+    public ResponseEntity logout() {
+        LogoutResponseDto dto = logoutService.logout();
+        if(dto != null){
+            return ResponseEntity.ok(dto);
+        }
+        return ResponseEntity.badRequest()
+                .build();
     }
 
     @GetMapping("/employee/vacation/requests")

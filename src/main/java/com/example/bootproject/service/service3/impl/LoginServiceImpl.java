@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class LoginServiceImpl implements LoginService {
     private final LoginRepository loginRepository;
     private final SqlSessionFactory sqlSessionFactory;
@@ -32,9 +34,7 @@ public class LoginServiceImpl implements LoginService {
     private final AdminLoginMapper adminLoginMapper;
     private final HttpSession session;
     private final SessionLoginMapper sessionLoginMapper;
-    private final AuthMapper authMapper;
-    private final HttpServletResponse resp;
-    private final HttpServletRequest req;
+
 
     @Override
     public LoginResponseDto sessionLogin(LoginRequestDto dto) {
@@ -100,6 +100,8 @@ public class LoginServiceImpl implements LoginService {
             return loginResult;
         }
     }
+
+
 
     private LoginResponseDto employeeLogin(LoginRequestDto dto) {
         /*
