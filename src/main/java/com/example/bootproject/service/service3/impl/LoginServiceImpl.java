@@ -1,18 +1,24 @@
 package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.repository.mapper3.login.AdminLoginMapper;
+import com.example.bootproject.repository.mapper3.login.AuthMapper;
 import com.example.bootproject.repository.mapper3.login.EmployeeLoginMapper;
 import com.example.bootproject.repository.mapper3.login.SessionLoginMapper;
 import com.example.bootproject.repository.repository3.LoginRepository;
 import com.example.bootproject.service.service3.api.LoginService;
+import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.request.LoginRequestDto;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
+import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
@@ -26,6 +32,9 @@ public class LoginServiceImpl implements LoginService {
     private final AdminLoginMapper adminLoginMapper;
     private final HttpSession session;
     private final SessionLoginMapper sessionLoginMapper;
+    private final AuthMapper authMapper;
+    private final HttpServletResponse resp;
+    private final HttpServletRequest req;
 
     @Override
     public LoginResponseDto sessionLogin(LoginRequestDto dto) {
@@ -59,10 +68,11 @@ public class LoginServiceImpl implements LoginService {
                 return new LoginResponseDto(sessionLoginId, sessionLoginIp);
             }
             /*
-             * id, ip를 세션에서 확인 완료
+             * loginId, ip를 세션에서 확인 완료
              * TODO :  추가적으로 필요한 인증 정보를 auth repository와 employee 테이블에서 가져온다
              * */
-
+            sessionLoginMapper.updateAuthInforamtion(sessionLoginId);
+            /*업데이트 후 재조회*/
             loginResult = sessionLoginMapper.sessionLogin(sessionLoginId);
         }
         return loginResult;
