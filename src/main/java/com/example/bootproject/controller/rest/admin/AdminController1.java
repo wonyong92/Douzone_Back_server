@@ -2,7 +2,7 @@ package com.example.bootproject.controller.rest.admin;
 
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+//@RestController
 @RequestMapping("/admin")
 public class AdminController1{
 

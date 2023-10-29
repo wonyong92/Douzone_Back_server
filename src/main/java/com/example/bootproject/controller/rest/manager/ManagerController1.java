@@ -2,7 +2,7 @@ package com.example.bootproject.controller.rest.manager;
 
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+//@RestController
 public class ManagerController1 {
 
     @GetMapping("/manager/employees")

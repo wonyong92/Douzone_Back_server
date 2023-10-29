@@ -5,22 +5,26 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.ibatis.type.LocalDateTimeTypeHandler;
+import org.apache.ibatis.type.LocalDateTypeHandler;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Configuration;
 
 
 import javax.sql.DataSource;
 
-@Configuration
-@MapperScan("com.example.bootproject.repository.mapper")
+//@Configuration
+//@MapperScan("com.example.bootproject.repository")
 public class MybatisConfig {
-    public SqlSessionFactory getSessionFactory(DataSource dataSource) {
-        TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration(environment);
-        configuration.setMapUnderscoreToCamelCase(true);
-
-        return new SqlSessionFactoryBuilder().build(configuration);
-    }
+//    public SqlSessionFactory getSessionFactory(DataSource dataSource) {
+//        TransactionFactory transactionFactory = new JdbcTransactionFactory();
+//        Environment environment = new Environment("development", transactionFactory, dataSource);
+//
+//        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration(environment);
+//        configuration.setMapUnderscoreToCamelCase(true);
+//        configuration.getTypeHandlerRegistry().register(LocalDateTimeTypeHandler.class, LocalDateTypeHandler.class);
+//        configuration.setCallSettersOnNulls(true);
+//        configuration.setReturnInstanceForEmptyRow(true);
+//        return new SqlSessionFactoryBuilder().build(configuration);
+//    }
 }

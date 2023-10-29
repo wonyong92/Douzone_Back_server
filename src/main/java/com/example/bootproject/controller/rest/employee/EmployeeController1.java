@@ -2,7 +2,7 @@ package com.example.bootproject.controller.rest.employee;
 
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+//@RestController
 public class EmployeeController1 {
 
 
