@@ -8,11 +8,8 @@ import com.example.bootproject.vo.vo3.request.LoginRequestDto;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
@@ -22,7 +19,6 @@ import java.time.LocalDateTime;
 @Transactional
 public class LoginServiceImpl implements LoginService {
 
-    private final SqlSessionFactory sqlSessionFactory;
     private final EmployeeLoginMapper employeeLoginMapper;
     private final AdminLoginMapper adminLoginMapper;
     private final HttpSession session;
@@ -84,14 +80,14 @@ public class LoginServiceImpl implements LoginService {
         log.info("login 유형 : {}", loginType == true ? "employee" : "admin");
 
         LoginResponseDto loginResult = null;
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            if (loginType) {
-                loginResult = employeeLogin(dto);
-            } else {
-                loginResult = adminLogin(dto);
-            }
-            return loginResult;
+
+        if (loginType) {
+            loginResult = employeeLogin(dto);
+        } else {
+            loginResult = adminLogin(dto);
         }
+        return loginResult;
+
     }
 
 
