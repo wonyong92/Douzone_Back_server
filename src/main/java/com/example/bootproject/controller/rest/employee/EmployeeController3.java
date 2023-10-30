@@ -2,10 +2,13 @@ package com.example.bootproject.controller.rest.employee;
 
 import com.example.bootproject.service.service3.api.LoginService;
 import com.example.bootproject.service.service3.api.LogoutService;
+import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.request.LoginRequestDto;
+import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
 import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
+import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,7 @@ public class EmployeeController3 {
 
     private final LoginService loginService;
     private final LogoutService logoutService;
+    private final VacationService vacationService;
     @GetMapping("/employee/information/{employee_id}")
     public String getInformationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
         return "getInformationOfEmployee";
@@ -36,6 +40,7 @@ public class EmployeeController3 {
     }
 
     @PostMapping("/login")
+    /*TODO : loginRequestDto validation 체크 필요*/
     public ResponseEntity<LoginResponseDto> login(LoginRequestDto dto, HttpServletRequest req) {
 
         dto.setIp(dto.getIp()==null?IpAnalyzer.getClientIp(req):dto.getIp());
@@ -85,4 +90,23 @@ public class EmployeeController3 {
         return "makeAppealRequest";
     }
 
+    @PostMapping("/employee/vacation")
+    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute VacationRequestDto dto) {
+        log.info("정상 작업 진행");
+        VacationRequestResponseDto result = null;
+        try {
+            result = vacationService.makeVacationRequest(dto);
+        } catch (Exception e) {
+            log.info("연차 요청 수행 도중 에러 발생");
+            e.printStackTrace();
+        }
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    private String checkLoginId() {
+        return "200001012";
+    }
 }

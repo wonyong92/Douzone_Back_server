@@ -13,9 +13,11 @@ public class LoginResponseDto {
     private LocalDateTime loginTime;
     private LocalDateTime logoutTime;
     private String ip;
+    private boolean manager;
 
     public LoginResponseDto(String loginId, String ip) {
         this.loginId = loginId;
         this.ip = ip;
     }
 }
+;

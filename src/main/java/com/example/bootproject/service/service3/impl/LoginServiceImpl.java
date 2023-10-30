@@ -142,6 +142,7 @@ public class LoginServiceImpl implements LoginService {
                     log.info("employee form 재로그인 {}", loginResult);
                     session.setAttribute("loginId", loginResult.getLoginId());
                     session.setAttribute("ip", loginResult.getIp());
+                    session.setAttribute("manager", loginResult.isManager());
                 }
             } else {
                 /*
