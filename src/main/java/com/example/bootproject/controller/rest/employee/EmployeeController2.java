@@ -6,6 +6,7 @@ import com.example.bootproject.vo.vo2.response.EmployeeDto;
 import com.example.bootproject.vo.vo2.response.VacationRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +31,11 @@ public class EmployeeController2 {
         // id값은 원래 session에서 가져와야 하나, 아직 작성 전이므로 하드코딩으로 id 지정
         String id="testid";
         return empService2.getHistoryOfRejectedVacationOfMine(id);
+    }
+
+    // 타 사원의 연차 사용 이력 조회 메서드
+    @GetMapping("/employee/vacation/use/{employee_id}")
+    public List<VacationRequestDto> getHistoryOfUsedVacationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
+        return empService2.getHistoryOfUsedVacationOfEmployee(employeeId);
     }
 }

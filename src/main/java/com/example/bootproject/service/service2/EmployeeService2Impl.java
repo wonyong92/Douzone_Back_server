@@ -22,4 +22,9 @@ public class EmployeeService2Impl implements  EmployeeService2{
     public List<VacationRequestDto> getHistoryOfRejectedVacationOfMine(String id) {
         return empMapper2.getHistoryOfRejectedVacationOfMine(id);
     }
+
+    @Override
+    public List<VacationRequestDto> getHistoryOfUsedVacationOfEmployee(String id) {
+        return empMapper2.getHistoryOfUsedVacationOfEmployee(id);
+    }
 }
