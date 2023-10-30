@@ -56,36 +56,24 @@ public class EmployeeService1Impl implements EmployeeService1{
         //자신의 근태승인요청
         @Override
         @Transactional
-        public void approveAttendance(String employeeId, LocalDate attendanceDate) {
-                // 1. 근태 정보 ID 찾기
-                Long attendanceInfoId = employeeMapper1.findAttendanceInfoIdByEmployeeIdAndDate(employeeId, attendanceDate);
-                if (attendanceInfoId == null) {
-                        throw new RuntimeException("Attendance record not found for employee " + employeeId + " on date " + attendanceDate);
-                }
-
-                // 2. "지각" 상태 정보 가져오기
+        public void approveAttendance(Long attendanceInfoId, String employeeId) {
+                // 1. "지각" 상태 정보 가져오기
                 AttendanceStatusCategoryDto lateStatus = employeeMapper1.findLateStatus();
-                if (lateStatus == null) {
-                        throw new RuntimeException("Late status not found in the database.");
-                }
 
-                // 3. 근태 상태 업데이트
+                // 2. 근태 상태 업데이트
                 AttendanceInfoDto attendanceInfoDto = new AttendanceInfoDto();
                 attendanceInfoDto.setAttendanceInfoId(attendanceInfoId);
                 attendanceInfoDto.setAttendanceStatusCategory(lateStatus.getKey());
                 int updatedRows = employeeMapper1.updateAttendanceStatus(attendanceInfoDto);
-                if (updatedRows == 0) {
-                        throw new RuntimeException("Failed to update attendance status for employee " + employeeId + " on date " + attendanceDate);
-                }
 
-                // 4. 근태 승인 정보 삽입
+                // 3. 근태 승인 정보 삽입
                 int insertedRows = employeeMapper1.insertAttendanceApproval(attendanceInfoId, employeeId);
-                if (insertedRows == 0) {
-                        throw new RuntimeException("Failed to insert attendance approval for employee " + employeeId + " on date " + attendanceDate);
-                }
         }
 
-
+        @Override
+        public List<AttendanceApprovalInfoDto> findApprovalInfoByMine(String employeeId) {
+                return employeeMapper1.findApprovalInfoByMine(employeeId);
+        }
 
 
 }

@@ -1,47 +1,31 @@
 package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
+@Slf4j
+@RequiredArgsConstructor
 public class EmployeeController1 {
 
     private final EmployeeService1 employeeService1;
 
-    @Autowired
-    public EmployeeController1(EmployeeService1 employeeService1) {
-        this.employeeService1 = employeeService1;
-    }
 
 
-    //세션로그인 예상
-//    @GetMapping("/attendance")
-//    public ResponseEntity<Void> makeAttendanceInfo(HttpSession session) {
-//        String employee_id = (String) session.getAttribute("employee_id");
-//        if (employee_id == null || employee_id.trim().isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//        employeeService1.updateStartTime(employee_id);
-//        return ResponseEntity.ok().build();
-//    }
 
-    //세션로그인 예상
-//    @GetMapping("/leave")
-//    public ResponseEntity<Void> makeLeaveInformation(HttpSession session){
-//        String employeeId = (String) session.getAttribute("employee_id");
-//        if (employeeId == null || employeeId.trim().isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//        employeeService1.updateEndTime(employeeId);
-//        return ResponseEntity.ok().build();
-//    }
 
     //출근기록
     @GetMapping("/attendance")
@@ -60,7 +44,7 @@ public class EmployeeController1 {
     }
 
 
-    //년월일 타사원정보검색 년월만 입력하면 년월만 입력데이터 적용되게 구현
+    //년월일 타사원정보검색 년월만 입력하면 년월만 입력데이터 적용되게 구현//manager로 넘길메서드
     @GetMapping("/attendance_info/{employee_id}/")
     public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfEmployeeByDay(
             @PathVariable("employee_id") String employeeId,
@@ -68,6 +52,19 @@ public class EmployeeController1 {
             @RequestParam("month") int month,
             @RequestParam(value = "day", required = false) Integer day) {
 
+
+        if (!employeeValidation(employeeId)) {
+            log.info("not collect validationcheck." + employeeId );
+            return ResponseEntity.badRequest().build();
+        }
+
+
+        if (day != null && !isValidDate(year, month, day)) {
+            log.info("Invalid date: year={}, month={}, day={}", year, month, day);
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        //TODO: 페이지네이션 사이즈 10개
         if (day != null) {
             // 일 데이터가 있으면 해당 날짜로 검색
             LocalDate attendanceDate = LocalDate.of(year, month, day);
@@ -85,14 +82,28 @@ public class EmployeeController1 {
 
     //년월일 자신의 근태정보조회 년월만 입력하면 년월만 입력데이터 적용되게 구현
     @GetMapping("/attendance_info/")
-    public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfMineByDay(
-
+    public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfMineByDay(HttpServletRequest request,
             @RequestParam("year") int year,
             @RequestParam("month") int month,
             @RequestParam(value = "day", required = false) Integer day) {
 
-        // 임시로 사원 ID를 설정합니다. 이 부분은 실제 로그인 구현에 따라 변경해야 할 수 있습니다.
+        HttpSession session = request.getSession();
+//        String employeeId = (String) session.getAttribute("employeeId");
+
+        if (day != null && !isValidDate(year, month, day)) {
+            log.info("Invalid date: year={}, month={}, day={}", year, month, day);
+            return ResponseEntity.badRequest().body(null);
+        }
+
+
         String tempEmployeeId = "emp01";
+
+        if (!employeeValidation(tempEmployeeId)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+
+
 
         if (day != null) {
             // 일 데이터가 있으면 해당 날짜로 검색
@@ -108,20 +119,106 @@ public class EmployeeController1 {
         }
     }
 
+    /*
+    세션에서 employeeId 가져온다 지금은 하드코딩중
+    사원id데이터 형식이 이상하게 넘어올경우 오류코드
+    데이터가 제데로 들어오면 log남김
+    날짜에 대한 데이터 자바 LocalDate을 사용하여 날짜 정보가 맞는지 validation체크
+    사원id validation체크
+    모든 조건 성공시 200 응답코드
+    일데이터가 있는경우 일 경우 검색
+    일데이터가 없으면 월로 검색
+    */
 
-    //자신의 근태 승인요청
-    @PostMapping("/approve/{employeeId}")
-    public ResponseEntity<String> makeApproveRequest(
-            @PathVariable String employeeId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate attendanceDate) {
-        try {
-            employeeService1.approveAttendance(employeeId, attendanceDate);
-            return new ResponseEntity<>("Attendance approved successfully", HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+    //타사원의 근태 승인요청
+    @PostMapping("/approve")
+    public ResponseEntity<String> makeApproveRequest(HttpServletRequest request) {
+        //        HttpSession session = request.getSession();
+//
+//        // 세션에서 attendanceInfoId와 employeeId 가져오기
+//        Long attendanceInfoId = (Long) session.getAttribute("attendanceInfoId");
+//        String employeeId = (String) session.getAttribute("employeeId");
+        Long attendanceInfoId = Long.valueOf("1");
+        String employeeId = "emp01";
+
+        if (attendanceInfoId == null || employeeId == null) {
+            log.info("AttendanceInfoId or EmployeeId is missing.");
+            return ResponseEntity.badRequest().body("Attendance info or Employee ID is missing.");
         }
+        log.info("Validating employee: " + attendanceInfoId);
+        log.info("Validating employee: " + employeeId);
+
+        if(!employeeValidation(employeeId)){
+            log.info("not collect validationcheck" + employeeId);
+            return ResponseEntity.badRequest().build();
+        }
+
+
+        employeeService1.approveAttendance(attendanceInfoId, employeeId);
+        return ResponseEntity.ok("Attendance approved successfully");
     }
 
+     /*
+    세션에서 attendanceInfoId와 employeeId 가져오기
+    사원id나 근태정보id가 안넘어올경우 오류코드
+    데이터가 들어올시 log데이터가 넘어옴
+    사원id validation체크
+    모든 조건 성공시 200 응답코드
+     */
+
+
+
+
+    //자신의 근태승인내역
+    @GetMapping("/approves")
+    public ResponseEntity<List<AttendanceApprovalInfoDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
+        HttpSession session = request.getSession();
+
+        String employeeId= "emp01";
+
+        if(employeeId == null){
+            log.info("EmployeeId is missing");
+            return ResponseEntity.noContent().build();
+        }
+
+        if(!employeeValidation(employeeId)){
+            log.info("not collect validationcheck" + employeeId);
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<AttendanceApprovalInfoDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
+        return new ResponseEntity<>(approvalInfoDtos, HttpStatus.OK);
+    }
+
+    /*
+    세션에서 attendanceInfoId와 employeeId 가져오기
+    사원id나 근태정보id가 안넘어올경우 오류코드
+    데이터가 들어올시 log데이터가 넘어옴
+    사원id validation체크
+    모든 조건 성공시 200 응답코드
+     */
+
+
+
+
+    //타사원에 대한 근태승인내역
+// 사원id validation check
+public boolean employeeValidation(String employeeId){
+    return employeeId.matches("^emp[0-9]+$");
+}
+
+    //년월알 데이터 형식 맞는지에 validationcheck
+    public static boolean isValidDate(int year, int month, int day) {
+        try {
+            LocalDate.of(year, month, day);
+            return true;
+        } catch (DateTimeException e) {
+            return false;
+        }
+
+
+    }
 
 }
 

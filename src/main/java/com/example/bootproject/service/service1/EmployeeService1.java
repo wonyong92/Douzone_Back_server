@@ -22,11 +22,14 @@ public interface EmployeeService1 {
     //타사원년월일
     List<AttendanceInfoDto> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId);
 
-    //타사원월일
+    //타사원년월
     List<AttendanceInfoDto> getAttendanceByMonthAndEmployee(LocalDate startDate, LocalDate endDate, String employeeId);
 
     //자신의 근태승인요청
-    void approveAttendance(String employeeId, LocalDate attendanceDate);
+    void approveAttendance(Long attendanceInfoId,String employeeId);
+
+    //자신의근태이상승인내역
+    List<AttendanceApprovalInfoDto> findApprovalInfoByMine(String employeeId);
 
 
 

@@ -26,10 +26,11 @@ public class ManagerService1Impl implements ManagerService1{
 
 
 
+    //이거 없앨껄
     //사원의 id와 근태관리자여부 true/false를 담음
     @Override
-    public EmployeeRequest findattendancemanager(String employee_id, boolean attendance_manager) {
-        return  managerMapper1.findattendancemanager(employee_id,attendance_manager);
+    public EmployeeRequest findattendancemanager(String employeeId, boolean attendance_manager) {
+        return  managerMapper1.findattendancemanager(employeeId,attendance_manager);
 
     }
 
@@ -39,15 +40,15 @@ public class ManagerService1Impl implements ManagerService1{
 
     //정규출퇴근시간 설정 사원아이디는 위에 있는 사원아이디를 담기위해 작성
     public RegularTimeAdjustmentHistoryDto insertRegularTimeAdjustmentHistory
-            (RegularTimeAdjustmentHistoryDto dto, String employee_id) {
+            (RegularTimeAdjustmentHistoryDto dto, String employeeId) {
         LocalDateTime regularTimeAdjustmentTime = LocalDateTime.now();
 
         // 대상 사원이 출석 관리자인지 확인
-        EmployeeRequest targetEmployee = managerMapper1.findattendancemanager(employee_id, true);
+        EmployeeRequest targetEmployee = managerMapper1.findattendancemanager(employeeId, true);
 
         if (targetEmployee != null && targetEmployee.isAttendanceManager()) {
             // 대상 사원의 employee_id를 설정
-            dto.setEmployeeId(employee_id);
+            dto.setEmployeeId(employeeId);
             // 현재 시간을 설정
             dto.setRegularTimeAdjustmentTime(regularTimeAdjustmentTime);
 

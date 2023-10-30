@@ -19,10 +19,11 @@ public interface ManagerMapper1 {
 
 
     //사원이 근태관리자인지 일반사원인지 확인
+    //TODO:이거 권환확인 굳이 필요없음 수정해서 코드 변경할것
     @Select("SELECT employee_id, attendance_manager " +
             "FROM employee " +
             "WHERE employee_id = #{employee_id} AND attendance_manager = #{attendance_manager}")
-    EmployeeRequest findattendancemanager(String employee_id, boolean attendance_manager);
+    EmployeeRequest findattendancemanager(String employeeId, boolean attendance_manager);
 
 
 

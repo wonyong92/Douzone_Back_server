@@ -12,6 +12,7 @@ INSERT INTO employee (employee_id, password, name, attendance_manager, hire_year
 #사원조회
 select * from employee;
 
+
 INSERT INTO attendance_status_category (`key`)
 VALUES ('출근');
 INSERT INTO attendance_status_category (`key`)
@@ -44,7 +45,8 @@ INSERT INTO attendance_info (attendance_status_category, employee_id, start_time
                                                                                                                  ('출근', 'emp07', '2023-02-07 09:00:00', '2023-02-07 18:00:00', '2023-02-07'),
                                                                                                                  ('결근', 'emp08', '2023-01-08 09:00:00', '2023-01-08 18:00:00', '2023-01-08'),
                                                                                                                  ('출근', 'emp08', '2023-02-08 09:00:00', '2023-02-08 18:00:00', '2023-02-08'),
-                                                                                                                 ('결근', 'emp09', '2023-01-09 09:00:00', '2023-01-09 18:00:00', '2023-01-09'),                                                                                                          ('출근', 'emp09', '2023-02-09 09:00:00', '2023-02-09 18:00:00', '2023-02-09'),
+                                                                                                                 ('결근', 'emp09', '2023-01-09 09:00:00', '2023-01-09 18:00:00', '2023-01-09'),
+                                                                                                                 ('출근', 'emp09', '2023-02-09 09:00:00', '2023-02-09 18:00:00', '2023-02-09'),
 
                                                                                                       ('출근', 'emp10', '2023-01-10 09:00:00', '2023-01-10 18:00:00', '2023-01-10');
 
@@ -64,6 +66,7 @@ select attendance_approval_date,employee_id from attendance_approval;
 INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (1, NOW(), 'emp01');
 
+select * from  attendance_approval;
 SELECT
     e.employee_id,
     e.name,
