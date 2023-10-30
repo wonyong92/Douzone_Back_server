@@ -58,15 +58,12 @@ public class ManagerController1 {
 
 
     //타사원에 대한 근태 이상 승인 내역
-    @GetMapping("approve/{employeeId}")
-    public ResponseEntity<List<AttendanceApprovalInfoDto>> getApprovalInfo(HttpServletRequest request
-            ) {
-        HttpSession session = request.getSession();
-
-        String employeeId = "emp01";
+    @GetMapping("/approve/{employeeId}")
+    public ResponseEntity<List<AttendanceApprovalInfoDto>> getApprovalInfo(
+            @PathVariable String employeeId) {
 
         if (!ManagerCheckApi()) {
-            // 권한이 없다면 403 Forbidden 응답을 반환합니다.
+            log.info("Access denied: User does not have manager privileges.");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -75,16 +72,20 @@ public class ManagerController1 {
             return ResponseEntity.noContent().build();
         }
 
-
         if (!employeeValidation(employeeId)) {
-            log.info("not collect validationcheck." + employeeId );
+            log.info("Invalid employeeId format: " + employeeId);
             return ResponseEntity.badRequest().build();
         }
 
-
         List<AttendanceApprovalInfoDto> approvalInfo = managerService1.getAttendanceApprovalInfoDto(employeeId);
+        if (approvalInfo.isEmpty()) {
+            log.info("No approval history found for employeeId: " + employeeId);
+            return ResponseEntity.noContent().build();
+        }
+
         return new ResponseEntity<>(approvalInfo, HttpStatus.OK);
     }
+
 
     /*
     Manager권환처리
@@ -96,6 +97,7 @@ public class ManagerController1 {
     모든 조건 성공시 200 응답코드
     일데이터가 있는경우 일 경우 검색
     일데이터가 없으면 월로 검색
+    만약 테이블에 데이터가 없으면 204요청
     */
 
 

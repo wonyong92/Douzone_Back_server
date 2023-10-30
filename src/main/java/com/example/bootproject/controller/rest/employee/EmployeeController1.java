@@ -52,49 +52,54 @@ public class EmployeeController1 {
             @RequestParam("month") int month,
             @RequestParam(value = "day", required = false) Integer day) {
 
-
         if (!employeeValidation(employeeId)) {
-            log.info("not collect validationcheck." + employeeId );
+            log.info("Invalid employee ID: " + employeeId);
             return ResponseEntity.badRequest().build();
         }
 
-
         if (day != null && !isValidDate(year, month, day)) {
             log.info("Invalid date: year={}, month={}, day={}", year, month, day);
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
 
-        //TODO: 페이지네이션 사이즈 10개
+        List<AttendanceInfoDto> attendanceInfo;
+
         if (day != null) {
             // 일 데이터가 있으면 해당 날짜로 검색
             LocalDate attendanceDate = LocalDate.of(year, month, day);
-            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
-            return ResponseEntity.ok(attendanceInfo);
+            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
         } else {
             // 일 데이터가 없으면 해당 월로 검색
             LocalDate startDate = LocalDate.of(year, month, 1);
             LocalDate endDate = startDate.plusMonths(1).minusDays(1);
-            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, employeeId);
-            return ResponseEntity.ok(attendanceInfo);
+            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, employeeId);
         }
+
+        if (attendanceInfo.isEmpty()) {
+            log.info("No attendance records found for employeeId: " + employeeId);
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(attendanceInfo);
     }
+
+     //TODO: 모든 내역조회에 페이징네이션 적용
 
 
     //년월일 자신의 근태정보조회 년월만 입력하면 년월만 입력데이터 적용되게 구현
     @GetMapping("/attendance_info/")
     public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfMineByDay(HttpServletRequest request,
-            @RequestParam("year") int year,
-            @RequestParam("month") int month,
-            @RequestParam(value = "day", required = false) Integer day) {
+                                                                                @RequestParam("year") int year,
+                                                                                @RequestParam("month") int month,
+                                                                                @RequestParam(value = "day", required = false) Integer day) {
 
         HttpSession session = request.getSession();
-//        String employeeId = (String) session.getAttribute("employeeId");
+        // String employeeId = (String) session.getAttribute("employeeId");
 
         if (day != null && !isValidDate(year, month, day)) {
             log.info("Invalid date: year={}, month={}, day={}", year, month, day);
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
-
 
         String tempEmployeeId = "emp01";
 
@@ -102,21 +107,23 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-
-
+        List<AttendanceInfoDto> attendanceInfo;
 
         if (day != null) {
-            // 일 데이터가 있으면 해당 날짜로 검색
             LocalDate attendanceDate = LocalDate.of(year, month, day);
-            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, tempEmployeeId);
-            return ResponseEntity.ok(attendanceInfo);
+            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, tempEmployeeId);
         } else {
-            // 일 데이터가 없으면 해당 월로 검색
             LocalDate startDate = LocalDate.of(year, month, 1);
             LocalDate endDate = startDate.plusMonths(1).minusDays(1);
-            List<AttendanceInfoDto> attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, tempEmployeeId);
-            return ResponseEntity.ok(attendanceInfo);
+            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, tempEmployeeId);
         }
+
+        if (attendanceInfo.isEmpty()) {
+            log.info("No attendance records found for employeeId: {}", tempEmployeeId);
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(attendanceInfo);
     }
 
     /*
@@ -155,6 +162,8 @@ public class EmployeeController1 {
         }
 
 
+
+
         employeeService1.approveAttendance(attendanceInfoId, employeeId);
         return ResponseEntity.ok("Attendance approved successfully");
     }
@@ -188,6 +197,12 @@ public class EmployeeController1 {
         }
 
         List<AttendanceApprovalInfoDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
+
+        if (approvalInfoDtos.isEmpty()) {
+            log.info("No approval history found for employeeId: " + employeeId);
+            return ResponseEntity.noContent().build();
+        }
+
         return new ResponseEntity<>(approvalInfoDtos, HttpStatus.OK);
     }
 
