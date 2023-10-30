@@ -8,6 +8,7 @@ import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpSession;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class LogoutServiceImpl implements LogoutService {
     private final HttpSession session;
 
@@ -51,6 +53,7 @@ public class LogoutServiceImpl implements LogoutService {
                 /*auth 테이블 정리*/
                 authMapper.logout(sessionLoginId);
                 LogoutResponseDto response = authMapper.logoutResult(sessionLoginId);
+                log.info("로그아웃 완료");
                 return response;
             }
         }
