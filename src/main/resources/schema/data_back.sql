@@ -14,13 +14,10 @@ select * from employee;
 
 INSERT INTO attendance_status_category (`key`)
 VALUES ('출근');
-
 INSERT INTO attendance_status_category (`key`)
 VALUES ('근태이상');
-
 INSERT INTO attendance_status_category (`key`)
 VALUES ('결근');
-
 INSERT INTO attendance_status_category (`key`)
 VALUES ('지각');
 
@@ -48,7 +45,10 @@ INSERT INTO attendance_info (attendance_status_category, employee_id, start_time
                                                                                                                  ('결근', 'emp08', '2023-01-08 09:00:00', '2023-01-08 18:00:00', '2023-01-08'),
                                                                                                                  ('출근', 'emp08', '2023-02-08 09:00:00', '2023-02-08 18:00:00', '2023-02-08'),
                                                                                                                  ('결근', 'emp09', '2023-01-09 09:00:00', '2023-01-09 18:00:00', '2023-01-09'),                                                                                                          ('출근', 'emp09', '2023-02-09 09:00:00', '2023-02-09 18:00:00', '2023-02-09'),
+
                                                                                                       ('출근', 'emp10', '2023-01-10 09:00:00', '2023-01-10 18:00:00', '2023-01-10');
+
+
 select *
 from attendance_info;
 
@@ -59,6 +59,10 @@ select *
 from attendance_approval;
 
 select attendance_approval_date,employee_id from attendance_approval;
+
+
+INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
+VALUES (1, NOW(), 'emp01');
 
 SELECT
     e.employee_id,
@@ -71,39 +75,41 @@ FROM
 WHERE
         e.employee_id = 'emp01';
 
-# UPDATE attendance_info
-# SET attendance_status_category = '지각'
-# WHERE employee_id = 'emp09' AND attendance_date = '2023-01-09';
-#
-# select * from attendance_info;
-#
-# INSERT INTO attendance_approval(attendance_info_id)
-#
-#
-#
-# SELECT * from attendance_info;
-# #이건 출퇴근시간 데이터 적용해볼 친구
-# INSERT INTO attendance_info (attendance_status_category, employee_id, attendance_date) VALUES
-#                                                                                            ('출근', 'emp01', '2023-01-01'),
-#                                                                                            ('출근', 'emp01', '2023-02-01'),
-#                                                                                            ('출근', 'emp02', '2023-01-02'),
-#                                                                                            ('출근', 'emp02', '2023-02-02'),
-#                                                                                            ('출근', 'emp03', '2023-01-03'),
-#                                                                                            ('출근', 'emp03', '2023-02-03'),
-#                                                                                            ('출근', 'emp04', '2023-01-04'),
-#                                                                                            ('출근', 'emp04', '2023-02-04'),
-#                                                                                            ('출근', 'emp05', '2023-01-05'),
-#                                                                                            ('출근', 'emp05', '2023-02-05'),
-#                                                                                            ('출근', 'emp06', '2023-01-06'),
-#                                                                                            ('출근', 'emp06', '2023-02-06'),
-#                                                                                            ('출근', 'emp07', '2023-01-07'),
-#                                                                                            ('출근', 'emp07', '2023-02-07'),
-#                                                                                            ('출근', 'emp08', '2023-01-08'),
-#                                                                                            ('출근', 'emp08', '2023-02-08'),
-#                                                                                            ('출근', 'emp09', '2023-01-09'),
-#                                                                                            ('출근', 'emp09', '2023-02-09'),
-#                                                                                            ('출근', 'emp10', '2023-01-10');
-# select * from attendance_info;
-#
-#
+
+UPDATE attendance_info
+SET attendance_status_category = '지각'
+WHERE employee_id = 'emp09' AND attendance_date = '2023-01-09';
+
+
+select * from attendance_info;
+
+INSERT INTO attendance_approval(attendance_info_id)
+
+
+
+SELECT * from attendance_info;
+#이건 출퇴근시간 데이터 적용해볼 친구
+INSERT INTO attendance_info (attendance_status_category, employee_id, attendance_date) VALUES
+                                                                                           ('출근', 'emp01', '2023-01-01'),
+                                                                                           ('출근', 'emp01', '2023-02-01'),
+                                                                                           ('출근', 'emp02', '2023-01-02'),
+                                                                                           ('출근', 'emp02', '2023-02-02'),
+                                                                                           ('출근', 'emp03', '2023-01-03'),
+                                                                                           ('출근', 'emp03', '2023-02-03'),
+                                                                                           ('출근', 'emp04', '2023-01-04'),
+                                                                                           ('출근', 'emp04', '2023-02-04'),
+                                                                                           ('출근', 'emp05', '2023-01-05'),
+                                                                                           ('출근', 'emp05', '2023-02-05'),
+                                                                                           ('출근', 'emp06', '2023-01-06'),
+                                                                                           ('출근', 'emp06', '2023-02-06'),
+                                                                                           ('출근', 'emp07', '2023-01-07'),
+                                                                                           ('출근', 'emp07', '2023-02-07'),
+                                                                                           ('출근', 'emp08', '2023-01-08'),
+                                                                                           ('출근', 'emp08', '2023-02-08'),
+                                                                                           ('출근', 'emp09', '2023-01-09'),
+                                                                                           ('출근', 'emp09', '2023-02-09'),
+                                                                                           ('출근', 'emp10', '2023-01-10');
+select * from attendance_info;
+
+
 

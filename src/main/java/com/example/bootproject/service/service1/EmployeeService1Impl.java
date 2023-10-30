@@ -2,6 +2,7 @@ package com.example.bootproject.service.service1;
 
 
 import com.example.bootproject.repository.mapper.EmployeeMapper1;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceStatusCategoryDto;
 import org.springframework.beans.factory.annotation.Autowired;

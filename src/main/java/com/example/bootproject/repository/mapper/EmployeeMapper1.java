@@ -1,6 +1,7 @@
 package com.example.bootproject.repository.mapper;
 
 import com.example.bootproject.entity.Employee;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceStatusCategoryDto;
 import org.apache.ibatis.annotations.*;
@@ -68,6 +69,8 @@ public interface EmployeeMapper1 {
     //근태정보--승인 테이블에 승인을 한 내역을 남긴다
     @Insert("INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id) VALUES (#{attendanceInfoId}, NOW(), #{employeeId})")
     int insertAttendanceApproval(Long attendanceInfoId, String employeeId);
+
+
 
 
 

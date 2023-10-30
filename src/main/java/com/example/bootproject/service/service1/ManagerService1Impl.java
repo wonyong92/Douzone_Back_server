@@ -1,6 +1,7 @@
 package com.example.bootproject.service.service1;
 
 import com.example.bootproject.repository.mapper.ManagerMapper1;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.EmployeeRequest;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ManagerService1Impl implements ManagerService1{
@@ -30,6 +32,8 @@ public class ManagerService1Impl implements ManagerService1{
         return  managerMapper1.findattendancemanager(employee_id,attendance_manager);
 
     }
+
+
 
 
 
@@ -55,6 +59,12 @@ public class ManagerService1Impl implements ManagerService1{
         } else {
             throw new IllegalStateException("Target employee is not an attendance manager or does not exist.");
         }
+    }
+
+    //타사원에대한 근태승인내역 조회
+    @Override
+    public List<AttendanceApprovalInfoDto> getAttendanceApprovalInfoDto(String employeeId) {
+        return managerMapper1.findApprovalInfoByEmployeeId(employeeId);
     }
 
 

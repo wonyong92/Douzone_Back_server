@@ -5,18 +5,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-//사원정보테이블
-@Data
+//근태승인내역테이블
 @NoArgsConstructor
-public class EmployeeRequest {
+@Data
+public class AttendanceApprovalInfoDto {
 
     private String employeeId;
 
-    private String password;
-
     private String name;
 
-    private boolean attendanceManager;
-
-    private Date hireYear;
+    private Date attendanceApprovalDate;
 }

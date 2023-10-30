@@ -1,6 +1,7 @@
 package com.example.bootproject.service.service1;
 
 
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,6 +27,8 @@ public interface EmployeeService1 {
 
     //자신의 근태승인요청
     void approveAttendance(String employeeId, LocalDate attendanceDate);
+
+
 
 
 }
