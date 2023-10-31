@@ -3,6 +3,7 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoEndDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartDto;
 
 
@@ -14,10 +15,9 @@ public interface EmployeeService1 {
 
 
     //출근기록
-    void startTime(String employeeId);
-
-    //퇴근
-    void updateEndTime(String employee_id);
+    AttendanceInfoStartDto startTime(String employeeId);
+    //퇴근기록
+    AttendanceInfoEndDto endTime(String employeeId);
 
     //타사원년월일
     List<AttendanceInfoDto> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId);

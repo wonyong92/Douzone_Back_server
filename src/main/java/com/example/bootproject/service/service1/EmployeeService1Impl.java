@@ -4,6 +4,7 @@ package com.example.bootproject.service.service1;
 import com.example.bootproject.repository.mapper.EmployeeMapper1;
 import com.example.bootproject.vo.vo1.request.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,9 +13,11 @@ import java.security.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmployeeService1Impl implements EmployeeService1{
 
@@ -25,34 +28,71 @@ public class EmployeeService1Impl implements EmployeeService1{
 
         //출근기록
         @Transactional
-        public void startTime(String employeeId) {
-                // 현재 날짜에 해당하는 출근 기록을 확인
-                LocalDateTime existingStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId, LocalDate.now());
-                if (existingStartTime != null) {
-                        throw new IllegalStateException("이미 출근 기록이 존재합니다.");
+        public AttendanceInfoStartDto startTime(String employeeId) {
+                LocalDate attendanceDate = LocalDate.now();
+                LocalDateTime startStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId,attendanceDate);
+
+                if (startStartTime != null) {
+
+                        log.info("출석시간이 있습니다");
+                         return null;
+                }
+                LocalDateTime startTime = LocalDateTime.now();
+
+                AttendanceInfoStartDto attendanceInfoStartDto = new AttendanceInfoStartDto();
+                attendanceInfoStartDto.setEmployeeId(employeeId);
+                attendanceInfoStartDto.setAttendanceDate(attendanceDate);
+                attendanceInfoStartDto.setStartTime(startTime);
+
+                int result = employeeMapper1.startTime(attendanceInfoStartDto);
+
+                return attendanceInfoStartDto;
+        }
+
+        @Transactional
+        public AttendanceInfoEndDto endTime(String employeeId) {
+                AttendanceInfoEndDto  attendanceInfoEndDto = new AttendanceInfoEndDto();
+                LocalDate currentDate = LocalDate.now();
+                LocalDateTime existingEndTime = employeeMapper1.getEndTimeByEmployeeIdAndDate(employeeId, currentDate);
+                LocalDateTime findstartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId,currentDate);
+
+                if (existingEndTime != null) {
+                        log.info("퇴근기록이있습니다");
+                        return null;
                 }
 
-                // 출근 시간 기록
-                LocalDateTime startTime = LocalDateTime.now();
-                employeeMapper1.startTime(employeeId, startTime);
+                if(findstartTime == null){
+                        log.info("출근기록이없습니다");
+                        return null;
+                }
+
+                LocalDateTime endTime = LocalDateTime.now();
+                attendanceInfoEndDto.setEmployeeId(employeeId);
+                attendanceInfoEndDto.setAttendanceDate(currentDate);
+                attendanceInfoEndDto.setEndTime(endTime);
+
+                int affectedRows = employeeMapper1.endTime(attendanceInfoEndDto);
+
+                //데이터가 비어있는지 확인
+                if (affectedRows == 0) {
+                        log.info("결과가 비어 있습니다.");
+                } else {
+                        log.info("결과가 비어 있지 않습니다. 영향을 받은 행의 수: {}", affectedRows);
+                }
+
+
+                return attendanceInfoEndDto;
         }
+
 
         /*
     세션에서 employeeId 가져온다 지금은 하드코딩중
     사원id데이터 형식이 이상하게 넘어올경우 오류코드
     starttime시간 내역을 확인하는mapper을 들고와서 비교한다
     starttime이 있으면 출근기록을남김니다
-    모든 조건 성공시 200 응답코드
+    데이터가 비어있는지확인 비어있으면 로그
+    성공하면 attendanceInfoEndDto반환
     */
-
-
-
-        //퇴근기록
-        @Override
-        public void updateEndTime(String employee_id) {
-                LocalDateTime localTime = LocalDateTime.now();
-                employeeMapper1.updateEndTime(employee_id,localTime);
-        }
 
 
         //사원 년,월,일 사원근태정보검색

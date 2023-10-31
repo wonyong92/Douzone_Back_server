@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Attendance_Approval {
     private Long attendanceInfoId;
-
     private String employeeId;
+
 
 }

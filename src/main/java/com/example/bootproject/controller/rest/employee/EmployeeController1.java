@@ -2,6 +2,8 @@ package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoEndDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoStartDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,35 +27,47 @@ public class EmployeeController1 {
 
     //출근기록
     @PostMapping("/attendance")
-    public ResponseEntity<String> makeAttendanceInfo() {
+    public ResponseEntity<AttendanceInfoStartDto> makeAttendanceInfo() {
         String employeeId = "emp01";
 
-            if (!employeeValidation(employeeId)) {
-                log.info("Invalid employee ID: " + employeeId);
-                return ResponseEntity.badRequest().body("유효하지 않은 직원 ID입니다.");
-            }
+
+        if (!employeeValidation(employeeId)) {
+            log.info("Invalid employee ID: " + employeeId);
+            return ResponseEntity.badRequest().body(employeeService1.startTime(employeeId));
+        }
 
 
-            employeeService1.startTime(employeeId);
-            return ResponseEntity.ok("출근 기록이 성공적으로 저장되었습니다.");
+
+        return ResponseEntity.ok().body(employeeService1.startTime(employeeId));
+    }
+    /*
+    세션에서 employeeId 가져온다 지금은 하드코딩중
+    사원id validation체크
+    모든 조건 성공시 200 응답코드
+    출근dto 내용 사원id body에 출근시간 현재날짜를 출력한다
+    */
+
+
+
+    @PostMapping("/leave")
+    public ResponseEntity<AttendanceInfoEndDto> makeLeaveInformation() {
+        String employeeId = "emp01";
+
+        if (!employeeValidation(employeeId)) {
+            log.info("Invalid employee ID: " + employeeId);
+            return ResponseEntity.badRequest().body(employeeService1.endTime(employeeId));
+        }
+
+
+        return ResponseEntity.ok().body(employeeService1.endTime(employeeId));
     }
 
     /*
     세션에서 employeeId 가져온다 지금은 하드코딩중
-    사원id데이터 형식이 이상하게 넘어올경우 오류코드
-    데이터가 제데로 들어오면 log남김
     사원id validation체크
-    모든 조건 성공시 200 응답코드
+    출근dto 내용 사원id body에 퇴근시간 퇴근날짜를 출력한다
     */
 
-
-    //퇴근기록
-    @GetMapping("/leave")
-    public ResponseEntity<Void> makeLeaveInformation(){
-        String employee_id = "emp02";
-        employeeService1.updateEndTime(employee_id);
-        return ResponseEntity.ok().build();
-    }
 
 
     //년월일 타사원정보검색 년월만 입력하면 년월만 입력데이터 적용되게 구현//manager로 넘길메서드
@@ -147,10 +161,11 @@ public class EmployeeController1 {
     모든 조건 성공시 200 응답코드
     일데이터가 있는경우 일 경우 검색
     일데이터가 없으면 월로 검색
+    attendanceinfo데이터를 넘긴다
     */
 
 
-    //타사원의 근태 승인요청
+    //자신의 근태 승인요청
     @PostMapping("/approve")
     public ResponseEntity<String> makeApproveRequest(HttpServletRequest request) {
         //        HttpSession session = request.getSession();
@@ -172,8 +187,6 @@ public class EmployeeController1 {
             log.info("not collect validationcheck" + employeeId);
             return ResponseEntity.badRequest().build();
         }
-
-
 
 
         employeeService1.approveAttendance(attendanceInfoId, employeeId);
@@ -215,7 +228,7 @@ public class EmployeeController1 {
             return ResponseEntity.noContent().build();
         }
 
-        return new ResponseEntity<>(approvalInfoDtos, HttpStatus.OK);
+        return  ResponseEntity.ok(approvalInfoDtos);
     }
 
     /*
@@ -223,17 +236,18 @@ public class EmployeeController1 {
     사원id나 근태정보id가 안넘어올경우 오류코드
     데이터가 들어올시 log데이터가 넘어옴
     사원id validation체크
-    모든 조건 성공시 200 응답코드
+    모든 조건 성공시 approvaInfoDtos을 출력한다
      */
 
 
 
 
-    //타사원에 대한 근태승인내역
 // 사원id validation check
 public boolean employeeValidation(String employeeId){
     return employeeId.matches("^emp[0-9]+$");
 }
+
+
 
     //년월알 데이터 형식 맞는지에 validationcheck
     public static boolean isValidDate(int year, int month, int day) {
