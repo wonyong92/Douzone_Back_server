@@ -79,7 +79,8 @@ public class VacationServiceImpl implements VacationService {
         if (old != null) {
             log.info("요청 처리 쓰기 수행 - 기존 데이터 {}", old);
             vacationMapper.process(dto);
-
+            if (dto.getVacationRequestStateCategoryKey().equals("permitted"))
+                dto.setReasonForRejection("permitted");
             VacationRequestResponseDto result = vacationMapper.findByVacationRequestKey(dto.getVacationRequestKey());
             log.info("요청 처리 쓰기 수행 결과 {}", result);
             return result;
