@@ -1,11 +1,14 @@
 package com.example.bootproject.controller.rest.employee;
 
+import com.example.bootproject.service.service3.api.AppealService;
 import com.example.bootproject.service.service3.api.LoginService;
 import com.example.bootproject.service.service3.api.LogoutService;
 import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.request.LoginRequestDto;
+import com.example.bootproject.vo.vo3.request.appeal.AppealRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
+import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
 import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
@@ -24,6 +27,7 @@ public class EmployeeController3 {
     private final LoginService loginService;
     private final LogoutService logoutService;
     private final VacationService vacationService;
+    private final AppealService appealService;
     @GetMapping("/employee/information/{employee_id}")
     public String getInformationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
         return "getInformationOfEmployee";
@@ -86,8 +90,20 @@ public class EmployeeController3 {
     }
 
     @PostMapping("/employee/appeal")
-    public String makeAppealRequest() {
-        return "makeAppealRequest";
+    public ResponseEntity<AppealRequestResponseDto> makeAppealRequest(@ModelAttribute AppealRequestDto dto) {
+
+        log.info("정상 작업 진행");
+        AppealRequestResponseDto result = null;
+        try {
+            result = appealService.makeAppealRequest(dto);
+        } catch (Exception e) {
+            log.info("연차 요청 수행 도중 에러 발생");
+            e.printStackTrace();
+        }
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/employee/vacation")

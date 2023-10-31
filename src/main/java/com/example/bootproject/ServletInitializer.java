@@ -8,7 +8,8 @@ import java.util.*;
 public class ServletInitializer extends SpringBootServletInitializer {
 
     private static List<String> VACATION_REQUEST_LIST = Collections.synchronizedList(new ArrayList<>());
-    public static Map<String, List<String>> REQUEST_LIST = new HashMap<>(Map.of("/employee/vacation", VACATION_REQUEST_LIST));
+    private static List<String> APPEAL_REQUEST_LIST = Collections.synchronizedList(new ArrayList<>());
+    public static Map<String, List<String>> REQUEST_LIST = new HashMap<>(Map.of("/employee/vacation", VACATION_REQUEST_LIST, "/employee/appeal", APPEAL_REQUEST_LIST));
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {

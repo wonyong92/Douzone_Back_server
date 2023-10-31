@@ -28,17 +28,7 @@ public class WorkingQueueInterceptor implements HandlerInterceptor {
 
         List<String> processingList = REQUEST_LIST.get(request.getRequestURI());
 
-        if (loginId == null) {
-            log.info("로그인 정보 없는 요청 발생");
-            response.setStatus(403);
-            return false;
-        }
 
-        if (ip.equals(IpAnalyzer.getClientIp(request))) {
-            log.info("ip 변경 발생");
-            response.setStatus(403);
-            return false;
-        }
         if (processingList.contains(loginId)) {
             log.info("작업 큐에 현재 진행 중인 작업 있음");
             response.setStatus(HttpStatus.CONFLICT.value());

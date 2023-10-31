@@ -1,6 +1,8 @@
 use douzone_test;
 drop table if exists auth;
+
 drop table if exists attendance_appeal_request;
+drop table if exists attendance_appeal_request_status;
 drop table if exists attendance_approval;
 drop table if exists attendance_info;
 drop table if exists attendance_status_category;
@@ -52,6 +54,11 @@ CREATE TABLE attendance_info
     CONSTRAINT attendance_info_ibfk_2 FOREIGN KEY (attendance_status_category) REFERENCES attendance_status_category (`key`)
 );
 
+create table attendance_appeal_request_status
+(
+    attendance_appeal_request_status_key varchar(10) not null primary key
+);
+
 create table attendance_appeal_request
 (
     attendance_appeal_request_id   bigint                    not null
@@ -59,15 +66,17 @@ create table attendance_appeal_request
     status                         varchar(10)               not null,
     reason                         text                      not null,
     attendance_info_id             bigint                    not null,
-    appealed_start_time            timestamp                 not null,
-    appealed_end_time              timestamp                 not null,
+    appealed_start_time            time                      not null,
+    appealed_end_time              time                      not null,
     employee_id                    varchar(10)               not null,
     attendance_appeal_request_time timestamp default (now()) not null,
     reason_for_rejection           text,
     constraint attendance_appeal_request_ibfk_1
         foreign key (attendance_info_id) references attendance_info (attendance_info_id),
     constraint attendance_appeal_request_ibfk_2
-        foreign key (employee_id) references employee (employee_id)
+        foreign key (employee_id) references employee (employee_id),
+    constraint attendance_appeal_request_ibfk_3
+        foreign key (status) references attendance_appeal_request_status (attendance_appeal_request_status_key)
 );
 
 create table attendance_approval
