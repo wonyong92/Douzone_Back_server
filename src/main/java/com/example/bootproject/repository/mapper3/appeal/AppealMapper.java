@@ -1,6 +1,8 @@
 package com.example.bootproject.repository.mapper3.appeal;
 
+import com.example.bootproject.vo.vo3.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.appeal.AppealRequestDto;
+import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
@@ -34,4 +36,8 @@ public interface AppealMapper {
 
     @Select("select * from attendance_appeal_request where attendance_appeal_request_id = #{generatedKey} ")
     AppealRequestResponseDto findById(Long generatedKey);
+
+    @Update("update attendance_appeal_request set status=#{dto.status}, reason_for_rejection=#{dto.reasonForRejection} where attendance_appeal_request_id =  #{dto.attendanceAppealRequestId}")
+    @Options(useGeneratedKeys = true, keyProperty = "attendanceAppealRequestId")
+    void process(@Param("dto") AppealProcessRequestDto dto);
 }

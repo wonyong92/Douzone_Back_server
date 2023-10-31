@@ -3,13 +3,19 @@ package com.example.bootproject.service.service3.impl;
 import com.example.bootproject.repository.mapper3.appeal.AppealMapper;
 import com.example.bootproject.repository.mapper3.attendanceinfo.AttendanceInfoMapper;
 import com.example.bootproject.service.service3.api.AppealService;
+import com.example.bootproject.vo.vo3.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.appeal.AppealRequestDto;
+import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
+import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+
+import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_PERMITTED;
+import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REQUESTED;
 
 @Service
 @Slf4j
@@ -49,5 +55,40 @@ public class AppealServiceImpl implements AppealService {
         appealMapper.makeRequest(dto, employeeId);
         AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
         return result;
+    }
+
+    @Override
+    public AppealRequestResponseDto processAppealRequest(AppealProcessRequestDto dto) {
+        //        1. 사유의 데이터가 null인지 확인
+//
+//            ⇒ 사유의 데이터가 null : 응답 코드 400
+//
+//            ⇒ 사유의 데이터가 not null : 응답 코드 200
+//
+//        3. 가져온 데이터를 분석하여 연차 사용 신청 내역 테이블을 업데이트 하거나 생략
+        /*결정이 거절인 경우*/
+        AppealRequestResponseDto old = appealMapper.findById(dto.getAttendanceAppealRequestId());
+        if (!old.getStatus().equals(VACATION_REQUEST_STATE_REQUESTED)) {
+            log.info("이미 처리된 연차 요청은 처리 할 수 없습니다");
+            return null;
+        }
+
+        log.info("{} {}", old.getEmployeeId(), dto.getEmployeeId());
+        if (old.getEmployeeId().equals(dto.getEmployeeId())) {
+            log.info("자신의 연차 요청은 처리 할 수 없습니다");
+            return null;
+        }
+        /*요청 번호에 문제가 있는 경우 null 반환*/
+        if (old != null) {
+            log.info("요청 처리 쓰기 수행 - 기존 데이터 {}", old);
+            appealMapper.process(dto);
+            if (dto.getStatus().equals(VACATION_REQUEST_STATE_PERMITTED))
+                dto.setReasonForRejection("permitted");
+            AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceAppealRequestId());
+            log.info("요청 처리 쓰기 수행 결과 {}", result);
+            return result;
+        }
+        log.info("요청 번호로 요청을 찾을 수 없음");
+        return null;
     }
 }

@@ -13,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REJECTED;
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REQUESTED;
+import static com.example.bootproject.system.StaticString.*;
 
 @Service
 @Transactional
@@ -79,7 +78,7 @@ public class VacationServiceImpl implements VacationService {
         if (old != null) {
             log.info("요청 처리 쓰기 수행 - 기존 데이터 {}", old);
             vacationMapper.process(dto);
-            if (dto.getVacationRequestStateCategoryKey().equals("permitted"))
+            if (dto.getVacationRequestStateCategoryKey().equals(VACATION_REQUEST_STATE_PERMITTED))
                 dto.setReasonForRejection("permitted");
             VacationRequestResponseDto result = vacationMapper.findByVacationRequestKey(dto.getVacationRequestKey());
             log.info("요청 처리 쓰기 수행 결과 {}", result);
