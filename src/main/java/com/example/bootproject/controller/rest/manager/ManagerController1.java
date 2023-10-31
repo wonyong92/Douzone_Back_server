@@ -69,7 +69,7 @@ public class ManagerController1 {
 
         if (employeeId == null) {
             log.info("EmployeeId is missing.");
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().build();
         }
 
         if (!employeeValidation(employeeId)) {
