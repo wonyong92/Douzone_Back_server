@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class VacationRequestDto {
+    Long vacationRequestKey = null;
     String vacationCategoryKey;
     String employeeId;
     String vacationRequestStateCategoryKey;

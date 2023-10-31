@@ -52,7 +52,8 @@ public class MultipartServiceImpl implements MultipartService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Integer generatedFileId = multipartMapper.upload(employeeId, uniqueFileName);
+        multipartMapper.upload(dto, uniqueFileName);
+        Long generatedFileId = dto.getFileId();
         MultipartUploadResponseDto result = multipartMapper.findByFileId(generatedFileId);
         return result;
     }
@@ -62,7 +63,7 @@ public class MultipartServiceImpl implements MultipartService {
 
         String filePath = "uploads/";
         AtomicReference<Resource> result = new AtomicReference<>();
-        Integer findFileNum = multipartMapper.findByEmployeeId(employeeId);
+        Long findFileNum = multipartMapper.findByEmployeeId(employeeId);
         MultipartUploadResponseDto fileData = multipartMapper.findByFileId(findFileNum);
         if (fileData == null) {
             fileData.setFileName("default.png");

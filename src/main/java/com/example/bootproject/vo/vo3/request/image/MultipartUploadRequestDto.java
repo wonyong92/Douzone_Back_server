@@ -7,4 +7,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class MultipartUploadRequestDto {
     MultipartFile uploadFile;
     String employeeId;
+    Long fileId;
 }

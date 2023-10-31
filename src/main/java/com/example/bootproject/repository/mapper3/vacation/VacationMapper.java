@@ -17,8 +17,8 @@ public interface VacationMapper {
 
     @Insert("insert into douzone_test.vacation_request (vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity, vacation_start_date, vacation_end_date, reason, vacation_request_time, reason_for_rejection)\n" +
             "values  (#{dto.vacationCategoryKey}, #{dto.employeeId}, 'requested', #{dto.vacationQuantity}, #{dto.vacationStartDate}, #{dto.vacationEndDate}, #{dto.reason}, now(), null)")
-    @Options(useGeneratedKeys = true, keyProperty = "vacation_request_key")
-    long addRequest(@Param("dto") VacationRequestDto dto);
+    @Options(useGeneratedKeys = true, keyProperty = "vacationRequestKey")
+    Long addRequest(@Param("dto") VacationRequestDto dto);
 
     @Select("select * from vacation_request where vacation_request_key = #{generatedKey}")
     VacationRequestResponseDto findByVacationRequestKey(long generatedKey);

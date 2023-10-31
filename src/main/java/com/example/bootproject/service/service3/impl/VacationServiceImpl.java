@@ -40,7 +40,8 @@ public class VacationServiceImpl implements VacationService {
                 // 정상 동작 수행
                 // 입력 데이터를 insert
                 log.info("정상 연차 생성 요청 처리 진행");
-                long generatedKey = vacationMapper.addRequest(dto);
+                vacationMapper.addRequest(dto);
+                long generatedKey = dto.getVacationRequestKey();
                 VacationRequestResponseDto result = vacationMapper.findByVacationRequestKey(generatedKey);
                 return result;
             }
