@@ -26,73 +26,29 @@ public class EmployeeService1Impl implements EmployeeService1{
 
 
 
-        //출근기록
-        @Transactional
-        public AttendanceInfoStartDto startTime(String employeeId) {
-                LocalDate attendanceDate = LocalDate.now();
-                LocalDateTime startStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId,attendanceDate);
-
-                if (startStartTime != null) {
-
-                        log.info("출석시간이 있습니다");
-                         return null;
-                }
-                LocalDateTime startTime = LocalDateTime.now();
-
-                AttendanceInfoStartDto attendanceInfoStartDto = new AttendanceInfoStartDto();
-                attendanceInfoStartDto.setEmployeeId(employeeId);
-                attendanceInfoStartDto.setAttendanceDate(attendanceDate);
-                attendanceInfoStartDto.setStartTime(startTime);
-
-                int result = employeeMapper1.startTime(attendanceInfoStartDto);
-
-                return attendanceInfoStartDto;
+        //출근시간데이터확인
+        @Override
+        public LocalDateTime getStartTimeByEmployeeIdAndDate(String employeeId, LocalDate date) {
+                return employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId, date);
         }
 
-        @Transactional
-        public AttendanceInfoEndDto endTime(String employeeId) {
-                AttendanceInfoEndDto  attendanceInfoEndDto = new AttendanceInfoEndDto();
-                LocalDate currentDate = LocalDate.now();
-                LocalDateTime existingEndTime = employeeMapper1.getEndTimeByEmployeeIdAndDate(employeeId, currentDate);
-                LocalDateTime findstartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId,currentDate);
-
-                if (existingEndTime != null) {
-                        log.info("퇴근기록이있습니다");
-                        return null;
-                }
-
-                if(findstartTime == null){
-                        log.info("출근기록이없습니다");
-                        return null;
-                }
-
-                LocalDateTime endTime = LocalDateTime.now();
-                attendanceInfoEndDto.setEmployeeId(employeeId);
-                attendanceInfoEndDto.setAttendanceDate(currentDate);
-                attendanceInfoEndDto.setEndTime(endTime);
-
-                int affectedRows = employeeMapper1.endTime(attendanceInfoEndDto);
-
-                //데이터가 비어있는지 확인
-                if (affectedRows == 0) {
-                        log.info("결과가 비어 있습니다.");
-                } else {
-                        log.info("결과가 비어 있지 않습니다. 영향을 받은 행의 수: {}", affectedRows);
-                }
-
-
-                return attendanceInfoEndDto;
+        //퇴근시간데이터확인
+        @Override
+        public LocalDateTime getEndTimeByEmployeeIdAndDate(String employeeId, LocalDate date) {
+                return employeeMapper1.getEndTimeByEmployeeIdAndDate(employeeId,date);
         }
 
+        //출근시간요청
+        @Override
+        public int startTime(AttendanceInfoStartDto attendanceInfoStartDto) {
+                return employeeMapper1.startTime(attendanceInfoStartDto);
+        }
 
-        /*
-    세션에서 employeeId 가져온다 지금은 하드코딩중
-    사원id데이터 형식이 이상하게 넘어올경우 오류코드
-    starttime시간 내역을 확인하는mapper을 들고와서 비교한다
-    starttime이 있으면 출근기록을남김니다
-    데이터가 비어있는지확인 비어있으면 로그
-    성공하면 attendanceInfoEndDto반환
-    */
+        //퇴근시간요청
+        @Override
+        public int endTime(AttendanceInfoEndDto attendanceInfoEndDto) {
+                return employeeMapper1.endTime(attendanceInfoEndDto);
+        }
 
 
         //사원 년,월,일 사원근태정보검색
@@ -109,9 +65,8 @@ public class EmployeeService1Impl implements EmployeeService1{
 
 
         //자신의 근태승인요청
-        @Override
         @Transactional
-        public void approveAttendance(Long attendanceInfoId, String employeeId) {
+        public AttendanceApprovalDto approveAttendance(Long attendanceInfoId, String employeeId) {
                 // 1. "지각" 상태 정보 가져오기
                 AttendanceStatusCategoryDto lateStatus = employeeMapper1.findLateStatus();
 
@@ -123,10 +78,19 @@ public class EmployeeService1Impl implements EmployeeService1{
 
                 // 3. 근태 승인 정보 삽입
                 int insertedRows = employeeMapper1.insertAttendanceApproval(attendanceInfoId, employeeId);
+
+                // 4. 근태 승인 정보를 DTO로 변환하여 반환
+                AttendanceApprovalDto attendanceApprovalDto = new AttendanceApprovalDto();
+                attendanceApprovalDto.setAttendanceInfoId(attendanceInfoId);
+                attendanceApprovalDto.setAttendanceApprovalDate(LocalDate.now()); // 승인 날짜 설정
+                attendanceApprovalDto.setEmployeeId(employeeId);
+
+                return attendanceApprovalDto;
         }
 
+
         @Override
-        public List<AttendanceApprovalInfoDto> findApprovalInfoByMine(String employeeId) {
+        public List<AttendanceApprovalDto> findApprovalInfoByMine(String employeeId) {
                 return employeeMapper1.findApprovalInfoByMine(employeeId);
         }
 

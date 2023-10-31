@@ -1,6 +1,6 @@
 package com.example.bootproject.repository.mapper;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalDto;
 import com.example.bootproject.vo.vo1.request.EmployeeDto;
 import com.example.bootproject.vo.vo1.request.EmployeeRequest;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
@@ -28,7 +28,7 @@ public interface ManagerMapper1 {
 
 
     //정규출퇴근시간 설정
-    @Insert("INSERT INTO regular_time_adjustment_history내 (" +
+    @Insert("INSERT INTO regular_time_adjustment_history (" +
             "target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id) " +
             "VALUES (#{target_date}, #{adjusted_start_time}, #{adjusted_end_time }, #{reason}, #{regular_time_adjustment_time}, #{employee_id})")
     int insertregulartimeadjustmenthistory(RegularTimeAdjustmentHistoryDto dto);
@@ -39,7 +39,7 @@ public interface ManagerMapper1 {
             "FROM attendance_approval a " +
             "JOIN employee e ON a.employee_id = e.employee_id " +
             "WHERE e.employee_id = #{employeeId}")
-    List<AttendanceApprovalInfoDto> findApprovalInfoByEmployeeId(String employeeId);
+    List<AttendanceApprovalDto> findApprovalInfoByEmployeeId(String employeeId);
 
 
 

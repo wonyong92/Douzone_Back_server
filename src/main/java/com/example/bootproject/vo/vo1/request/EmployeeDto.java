@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+//사원정보
 @Data
 @NoArgsConstructor
 public class EmployeeDto {

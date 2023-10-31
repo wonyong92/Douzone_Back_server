@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import java.sql.Date;
 import java.sql.Time;
 
+//근태정보
 @Data
 @NoArgsConstructor
 public class AttendanceInfoDto {

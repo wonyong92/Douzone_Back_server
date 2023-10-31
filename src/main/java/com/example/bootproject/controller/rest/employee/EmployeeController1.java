@@ -1,13 +1,11 @@
 package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoEndDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoStartDto;
+import com.example.bootproject.vo.vo1.request.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -25,48 +24,87 @@ public class EmployeeController1 {
 
     private final EmployeeService1 employeeService1;
 
-    //출근기록
+
     @PostMapping("/attendance")
-    public ResponseEntity<AttendanceInfoStartDto> makeAttendanceInfo() {
-        String employeeId = "emp01";
+    @Transactional
+    public ResponseEntity<Object> makeAttendanceInfo() {
+        String employeeId ="emp01";
+        LocalDate attendanceDate = LocalDate.now();
+        LocalDateTime existingStartTime = employeeService1.getStartTimeByEmployeeIdAndDate(employeeId, attendanceDate);
+        LocalDateTime startTime = LocalDateTime.now();
+        AttendanceInfoStartDto attendanceInfoStartDto = new AttendanceInfoStartDto();
+        attendanceInfoStartDto.setEmployeeId(employeeId);
+        attendanceInfoStartDto.setAttendanceDate(attendanceDate);
+        attendanceInfoStartDto.setStartTime(startTime);
 
+        if (existingStartTime != null) {
+            log.info("출근시간이 있습니다");
+            return ResponseEntity.badRequest().body("출근시간이 있습니다");
+        }
+        int result = employeeService1.startTime(attendanceInfoStartDto);
 
-        if (!employeeValidation(employeeId)) {
-            log.info("Invalid employee ID: " + employeeId);
-            return ResponseEntity.badRequest().body(employeeService1.startTime(employeeId));
+        if (result == 0) {
+            log.info("출근 데이터가 안담김");
+            return ResponseEntity.badRequest().body("출근 데이터가 안담김");
         }
 
-
-
-        return ResponseEntity.ok().body(employeeService1.startTime(employeeId));
+        return ResponseEntity.ok(attendanceInfoStartDto);
     }
+
     /*
     세션에서 employeeId 가져온다 지금은 하드코딩중
-    사원id validation체크
-    모든 조건 성공시 200 응답코드
-    출근dto 내용 사원id body에 출근시간 현재날짜를 출력한다
+     existingStartTime에 출근시간을 조회하는 데이터를 담아옵니다
+     만약 출근시간이 있으면  badrequest와 할께 출근시간이있습니다 body에담아서반환
+     dto가 데이터가 없으면  badrequest와 할께 데이터가 안담김을 body에 담아서 반환한다
+    모든요청이 정상적이면 AttendanceEndDto 내용을 body에 사원id 퇴근시간 현재날짜를 반한환다
     */
-
 
 
     @PostMapping("/leave")
-    public ResponseEntity<AttendanceInfoEndDto> makeLeaveInformation() {
-        String employeeId = "emp01";
+    @Transactional
+    public ResponseEntity<Object>makeLeaveInformation(){
+        String employeeId ="emp01";
+        LocalDate attendanceDate = LocalDate.now();
+        LocalDateTime endTime = LocalDateTime.now();
+        AttendanceInfoEndDto attendanceInfoEndDto = new AttendanceInfoEndDto();
+        attendanceInfoEndDto.setEmployeeId(employeeId);
+        attendanceInfoEndDto.setAttendanceDate(attendanceDate);
+        attendanceInfoEndDto.setEndTime(endTime);
 
-        if (!employeeValidation(employeeId)) {
-            log.info("Invalid employee ID: " + employeeId);
-            return ResponseEntity.badRequest().body(employeeService1.endTime(employeeId));
+        //출근시간 유무확인
+        LocalDateTime existingStartTime = employeeService1.getStartTimeByEmployeeIdAndDate(employeeId, attendanceDate);
+        if (existingStartTime == null) {
+            log.info("출근정보가 없습니다");
+            return ResponseEntity.badRequest().body("출근정보가없습니다");
         }
 
+        //퇴근시간 유무확인
+        LocalDateTime existingEndTime = employeeService1.getEndTimeByEmployeeIdAndDate(employeeId,attendanceDate);
+        if (existingEndTime != null) {
+            log.info("퇴근시간이 있습니다");
+            return ResponseEntity.badRequest().body("퇴근시간이있습니다");
+        }
+        int result = employeeService1.endTime(attendanceInfoEndDto);
 
-        return ResponseEntity.ok().body(employeeService1.endTime(employeeId));
+        if (result == 0) {
+            log.info("퇴근 정보 데이터가 안담김");
+            return ResponseEntity.badRequest().body("퇴근 정보 데이터가 안담겼습니다");
+        }
+
+        return ResponseEntity.ok(attendanceInfoEndDto);
     }
 
     /*
     세션에서 employeeId 가져온다 지금은 하드코딩중
-    사원id validation체크
-    출근dto 내용 사원id body에 퇴근시간 퇴근날짜를 출력한다
+     existingstartTime에 출근시간을 조회하는 데이터를 담아옵니다
+     만약 출근시간이 없으면  badrequest와 할께 출근시간이없습니다 body에담아서반환
+     existingEndTime에 퇴근시간을 조회하는 데이터를 담아옵니다
+     만약 퇴근시간이 있으면  badrequest와 할께 퇴근시간이있습니다 body에담아서반환
+     dto가 데이터가 없으면  badrequest와 할께 데이터가 안담김을 body에 담아서 반환한다
+    모든요청이 정상적이면 AttendanceEndDto 내용을 body에 사원id 퇴근시간요청내용을 반한환다
     */
+
+
 
 
 
@@ -167,30 +205,24 @@ public class EmployeeController1 {
 
     //자신의 근태 승인요청
     @PostMapping("/approve")
-    public ResponseEntity<String> makeApproveRequest(HttpServletRequest request) {
-        //        HttpSession session = request.getSession();
-//
-//        // 세션에서 attendanceInfoId와 employeeId 가져오기
-//        Long attendanceInfoId = (Long) session.getAttribute("attendanceInfoId");
-//        String employeeId = (String) session.getAttribute("employeeId");
+    public ResponseEntity<AttendanceApprovalDto> makeApproveRequest(HttpServletRequest request) {
         Long attendanceInfoId = Long.valueOf("1");
         String employeeId = "emp01";
 
         if (attendanceInfoId == null || employeeId == null) {
             log.info("AttendanceInfoId or EmployeeId is missing.");
-            return ResponseEntity.badRequest().body("Attendance info or Employee ID is missing.");
+            return ResponseEntity.badRequest().build();
         }
-        log.info("Validating employee: " + attendanceInfoId);
-        log.info("Validating employee: " + employeeId);
+        log.info("Validating employee: {}", attendanceInfoId);
+        log.info("Validating employee: {}", employeeId);
 
-        if(!employeeValidation(employeeId)){
-            log.info("not collect validationcheck" + employeeId);
+        if (!employeeValidation(employeeId)) {
+            log.info("Not collect validation check {}", employeeId);
             return ResponseEntity.badRequest().build();
         }
 
-
-        employeeService1.approveAttendance(attendanceInfoId, employeeId);
-        return ResponseEntity.ok("Attendance approved successfully");
+        AttendanceApprovalDto attendanceApprovalDto = employeeService1.approveAttendance(attendanceInfoId, employeeId);
+        return ResponseEntity.ok(attendanceApprovalDto);
     }
 
      /*
@@ -198,7 +230,7 @@ public class EmployeeController1 {
     사원id나 근태정보id가 안넘어올경우 오류코드
     데이터가 들어올시 log데이터가 넘어옴
     사원id validation체크
-    모든 조건 성공시 200 응답코드
+    모든 조건 달성시 attendanceApprovalDto 반환
      */
 
 
@@ -206,7 +238,7 @@ public class EmployeeController1 {
 
     //자신의 근태승인내역
     @GetMapping("/approves")
-    public ResponseEntity<List<AttendanceApprovalInfoDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
+    public ResponseEntity<List<AttendanceApprovalDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
         HttpSession session = request.getSession();
 
         String employeeId= "emp01";
@@ -221,7 +253,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceApprovalInfoDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
+        List<AttendanceApprovalDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
 
         if (approvalInfoDtos.isEmpty()) {
             log.info("No approval history found for employeeId: " + employeeId);

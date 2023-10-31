@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+//퇴근
 @Data
 @NoArgsConstructor
 public class AttendanceInfoEndDto {

@@ -30,8 +30,8 @@ VALUES
 # VALUES ('emp01', CURDATE(), '2023-11-01 08:40:00')
 # ON DUPLICATE KEY UPDATE start_time = '2023-11-01 08:30:00';
 
-# INSERT INTO attendance_info (employee_id, attendance_date)
-# VALUES ('emp01', CURDATE());
+INSERT INTO attendance_info (employee_id, attendance_date)
+VALUES ('emp01', CURDATE());
 
 #사원조회
 select * from attendance_info;

@@ -20,15 +20,15 @@ public interface EmployeeMapper1 {
             "ON DUPLICATE KEY UPDATE start_time = VALUES (start_time)")
     int startTime(AttendanceInfoStartDto attendanceInfoStartDto);
 
-    //퇴근기록
-    @Insert("UPDATE attendance_info SET end_time = #{endTime} " +
-            "WHERE employee_id = #{employeeId} AND attendance_date = #{attendanceDate}")
-    int endTime(AttendanceInfoEndDto attendanceInfoEndDto);
-
     //출근내역찾기
     @Select("SELECT start_time FROM attendance_info " +
             "WHERE employee_id = #{employeeId} AND attendance_date = #{date}")
     LocalDateTime getStartTimeByEmployeeIdAndDate(String employeeId, LocalDate date);
+
+    //퇴근기록
+    @Insert("UPDATE attendance_info SET end_time = #{endTime} " +
+            "WHERE employee_id = #{employeeId} AND attendance_date = #{attendanceDate}")
+    int endTime(AttendanceInfoEndDto attendanceInfoEndDto);
 
     //퇴근내역찾기
     @Select("SELECT end_time FROM attendance_info " +
@@ -88,7 +88,7 @@ public interface EmployeeMapper1 {
             "FROM attendance_approval a " +
             "JOIN employee e ON a.employee_id = e.employee_id " +
             "WHERE e.employee_id = #{employeeId}")
-    List<AttendanceApprovalInfoDto> findApprovalInfoByMine(String employeeId);
+    List<AttendanceApprovalDto> findApprovalInfoByMine(String employeeId);
 
 
 

@@ -9,6 +9,7 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+//정규출퇴근시간
 @Data
 @NoArgsConstructor
 public class RegularTimeAdjustmentHistoryDto {

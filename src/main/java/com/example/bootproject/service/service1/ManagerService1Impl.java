@@ -1,7 +1,7 @@
 package com.example.bootproject.service.service1;
 
 import com.example.bootproject.repository.mapper.ManagerMapper1;
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalDto;
 import com.example.bootproject.vo.vo1.request.EmployeeRequest;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ public class ManagerService1Impl implements ManagerService1{
 
 
 
-    //이거 없앨껄
     //사원의 id와 근태관리자여부 true/false를 담음
     @Override
     public EmployeeRequest findattendancemanager(String employeeId, boolean attendance_manager) {
@@ -64,7 +63,7 @@ public class ManagerService1Impl implements ManagerService1{
 
     //타사원에대한 근태승인내역 조회
     @Override
-    public List<AttendanceApprovalInfoDto> getAttendanceApprovalInfoDto(String employeeId) {
+    public List<AttendanceApprovalDto> getAttendanceApprovalInfoDto(String employeeId) {
         return managerMapper1.findApprovalInfoByEmployeeId(employeeId);
     }
 
