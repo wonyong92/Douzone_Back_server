@@ -50,14 +50,14 @@ public class EmployeeController3 {
         dto.setIp(dto.getIp()==null?IpAnalyzer.getClientIp(req):dto.getIp());
         log.info("LoginRequestDto dto : {}",dto);
         LoginResponseDto loginResult = null;
-        loginResult = loginService.sessionLogin(dto);
-        log.info("session login 결과 : {}",loginResult);
+        loginResult = loginService.sessionLogin(dto, req);
+        log.info("session login 결과 : {}", loginResult);
          if(loginResult!=null){
-             log.info("session login sessionId : {}",req.getSession().getId());
+             log.info("session login sessionId : {}", req.getSession(false).getId());
              return ResponseEntity.ok(loginResult);
          }
          else{
-             loginResult = loginService.formLogin(dto);
+             loginResult = loginService.formLogin(dto, req);
              if(loginResult!=null){
                  log.info("form login request : {}",dto);
                  return ResponseEntity.ok(loginResult);
@@ -107,9 +107,14 @@ public class EmployeeController3 {
     }
 
     @PostMapping("/employee/vacation")
-    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute VacationRequestDto dto) {
+    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute VacationRequestDto dto, @SessionAttribute(name = "loginId") String employeeId) {
         log.info("정상 작업 진행");
         VacationRequestResponseDto result = null;
+        if (dto.getEmployeeId() == null) {
+            dto.setEmployeeId(employeeId);
+        } else if (!dto.getEmployeeId().equals(employeeId)) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
             result = vacationService.makeVacationRequest(dto);
         } catch (Exception e) {

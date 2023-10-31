@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
@@ -21,12 +23,12 @@ public class LoginServiceImpl implements LoginService {
 
     private final EmployeeLoginMapper employeeLoginMapper;
     private final AdminLoginMapper adminLoginMapper;
-    private final HttpSession session;
+    //    private final HttpSession session;
     private final SessionLoginMapper sessionLoginMapper;
 
 
     @Override
-    public LoginResponseDto sessionLogin(LoginRequestDto dto) {
+    public LoginResponseDto sessionLogin(LoginRequestDto dto, HttpServletRequest req) {
         /*
          * 세션 로그인을 통해 동시로그인 방지 기능을 구현
          * jsessionId + client Ip로 검사 - 내부망에서 각자 할당된 IP로 로그인을 시도할 것이므로 세션이 유지된 상태에서 IP 변경이 발생하지 않아야 한다
@@ -39,7 +41,9 @@ public class LoginServiceImpl implements LoginService {
          * 재로그인후 세션 로그인을 이용할 수 있도록 한다
          * */
         LoginResponseDto loginResult = null;
-        if (session == null) {
+        HttpSession session = req.getSession(false);
+        log.info("session login 검삭 결과 {}", !(session == null || session.getAttribute("loginId") == null));
+        if (session == null || session.getAttribute("loginId") == null) {
             /*세션이 존재하지 않는 경우 null 반환*/
             return null;
         } else {
@@ -60,15 +64,15 @@ public class LoginServiceImpl implements LoginService {
              * loginId, ip를 세션에서 확인 완료
              * TODO :  추가적으로 필요한 인증 정보를 auth repository와 employee 테이블에서 가져온다
              * */
-            sessionLoginMapper.updateAuthInforamtion(sessionLoginId);
+            sessionLoginMapper.updateAuthInforamtion(sessionLoginId, sessionLoginIp);
             /*업데이트 후 재조회*/
-            loginResult = sessionLoginMapper.sessionLogin(sessionLoginId);
+            loginResult = sessionLoginMapper.sessionLogin(sessionLoginId, sessionLoginIp);
         }
         return loginResult;
     }
 
     @Override
-    public LoginResponseDto formLogin(LoginRequestDto dto) {
+    public LoginResponseDto formLogin(LoginRequestDto dto, HttpServletRequest req) {
         /*
          * validation check, sanitizing 은 컨트롤러에서 수행
          * dto 에서 String 타입인 loginId와 String 타입인 password 를 가져온다
@@ -82,16 +86,16 @@ public class LoginServiceImpl implements LoginService {
         LoginResponseDto loginResult = null;
 
         if (loginType) {
-            loginResult = employeeLogin(dto);
+            loginResult = employeeLogin(dto, req);
         } else {
-            loginResult = adminLogin(dto);
+            loginResult = adminLogin(dto, req);
         }
         return loginResult;
 
     }
 
 
-    private LoginResponseDto employeeLogin(LoginRequestDto dto) {
+    private LoginResponseDto employeeLogin(LoginRequestDto dto, HttpServletRequest req) {
         /*
          * employee 로그인 수행
          * employee join auth 테이블에서 아이디와 패스워드 + 로그인 정보 한번에 가져오기
@@ -100,8 +104,9 @@ public class LoginServiceImpl implements LoginService {
          * 로그인 데이터가 없다면? - 서버 구동 후 최초 로그인, 로그인 정보 insert
          *
          * */
+        HttpSession session = req.getSession(false);
         LoginResponseDto loginResult = employeeLoginMapper.employeeLogin(dto);
-        log.info("loginResult = {}", (Object) (employeeLoginMapper.employeeLogin(dto)));
+        log.info("ip, password 검색 결과 = {}", (Object) (employeeLoginMapper.employeeLogin(dto)));
         /*employee 테이블에서 입력된 아이디와 패스워드로 인증 정보 검색*/
         if (loginResult == null) {
 
@@ -156,14 +161,16 @@ public class LoginServiceImpl implements LoginService {
                 /*로그인 성공 후 재조회*/
                 loginResult = employeeLoginMapper.employeeLogin(dto);
                 log.info("employee form 최초 로그인 {}", loginResult);
+                session = req.getSession(true);
                 session.setAttribute("loginId", loginResult.getLoginId());
                 session.setAttribute("ip", loginResult.getIp());
+                session.setAttribute("manager", loginResult.isManager());
             }
         }
         return loginResult;
     }
 
-    private LoginResponseDto adminLogin(LoginRequestDto dto) {
+    private LoginResponseDto adminLogin(LoginRequestDto dto, HttpServletRequest req) {
         /*
          * employee 로그인 수행
          * employee join auth 테이블에서 아이디와 패스워드 + 로그인 정보 한번에 가져오기
@@ -172,7 +179,7 @@ public class LoginServiceImpl implements LoginService {
          * 로그인 데이터가 없다면? - 서버 구동 후 최초 로그인, 로그인 정보 insert
          *
          * */
-
+        HttpSession session = req.getSession(false);
         LoginResponseDto loginResult = adminLoginMapper.adminLogin(dto);
         log.info("loginResult = {}", (Object) (adminLoginMapper.adminLogin(dto)));
         /*admin 테이블에서 입력된 아이디와 패스워드로 인증 정보 검색*/

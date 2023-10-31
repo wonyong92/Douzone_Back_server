@@ -1,5 +1,6 @@
 package com.example.bootproject.repository.mapper3.vacation;
 
+import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
 import org.apache.ibatis.annotations.*;
@@ -22,4 +23,8 @@ public interface VacationMapper {
 
     @Select("select * from vacation_request where vacation_request_key = #{generatedKey}")
     VacationRequestResponseDto findByVacationRequestKey(long generatedKey);
+
+    @Update("update vacation_request set vacation_request_state_category_key=#{dto.vacationRequestStateCategoryKey}, reason_for_rejection=#{dto.reasonForRejection} where vacation_request_key =  #{dto.vacationRequestKey}")
+    @Options(useGeneratedKeys = true, keyProperty = "vacationRequestKey")
+    void process(@Param("dto") VacationProcessRequestDto dto);
 }
