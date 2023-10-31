@@ -23,17 +23,29 @@ public class EmployeeController1 {
 
     private final EmployeeService1 employeeService1;
 
-
-
-
-
     //출근기록
-    @GetMapping("/attendance")
-    public ResponseEntity<Void> makeAttendanceInfo() {
-        String employee_id = "emp01";
-        employeeService1.updateStartTime(employee_id);
-        return ResponseEntity.ok().build();
+    @PostMapping("/attendance")
+    public ResponseEntity<String> makeAttendanceInfo() {
+        String employeeId = "emp01";
+
+            if (!employeeValidation(employeeId)) {
+                log.info("Invalid employee ID: " + employeeId);
+                return ResponseEntity.badRequest().body("유효하지 않은 직원 ID입니다.");
+            }
+
+
+            employeeService1.startTime(employeeId);
+            return ResponseEntity.ok("출근 기록이 성공적으로 저장되었습니다.");
     }
+
+    /*
+    세션에서 employeeId 가져온다 지금은 하드코딩중
+    사원id데이터 형식이 이상하게 넘어올경우 오류코드
+    데이터가 제데로 들어오면 log남김
+    사원id validation체크
+    모든 조건 성공시 200 응답코드
+    */
+
 
     //퇴근기록
     @GetMapping("/leave")

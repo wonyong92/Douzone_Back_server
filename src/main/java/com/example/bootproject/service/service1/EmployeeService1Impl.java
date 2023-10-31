@@ -2,35 +2,50 @@ package com.example.bootproject.service.service1;
 
 
 import com.example.bootproject.repository.mapper.EmployeeMapper1;
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
-import com.example.bootproject.vo.vo1.request.AttendanceStatusCategoryDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bootproject.vo.vo1.request.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService1Impl implements EmployeeService1{
 
         private final EmployeeMapper1 employeeMapper1;
 
-        @Autowired
-        public EmployeeService1Impl(EmployeeMapper1 employeeMapper1) {
-                this.employeeMapper1 = employeeMapper1;
-        }
+
 
 
         //출근기록
-        @Override
-        public void updateStartTime(String employee_id) {
-                LocalDateTime localTime = LocalDateTime.now();
+        @Transactional
+        public void startTime(String employeeId) {
+                // 현재 날짜에 해당하는 출근 기록을 확인
+                LocalDateTime existingStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId, LocalDate.now());
+                if (existingStartTime != null) {
+                        throw new IllegalStateException("이미 출근 기록이 존재합니다.");
+                }
 
-                employeeMapper1.updateStartTime(employee_id,localTime);
+                // 출근 시간 기록
+                LocalDateTime startTime = LocalDateTime.now();
+                employeeMapper1.startTime(employeeId, startTime);
         }
+
+        /*
+    세션에서 employeeId 가져온다 지금은 하드코딩중
+    사원id데이터 형식이 이상하게 넘어올경우 오류코드
+    starttime시간 내역을 확인하는mapper을 들고와서 비교한다
+    starttime이 있으면 출근기록을남김니다
+    모든 조건 성공시 200 응답코드
+    */
+
+
 
         //퇴근기록
         @Override

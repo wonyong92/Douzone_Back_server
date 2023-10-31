@@ -3,18 +3,18 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalInfoDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoDto;
-import org.apache.ibatis.annotations.Param;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoStartDto;
 
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EmployeeService1 {
 
 
-    //출근
-    void updateStartTime(String employee_id);
+    //출근기록
+    void startTime(String employeeId);
 
     //퇴근
     void updateEndTime(String employee_id);

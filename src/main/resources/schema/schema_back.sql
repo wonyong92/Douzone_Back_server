@@ -40,13 +40,13 @@ create table employee
 CREATE TABLE attendance_info
 (
     attendance_info_id         BIGINT NOT NULL AUTO_INCREMENT,
-    attendance_status_category VARCHAR(10) NOT NULL,
+    attendance_status_category VARCHAR(10) NOT NULL DEFAULT '미지정상태',
     employee_id                VARCHAR(10) NOT NULL,
     start_time                 timestamp,
     end_time                   timestamp,
     attendance_date            DATE DEFAULT (CURRENT_DATE) NOT NULL,
-    PRIMARY KEY (employee_id, attendance_date),
-    UNIQUE (attendance_info_id),
+    PRIMARY KEY (attendance_info_id),
+    UNIQUE (employee_id,attendance_date),
     CONSTRAINT attendance_info_ibfk_1 FOREIGN KEY (employee_id) REFERENCES employee (employee_id),
     CONSTRAINT attendance_info_ibfk_2 FOREIGN KEY (attendance_status_category) REFERENCES attendance_status_category (`key`)
 );
