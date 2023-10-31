@@ -1,7 +1,9 @@
 package com.example.bootproject.repository.mapper3.vacation;
 
+import com.example.bootproject.vo.vo3.request.vacation.VacationAdjustRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
+import com.example.bootproject.vo.vo3.response.vacation.VacationAdjustResponseDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
@@ -27,4 +29,12 @@ public interface VacationMapper {
     @Update("update vacation_request set vacation_request_state_category_key=#{dto.vacationRequestStateCategoryKey}, reason_for_rejection=#{dto.reasonForRejection} where vacation_request_key =  #{dto.vacationRequestKey}")
     @Options(useGeneratedKeys = true, keyProperty = "vacationRequestKey")
     void process(@Param("dto") VacationProcessRequestDto dto);
+
+    @Insert("insert into douzone_test.vacation_adjusted_history (employee_id, adjust_type, adjust_time, adjust_quantity, reason)\n" +
+            "values  (#{employeeId}, 'normal', now(), #{dto.adjustQuantity}, #{dto.reason});")
+    @Options(useGeneratedKeys = true, keyProperty = "dto.generatedKey")
+    void modifyVacationOfEmployee(@Param("dto") VacationAdjustRequestDto dto, @Param("employeeId") String employeeId);
+
+    @Select("select * from vacation_adjusted_history where vacation_adjusted_history_id = #{generatedKey}")
+    VacationAdjustResponseDto getModifyVacationOfEmployee(Long generatedKey);
 }

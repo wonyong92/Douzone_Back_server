@@ -12,7 +12,7 @@ public class WebApplicationConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LogginInterceptor());
         // TODO : 다른 오쳥에 대해서도 사용할 수 있도록 URI 추가 필요
-        registry.addInterceptor(new WorkingQueueInterceptor()).addPathPatterns("/employee/vacation", "/employee/appeal", "/manager/vacation/process");
+        registry.addInterceptor(new WorkingQueueInterceptor()).addPathPatterns("/employee/vacation", "/employee/appeal", "/manager/vacation/process", "/manager/vacation/modify");
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 }

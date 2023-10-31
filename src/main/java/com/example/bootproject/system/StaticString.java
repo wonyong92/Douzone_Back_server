@@ -10,4 +10,5 @@ public class StaticString {
     public static final String APPEAL_REQUEST_STATE_REQUESTED = "requested";
     public static final String APPEAL_REQUEST_STATE_REJECTED = "rejected";
     public static final String APPEAL_REQUEST_STATE_PERMITTED = "permitted";
+
 }

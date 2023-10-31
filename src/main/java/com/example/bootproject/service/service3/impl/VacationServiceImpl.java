@@ -1,9 +1,12 @@
 package com.example.bootproject.service.service3.impl;
 
+import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 import com.example.bootproject.repository.mapper3.vacation.VacationMapper;
 import com.example.bootproject.service.service3.api.VacationService;
+import com.example.bootproject.vo.vo3.request.vacation.VacationAdjustRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
+import com.example.bootproject.vo.vo3.response.vacation.VacationAdjustResponseDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationProcessResponseDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,7 @@ import static com.example.bootproject.system.StaticString.*;
 public class VacationServiceImpl implements VacationService {
 
     private final VacationMapper vacationMapper;
-
+    private final EmployeeMapper employeeMapper;
 
     @Override
     public VacationRequestResponseDto makeVacationRequest(VacationRequestDto dto) {
@@ -86,6 +89,21 @@ public class VacationServiceImpl implements VacationService {
         }
         log.info("요청 번호로 요청을 찾을 수 없음");
         return null;
+    }
+
+    @Override
+    public VacationAdjustResponseDto modifyVacationOfEmployee(VacationAdjustRequestDto dto, String employeeId) {
+//                - 분기점 1 : 타겟 employee_id로 사원을 찾을 수 없는 경우
+//                - badRequest 응답을 위한 응답
+//                - 분기점 1 : 저장 대상 사원을 찾은 경우
+//                - vacation_adjusted_history에 데이터 insert
+//        - generated key를 이용하여 재조회 후 vacationAdjustResponseDto에 담아서 응답 전달
+        if (employeeMapper.checkEmployeeExist(employeeId) < 1) {
+            return null;
+        }
+        vacationMapper.modifyVacationOfEmployee(dto, employeeId);
+        VacationAdjustResponseDto result = vacationMapper.getModifyVacationOfEmployee(dto.getGeneratedKey());
+        return result;
     }
 
     private Integer getVacationRemain() {
