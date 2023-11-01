@@ -26,12 +26,7 @@ public class AdminService2Impl implements AdminService2 {
         int startRow = (pagingRequestDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
         int totalRowCount = mapper.getEmpInfoTotalRow(); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
-
         String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
-        /*if (desc&&!getSort.isEmpty()) { // 내림차순 적용 True일 때 orderByCondition 뒤에 desc를 붙인다
-
-            orderByCondition += " desc";
-        }*/
 
         List<EmployeeDto> getData = mapper.getEmpInfo(pagingRequestDto.getCurrentPage(),size,orderByCondition,startRow,pagingRequestDto.getSortOrder()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         log.info("mapper.getEmpInfo()의 result : {}",result);
