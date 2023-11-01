@@ -1,13 +1,8 @@
 package com.example.bootproject.service.service2;
 
 import com.example.bootproject.repository.mapper.mapper2.ManagerMapper2;
-import com.example.bootproject.vo.vo2.response.EmployeeDto;
+import com.example.bootproject.vo.vo2.response.*;
 
-import com.example.bootproject.vo.vo2.response.SettingWorkTimeDto;
-
-import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
-
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +21,36 @@ public class ManagerService2Impl implements  ManagerService2{
 
     private final ManagerMapper2 manMapper2;
     @Override
-    public List<VacationRequestDto> getAllVacationHistory(String date) {
+    public Page<List<VacationRequestDto>> getAllVacationHistory(PagingRequestWithDateDto pagingRequestWithDateDto) {
+        Page<List<VacationRequestDto>> result = new Page<>();
+        int size = result.getSize(); // Page 객체로부터 size를 가져옴
+        int startRow = (pagingRequestWithDateDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
+        int totalRowCount = manMapper2.getAllVacationRequestCountByDate(pagingRequestWithDateDto.getDate()); // 전제 행
+        int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
+        String orderByCondition = pagingRequestWithDateDto.getSort(); // 정렬할 컬럼 이름
+        if(orderByCondition=="name"){
+            orderByCondition = "e."+orderByCondition;
+        }
+        else{
+            orderByCondition="v."+orderByCondition;
+        }
+        List<VacationRequestDto> getData = manMapper2.getAllVacationHistory(size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder(),pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
+        log.info("manMapper2.getEmpInfo의 getData : {}",getData);
 
-        /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationRequestDto> result = manMapper2.getAllVacationHistory(date);
 
-        log.info("manMapper2.getAllVacationHistory(date)의 result : {}",result);
+        result.setData(getData);
+        if(pagingRequestWithDateDto.getCurrentPage()<lastPageNumber){
+            result.setHasNext(true);
+        }
+        result.setSort(pagingRequestWithDateDto.getSort());
+        result.setDesc(pagingRequestWithDateDto.getSortOrder());
+        result.setPage(pagingRequestWithDateDto.getCurrentPage());
+        result.setTotalElement(totalRowCount);
+
+
         return result;
+
+
     }
     @Override
     public List<VacationRequestDto> getEmpReqVacationHistory(String employeeId) {

@@ -44,7 +44,6 @@ public class AdminController2 {
 
     // 전체 사원 정보 조회 메서드
     /* TODO : 추후 권한 확인 추가 */
-    /* TODO : 추후 페이지네이션 , 페이지네이션 validation 체크 추가 */
     @GetMapping("/admin/employee/information")
     public ResponseEntity <Page<List<EmployeeDto>>> getEmployeesInformation(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
         if(authCheckApi()){
@@ -76,7 +75,6 @@ public class AdminController2 {
 
     //특정 사원의 정보 조회 메서드
     /* TODO : 추후 권한 확인 추가 */
-    /* TODO : 추후 페이지네이션 , 페이지네이션 validation 체크 추가 */
     @GetMapping("/admin/employee/information/{employee_id}")
     public ResponseEntity<EmployeeDto> getEmployeeInformationByEmployeeId(@PathVariable(name = "employee_id") String employeeId) {
         if(authCheckApi()){ //권한 확인 api

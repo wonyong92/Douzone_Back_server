@@ -1,13 +1,8 @@
 package com.example.bootproject.controller.rest.manager;
 
 import com.example.bootproject.service.service2.ManagerService2;
-import com.example.bootproject.vo.vo2.response.EmployeeDto;
+import com.example.bootproject.vo.vo2.response.*;
 
-import com.example.bootproject.vo.vo2.response.SettingWorkTimeDto;
-
-import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
-
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -29,13 +24,25 @@ import java.util.List;
 public class ManagerController2 {
     private final ManagerService2 manService2;
 
-    public boolean authCheckApi(){ //권한 확인 API
-        //로그인 확인 포함 해야한다
+    public boolean authCheckApi(){ //권한 확인 API,
+        // 로그인 확인
         return true;
     }
 
-    public boolean validationId(String employeeId){ // ID Validation 확인
-        return employeeId.matches("^[0-9]*$"); // 숫자로 구성 되어 있는지 확인
+    public boolean validationId(String employeeId){ // Id Validation 체크
+        return employeeId.matches("^[0-9]+$"); // 숫자로 구성 되어 있는지 확인
+    }
+
+    public boolean validationPageNum(int currentPage){ //요청 받은 페이지에 대한 validation check
+        return currentPage>0;
+    }
+
+    public boolean validationSort(String sort){
+        return sort.matches("^[a-zA-Z_]+$");
+    }
+
+    public boolean validationDesc(String sortOrder){
+        return sortOrder.matches("^(desc|DESC|)$");
     }
 
     public boolean validationDate(int year, int month, int day ){ //날짜 Validation 확인
@@ -53,22 +60,29 @@ public class ManagerController2 {
 
     //전체 연차 요청 정보 조회 메서드
     /*TODO : 추후 권한 확인 추가*/
-    /* TODO : 추후 페이지네이션 , 페이지네이션 validation 체크 추가 */
+
+
     @GetMapping("/manager/vacation/requests")
-    public ResponseEntity<List<VacationRequestDto>> getRequestVacationInformationOfAll(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
+    public ResponseEntity <Page<List<VacationRequestDto>>> getRequestVacationInformationOfAll(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day,@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
         if(authCheckApi()){
-            if(!validationDate(year,month,day)){
-                return ResponseEntity.badRequest().build(); //400 Bad Request
+            //페이징 코드
+            int currentPage = Integer.parseInt(getPageNum); // 쿼리파라미터로 받아온 페이지 번호를 int 형으로 변환
+            if(validationPageNum(currentPage)&&validationSort(sort)&&validationDesc(sortOrder)&&validationDate(year,month,day)){
+                String date = String.format("%04d-%02d-%02d", year, month, day); // year-month-day 형태의 문자열로 변환
+                PagingRequestWithDateDto pagingRequestWithDateDto = new PagingRequestWithDateDto(currentPage,sort,sortOrder,date);
+
+                Page<List<VacationRequestDto>> result = manService2.getAllVacationHistory(pagingRequestWithDateDto); // 전체 사원 정보 반환
+                log.info("getAllVacationHistory result : {}",result);
+                if(result.getData().isEmpty()){
+                    return ResponseEntity.noContent().build(); // 204 No Content
+                }
+                return ResponseEntity.ok(result); // 200 OK
             }
-            String date = String.format("%04d-%02d-%02d", year, month, day); // year-month-day 형태의 문자열로 변환
-            List<VacationRequestDto> result = manService2.getAllVacationHistory(date);
-            log.info("getAllVacationHistory result : {}",result);
-            if(result.isEmpty()){
-                return ResponseEntity.noContent().build(); // 204 No Content
-            }
-            return ResponseEntity.ok(result); // 200 OK
+            return ResponseEntity.badRequest().build(); //400 Bad Request
         }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+
 
         /*
         * 근태 담당자 권한 확인

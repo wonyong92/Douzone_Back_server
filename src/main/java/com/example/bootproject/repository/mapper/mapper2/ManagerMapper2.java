@@ -16,8 +16,11 @@ public interface ManagerMapper2 {
     /* vacation_request 테이블의 vacation_request_time 컬럼의 값을 '%Y-%m-%d'로 변환 하고,
        변환 값이 매개변수 date와 일치하는 데이터만 select함
     */
-    @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE DATE_FORMAT(V.vacation_request_time,'%Y-%m-%d')=#{date};")
-    public List<VacationRequestDto> getAllVacationHistory(String date);
+    @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name " +
+            "FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE DATE_FORMAT(V.vacation_request_time,'%Y-%m-%d')=#{date} " +
+            "ORDER BY ${orderByCondition} ${sortOrder} " +
+            "LIMIT ${size} OFFSET ${startRow};")
+    public List<VacationRequestDto> getAllVacationHistory(int size, String orderByCondition, int startRow,String sortOrder, String date);
 
     // 특정 사원번호를 가진 사원의 데이터를 select 함
     @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE V.employee_id=#{employeeId}")
@@ -34,5 +37,8 @@ public interface ManagerMapper2 {
     // 특정 사원의 신청 결과 컬럼의 값이 '반려'인 데이터를 select함
     @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE V.employee_id=#{employeeId} and V.vacation_request_state_category_key='반려';")
     public List<VacationRequestDto> getHistoryOfRejectedVacationOfEmployee(String employeeId);
+
+    @Select("SELECT COUNT(*) FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE DATE_FORMAT(V.vacation_request_time,'%Y-%m-%d')=#{date};")
+    public int getAllVacationRequestCountByDate(String date);
 
 }

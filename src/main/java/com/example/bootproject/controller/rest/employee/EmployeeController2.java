@@ -104,7 +104,6 @@ public class EmployeeController2 {
 
     // 타 사원의 연차 사용 이력 조회 메서드
     /* TODO : 추후 권한 확인 추가 */
-    /* TODO : 추후 페이지네이션 , 페이지네이션 validation 체크 추가 */
     @GetMapping("/employee/vacation/use/{employee_id}")
     public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryOfUsedVacationOfEmployee(@PathVariable(name = "employee_id") String id,@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
         if(authCheckApi()){
