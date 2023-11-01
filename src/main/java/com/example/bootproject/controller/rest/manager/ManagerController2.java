@@ -139,16 +139,21 @@ public class ManagerController2 {
     /*TODO : 추후 권한 확인 추가*/
     /* TODO : 추후 페이지네이션 , 페이지네이션 validation 체크 추가 */
     @GetMapping("/manager/setting_history/work_time")
-    public ResponseEntity<List<SettingWorkTimeDto>> settingWorkTime() {
+    public ResponseEntity <Page<List<SettingWorkTimeDto>>> settingWorkTime(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
         if(authCheckApi()) {
-            List<SettingWorkTimeDto> result = manService2.getSettingWorkTime();
-            log.info("getSettingWorkTime result : {}",result);
-            if (result.isEmpty()) {
-                return ResponseEntity.noContent().build(); //204 No Content
+            int currentPage = Integer.parseInt(getPageNum);
+            if (validationPageNum(currentPage) && validationSort(sort) && validationDesc(sortOrder)){
+                PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage,sort,sortOrder);
+                Page<List<SettingWorkTimeDto>> result = manService2.getSettingWorkTime(pagingRequestDto);
+                log.info("getSettingWorkTime result : {}", result);
+                if (result.getData().isEmpty()) {
+                    return ResponseEntity.noContent().build(); //204 No Content
+                }
+                return ResponseEntity.ok(result); //200 OK
             }
-            return ResponseEntity.ok(result); //200 OK
+            return ResponseEntity.badRequest().build(); //400 Bad Request
         }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN) ; //403 ERROR
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
         /*
         * 근태담당자 권한 확인
         * 권한 확인 성공시 -> 정규 출/퇴근 시간 설정 내역 정보 반환 받음

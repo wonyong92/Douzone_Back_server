@@ -9,7 +9,7 @@ import java.util.List;
 public interface ManagerService2 {
     public Page<List<VacationRequestDto>> getAllVacationHistory(PagingRequestWithDateDto pagingRequestWithDateDto);
     public Page<List<VacationRequestDto>> getEmpReqVacationHistory(PagingRequestWithIdDto pagingRequestWithIdDto);
-    public List<SettingWorkTimeDto> getSettingWorkTime();
+    public Page<List<SettingWorkTimeDto>> getSettingWorkTime(PagingRequestDto pagingRequestDto);
     public List<VacationQuantitySettingDto> getVacationSettingHistory();
     public List<VacationRequestDto> getHistoryOfRejectedVacationOfEmployee(String employeeId);
 }

@@ -43,8 +43,15 @@ public interface ManagerMapper2 {
 
 
     //정규 근무시간 조정내역 테이블의 전체 정보를 select 함
-    @Select("SELECT regular_time_adjustment_history_id as regularTimeAdjustmentHistoryId, target_date as targetDate, adjusted_start_time as adjustedStartTime, adjusted_end_time as adjustedEndTime, reason, regular_time_adjustment_time as regularTimeAdjustmentTime,employee_id as employeeId FROM regular_time_adjustment_history;")
-    public List<SettingWorkTimeDto> getSettingWorkTime();
+    @Select("SELECT regular_time_adjustment_history_id as regularTimeAdjustmentHistoryId, target_date as targetDate, adjusted_start_time as adjustedStartTime, adjusted_end_time as adjustedEndTime, reason, regular_time_adjustment_time as regularTimeAdjustmentTime,employee_id as employeeId " +
+            "FROM regular_time_adjustment_history " +
+            "ORDER BY ${orderByCondition} ${sortOrder} " +
+            "LIMIT ${size} OFFSET ${startRow};")
+    public List<SettingWorkTimeDto> getSettingWorkTime(int size,String orderByCondition,int startRow,String sortOrder);
+
+    @Select("SELECT COUNT(*) FROM regular_time_adjustment_history;")
+    public int getSettingWorkTimeCount();
+
 
     // 연차별 사원 연차 개수 설정 테이블의 전체 정보를 select 함
     @Select("SELECT setting_key as settingKey, freshman,senior,setting_time as settingTime,target_date as targetDate, employee_id as employeeId FROM vacation_quantity_setting")
