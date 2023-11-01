@@ -22,9 +22,25 @@ public interface ManagerMapper2 {
             "LIMIT ${size} OFFSET ${startRow};")
     public List<VacationRequestDto> getAllVacationHistory(int size, String orderByCondition, int startRow,String sortOrder, String date);
 
+
+
     // 특정 사원번호를 가진 사원의 데이터를 select 함
-    @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE V.employee_id=#{employeeId}")
-    public List<VacationRequestDto> getEmpReqVacationHistory(String employeeId);
+    @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name " +
+            "FROM vacation_request V inner join employee E on V.employee_id = E.employee_id" +
+            " WHERE V.employee_id=#{id}" +
+            " ORDER BY ${orderByCondition} ${sortOrder} " +
+            "LIMIT ${size} OFFSET ${startRow}")
+    public List<VacationRequestDto> getEmpReqVacationHistory(int size, String orderByCondition, int startRow,String sortOrder,String id);
+
+    @Select("SELECT COUNT(*) FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE V.employee_id=#{employeeId}")
+    public int getEmpReqVaationHistoryCount(String id);
+
+
+
+
+
+
+
 
     //정규 근무시간 조정내역 테이블의 전체 정보를 select 함
     @Select("SELECT regular_time_adjustment_history_id as regularTimeAdjustmentHistoryId, target_date as targetDate, adjusted_start_time as adjustedStartTime, adjusted_end_time as adjustedEndTime, reason, regular_time_adjustment_time as regularTimeAdjustmentTime,employee_id as employeeId FROM regular_time_adjustment_history;")

@@ -29,8 +29,8 @@ public class ManagerController2 {
         return true;
     }
 
-    public boolean validationId(String employeeId){ // Id Validation 체크
-        return employeeId.matches("^[0-9]+$"); // 숫자로 구성 되어 있는지 확인
+    public boolean validationId(String id){ // Id Validation 체크
+        return id.matches("^[0-9]+$"); // 숫자로 구성 되어 있는지 확인
     }
 
     public boolean validationPageNum(int currentPage){ //요청 받은 페이지에 대한 validation check
@@ -60,7 +60,6 @@ public class ManagerController2 {
 
     //전체 연차 요청 정보 조회 메서드
     /*TODO : 추후 권한 확인 추가*/
-
 
     @GetMapping("/manager/vacation/requests")
     public ResponseEntity <Page<List<VacationRequestDto>>> getRequestVacationInformationOfAll(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day,@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
@@ -99,29 +98,42 @@ public class ManagerController2 {
 
     //타 사원의 연차 요청 정보 조회 메서드
     /*TODO : 추후 권한 확인 추가*/
-    /* TODO : 추후 페이지네이션 , 페이지네이션 validation 체크 추가 */
     @GetMapping("/manager/vacation/requests/{employee_id}")
-    public ResponseEntity<List<VacationRequestDto>> getRequestVacationInformationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
+    public ResponseEntity <Page<List<VacationRequestDto>>> getRequestVacationInformationOfEmployee(@PathVariable(name = "employee_id") String id,@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
         if(authCheckApi()){
-            if(!validationId(employeeId))
-                return ResponseEntity.badRequest().build(); //400 Bad Request
-            List<VacationRequestDto> result = manService2.getEmpReqVacationHistory(employeeId);
-            log.info("getEmpReqVacationHistory result : {}",result);
-            if(result.isEmpty())
-                return ResponseEntity.noContent().build(); // 204 No Content
-            return ResponseEntity.ok(result); //200 OK
+            int currentPage = Integer.parseInt(getPageNum);
+            if (validationPageNum(currentPage) && validationSort(sort) && validationDesc(sortOrder)&&validationId(id)){
+                PagingRequestWithIdDto pagingRequestWithIdDto = new PagingRequestWithIdDto(currentPage,sort,sortOrder,id);
+
+                Page<List<VacationRequestDto>> result = manService2.getEmpReqVacationHistory(pagingRequestWithIdDto);
+                log.info("getEmpReqVacationHistory result : {}", result);
+                if (result.getData().isEmpty()) {
+                    return ResponseEntity.noContent().build(); //204 No Content
+                }
+                return ResponseEntity.ok(result); //200 OK
+            }
+            return ResponseEntity.badRequest().build(); //400 Bad Request
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
         /*
-        * 근태 담당자 권한 확인
-        * 권한 확인 성공 시 -> 경로변수로 받아온 id의 validation 확인
-        *                -> validation 확인 성공시 타 사원의 연차 요청 정보 반환 받음
-        *                   반환 값이 비어있을 때 - 204 No Content 응답 반환
-        *                   반환 값이 비어있지 않을 때 - 200 OK 응답 반환
-        *                -> validation 확인 실패 시 400 Bad Request 반환
-        * 권한 확인 실패 시 -> 403 ERROR 반환
-        * */
+         * 근태 담당자 권한 확인
+         * 권한 확인 성공 시 -> 경로변수로 받아온 id의 validation 확인
+         *                -> validation 확인 성공시 타 사원의 연차 요청 정보 반환 받음
+         *                   반환 값이 비어있을 때 - 204 No Content 응답 반환
+         *                   반환 값이 비어있지 않을 때 - 200 OK 응답 반환
+         *                -> validation 확인 실패 시 400 Bad Request 반환
+         * 권한 확인 실패 시 -> 403 ERROR 반환
+         * */
     }
+
+
+
+
+
+
+
+
+
 
     // 정규 출/퇴근 시간 설정 내역 확인 메서드
     /*TODO : 추후 권한 확인 추가*/
