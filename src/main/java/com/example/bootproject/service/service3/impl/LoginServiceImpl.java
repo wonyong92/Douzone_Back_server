@@ -222,6 +222,7 @@ public class LoginServiceImpl implements LoginService {
                     log.info("admin form 재로그인 {}", loginResult);
                     session.setAttribute("loginId", loginResult.getLoginId());
                     session.setAttribute("ip", loginResult.getIp());
+                    session.setAttribute("admin", true);
                 }
             } else {
                 /*
@@ -235,8 +236,10 @@ public class LoginServiceImpl implements LoginService {
                 /*로그인 성공 후 재조회*/
                 loginResult = adminLoginMapper.adminLogin(dto);
                 log.info("admin form 최초 로그인 {}", loginResult);
+                session = req.getSession();
                 session.setAttribute("loginId", loginResult.getLoginId());
                 session.setAttribute("ip", loginResult.getIp());
+                session.setAttribute("admin", true);
             }
         }
         return loginResult;

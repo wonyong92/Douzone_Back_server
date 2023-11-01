@@ -1,8 +1,8 @@
 package com.example.bootproject.repository.mapper3.employee;
 
 import com.example.bootproject.entity.Employee;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.example.bootproject.service.service3.impl.AdminServiceImpl;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface EmployeeMapper {
@@ -15,4 +15,8 @@ public interface EmployeeMapper {
 
     @Select("select count(*) from employee where employee_id = #{employeeId}")
     Integer checkEmployeeExist(String employeeId);
+
+    @Update("update employee set attendance_manager=!attendance_manager where employee_id = #{employeeId}")
+    @Options(useGeneratedKeys = true, keyProperty = "generatedKeyDto.generatedKey")
+    void toggleManager(@Param("generatedKeyDto") AdminServiceImpl.TempDto generatedKey, @Param("employeeId") String employeeId);
 }

@@ -1,26 +1,42 @@
 package com.example.bootproject.controller.rest.admin;
 
+import com.example.bootproject.service.service3.api.AdminService;
 import com.example.bootproject.service.service3.api.MultipartService;
 import com.example.bootproject.vo.vo3.request.image.MultipartUploadRequestDto;
-import jdk.jfr.ContentType;
+import com.example.bootproject.vo.vo3.response.image.MultipartUploadResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class AdminController3 {
     private final MultipartService multipartService;
+    private final AdminService adminService;
+
+
     @PutMapping("/admin/manager/{employee_id}")
-    public String toggleManager(@PathVariable(name = "employee_id") String employeeId) {
-        return "toggleManager";
+    public ResponseEntity<Void> toggleManager(@PathVariable(name = "employee_id") String employeeId, HttpServletRequest req) {
+        if (isAdmin(req)) {
+            boolean result = adminService.toggleManager(employeeId);
+            if (result) {
+                return ResponseEntity.ok().build();
+            }
+        } else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/admin/download/{employee_id}")
@@ -37,9 +53,22 @@ public class AdminController3 {
     }
 
     @PostMapping("/admin/upload")
-    public String uploadEmployeePhoto(@ModelAttribute MultipartUploadRequestDto dto) {
-        /*Todo : 권한 확인 필요*/
-        multipartService.uploadFile(dto);
-        return "사원의 사진 파일 업로드";
+    public ResponseEntity<Integer> uploadEmployeePhoto(@ModelAttribute MultipartUploadRequestDto dto, HttpServletRequest req) {
+        if (isAdmin(req)) {
+            MultipartUploadResponseDto result = multipartService.uploadFile(dto);
+            return ResponseEntity.ok(result.getFileId());
+        }
+        //TODO : admin 확인 로직을 인터셉터로 공통 부분 추출 필요
+        log.info("admin이 아닌 사용자의 요청 발생");
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
+
+    private boolean isAdmin(HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session.getAttribute("loginId") == null) {
+            return false;
+        }
+        return (boolean) session.getAttribute("admin");
     }
 }
