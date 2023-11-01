@@ -29,7 +29,7 @@ public class AdminService2Impl implements AdminService2 {
         String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
 
         List<EmployeeDto> getData = mapper.getEmpInfo(pagingRequestDto.getCurrentPage(),size,orderByCondition,startRow,pagingRequestDto.getSortOrder()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
-        log.info("mapper.getEmpInfo()의 result : {}",result);
+        log.info("mapper.getEmpInfo()의 getData : {}",getData);
 
 
         result.setData(getData);
