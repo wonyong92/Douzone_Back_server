@@ -49,16 +49,6 @@ public class EmployeeService2Impl implements  EmployeeService2{
         result.setPage(pagingRequestWithIdDto.getCurrentPage());
         result.setTotalElement(totalRowCount);
 
-        log.info("empMapper2.getHistoryOfUsedVacationOfMine의 getData : {}",result.getData());
-        log.info("empMapper2.getHistoryOfUsedVacationOfMine의 getSize : {}",result.getSize());
-        log.info("empMapper2.getHistoryOfUsedVacationOfMine의 getHasNext : {}",result.isHasNext());
-        log.info("empMapper2.getHistoryOfUsedVacationOfMine의 getSort : {}",result.getSort());
-        log.info("empMapper2.getHistoryOfUsedVacationOfMine의 getDesc : {}",result.getDesc());
-        log.info("empMapper2.getHistoryOfUsedVacationOfMine의 getPage : {}",result.getPage());
-        log.info("empMapper2.getHistoryOfUsedVacationOfMine의 getTotalElement : {}",result.getTotalElement());
-
-
-
         return result;
     }
 
@@ -67,7 +57,7 @@ public class EmployeeService2Impl implements  EmployeeService2{
         Page<List<VacationRequestDto>> result = new Page<>();
         int size = result.getSize(); // Page 객체로부터 size를 가져옴
         int startRow = (pagingRequestWithIdDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
-        int totalRowCount = empMapper2.getHistoryOfUsedVacationOfMineTotalRow(pagingRequestWithIdDto.getId()); // 전제 행
+        int totalRowCount = empMapper2.getHistoryOfRejectedVacationOfMineTotalRow(pagingRequestWithIdDto.getId()); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         String orderByCondition = pagingRequestWithIdDto.getSort(); // 정렬할 컬럼 이름
         if(orderByCondition=="name"){
@@ -89,14 +79,6 @@ public class EmployeeService2Impl implements  EmployeeService2{
         result.setDesc(pagingRequestWithIdDto.getSortOrder());
         result.setPage(pagingRequestWithIdDto.getCurrentPage());
         result.setTotalElement(totalRowCount);
-
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getData : {}",result.getData());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getSize : {}",result.getSize());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getHasNext : {}",result.isHasNext());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getSort : {}",result.getSort());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getDesc : {}",result.getDesc());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getPage : {}",result.getPage());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getTotalElement : {}",result.getTotalElement());
         return result;
     }
 
@@ -128,13 +110,6 @@ public class EmployeeService2Impl implements  EmployeeService2{
         result.setPage(pagingRequestWithIdDto.getCurrentPage());
         result.setTotalElement(totalRowCount);
 
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getData : {}",result.getData());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getSize : {}",result.getSize());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getHasNext : {}",result.isHasNext());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getSort : {}",result.getSort());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getDesc : {}",result.getDesc());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getPage : {}",result.getPage());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine의 getTotalElement : {}",result.getTotalElement());
         return result;
 
 

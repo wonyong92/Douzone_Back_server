@@ -37,5 +37,8 @@ public interface EmployeeMapper2 {
 
     @Select("select count(*) from VACATION_REQUEST V INNER JOIN EMPLOYEE E ON V.employee_id = E.employee_id WHERE V.vacation_request_state_category_key='승인' AND V.EMPLOYEE_ID=#{id};")
     public int getHistoryOfUsedVacationOfMineTotalRow(String id);
+
+    @Select("select count(*) from VACATION_REQUEST V INNER JOIN EMPLOYEE E ON V.employee_id = E.employee_id WHERE V.vacation_request_state_category_key='반려' AND V.EMPLOYEE_ID=#{id};")
+    public int getHistoryOfRejectedVacationOfMineTotalRow(String id);
 }
 

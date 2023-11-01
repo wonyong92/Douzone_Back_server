@@ -28,7 +28,7 @@ public class AdminService2Impl implements AdminService2 {
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
 
-        List<EmployeeDto> getData = mapper.getEmpInfo(pagingRequestDto.getCurrentPage(),size,orderByCondition,startRow,pagingRequestDto.getSortOrder()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
+        List<EmployeeDto> getData = mapper.getEmpInfo(size,orderByCondition,startRow,pagingRequestDto.getSortOrder()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         log.info("mapper.getEmpInfo()의 getData : {}",getData);
 
 
@@ -40,14 +40,6 @@ public class AdminService2Impl implements AdminService2 {
         result.setDesc(pagingRequestDto.getSortOrder());
         result.setPage(pagingRequestDto.getCurrentPage());
         result.setTotalElement(totalRowCount);
-
-        log.info("mapper.getEmpInfo()의 getData : {}",result.getData());
-        log.info("mapper.getEmpInfo()의 getSize : {}",result.getSize());
-        log.info("mapper.getEmpInfo()의 getHasNext : {}",result.isHasNext());
-        log.info("mapper.getEmpInfo()의 getSort : {}",result.getSort());
-        log.info("mapper.getEmpInfo()의 getDesc : {}",result.getDesc());
-        log.info("mapper.getEmpInfo()의 getPage : {}",result.getPage());
-        log.info("mapper.getEmpInfo()의 getTotalElement : {}",result.getTotalElement());
 
 
         return result;
