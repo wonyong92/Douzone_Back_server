@@ -3,6 +3,7 @@ package com.example.bootproject.service.service2;
 import com.example.bootproject.repository.mapper.mapper2.AdminMapper2;
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
 import com.example.bootproject.vo.vo2.response.Page;
+import com.example.bootproject.vo.vo2.response.PagingRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,31 +19,31 @@ public class AdminService2Impl implements AdminService2 {
     private final AdminMapper2 mapper;
 
     @Override
-    public Page<List<EmployeeDto>> getEmpInfo(int currentPage, String getSort, String desc) {
+    public Page<List<EmployeeDto>> getEmpInfo(PagingRequestDto pagingRequestDto) {
 
         Page<List<EmployeeDto>> result = new Page<>();
         int size = result.getSize(); // Page 객체로부터 size를 가져옴
-        int startRow = (currentPage-1)*size; // 가져오기 시작할 row의 번호
+        int startRow = (pagingRequestDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
         int totalRowCount = mapper.getEmpInfoTotalRow(); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
 
-        String orderByCondition = getSort; // 정렬할 컬럼 이름
+        String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
         /*if (desc&&!getSort.isEmpty()) { // 내림차순 적용 True일 때 orderByCondition 뒤에 desc를 붙인다
 
             orderByCondition += " desc";
         }*/
 
-        List<EmployeeDto> getData = mapper.getEmpInfo(currentPage,size,orderByCondition,startRow,desc); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
+        List<EmployeeDto> getData = mapper.getEmpInfo(pagingRequestDto.getCurrentPage(),size,orderByCondition,startRow,pagingRequestDto.getSortOrder()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         log.info("mapper.getEmpInfo()의 result : {}",result);
 
 
         result.setData(getData);
-        if(currentPage<lastPageNumber){
+        if(pagingRequestDto.getCurrentPage()<lastPageNumber){
             result.setHasNext(true);
         }
-        result.setSort(getSort);
-        result.setDesc(desc);
-        result.setPage(currentPage);
+        result.setSort(pagingRequestDto.getSort());
+        result.setDesc(pagingRequestDto.getSortOrder());
+        result.setPage(pagingRequestDto.getCurrentPage());
         result.setTotalElement(totalRowCount);
 
         log.info("mapper.getEmpInfo()의 getData : {}",result.getData());

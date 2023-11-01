@@ -2,6 +2,7 @@ package com.example.bootproject.controller.rest.admin;
 import com.example.bootproject.service.service2.AdminService2;
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
 import com.example.bootproject.vo.vo2.response.Page;
+import com.example.bootproject.vo.vo2.response.PagingRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,12 +33,12 @@ public class AdminController2 {
         return currentPage>0;
     }
 
-    public boolean validationSort(String getSort){
-        return getSort.matches("^[a-zA-Z_]+$");
+    public boolean validationSort(String sort){
+        return sort.matches("^[a-zA-Z_]+$");
     }
 
-    public boolean validationDesc(String getDescData){
-        return getDescData.matches("^(desc|DESC|)$");
+    public boolean validationDesc(String sortOrder){
+        return sortOrder.matches("^(desc|DESC|)$");
     }
 
 
@@ -45,14 +46,14 @@ public class AdminController2 {
     /* TODO : 추후 권한 확인 추가 */
     /* TODO : 추후 페이지네이션 , 페이지네이션 validation 체크 추가 */
     @GetMapping("/admin/employee/information")
-    public ResponseEntity <Page<List<EmployeeDto>>> getEmployeesInformation(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="desc", defaultValue = "") String getDesc) {
+    public ResponseEntity <Page<List<EmployeeDto>>> getEmployeesInformation(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
         if(authCheckApi()){
             //페이징 코드
             int currentPage = Integer.parseInt(getPageNum); // 쿼리파라미터로 받아온 페이지 번호를 int 형으로 변환
-            if(validationPageNum(currentPage)&&validationSort(getSort)&&validationDesc(getDesc)){
+            if(validationPageNum(currentPage)&&validationSort(sort)&&validationDesc(sortOrder)){
                 // 페이지 번호, Sort 할 컬럼에 대한 validation check
-                /* */
-                Page<List<EmployeeDto>> result = adminService.getEmpInfo(currentPage,getSort,getDesc); // 전체 사원 정보 반환
+                PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage,sort,sortOrder);
+                Page<List<EmployeeDto>> result = adminService.getEmpInfo(pagingRequestDto); // 전체 사원 정보 반환
                 log.info("getEmpInfo result : {}",result);
                 if(result.getData().isEmpty()){
                     return ResponseEntity.noContent().build(); // 204 No Content
