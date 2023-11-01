@@ -1,6 +1,6 @@
 package com.example.bootproject.controller.rest.manager;
 import com.example.bootproject.service.service1.ManagerService1;
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class ManagerController1 {
 
     //타사원에 대한 근태 이상 승인 내역
     @GetMapping("/approve/{employeeId}")
-    public ResponseEntity<List<AttendanceApprovalDto>> getApprovalInfo(
+    public ResponseEntity<List<AttendanceApprovalRequestDto>> getApprovalInfo(
             @PathVariable String employeeId) {
 
         if (!ManagerCheckApi()) {
@@ -77,7 +77,7 @@ public class ManagerController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceApprovalDto> approvalInfo = managerService1.getAttendanceApprovalInfoDto(employeeId);
+        List<AttendanceApprovalRequestDto> approvalInfo = managerService1.getAttendanceApprovalInfoDto(employeeId);
         if (approvalInfo.isEmpty()) {
             log.info("No approval history found for employeeId: " + employeeId);
             return ResponseEntity.noContent().build();

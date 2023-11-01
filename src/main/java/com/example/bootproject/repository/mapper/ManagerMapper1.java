@@ -1,17 +1,12 @@
 package com.example.bootproject.repository.mapper;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalDto;
-import com.example.bootproject.vo.vo1.request.EmployeeDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
 import com.example.bootproject.vo.vo1.request.EmployeeRequest;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -39,7 +34,7 @@ public interface ManagerMapper1 {
             "FROM attendance_approval a " +
             "JOIN employee e ON a.employee_id = e.employee_id " +
             "WHERE e.employee_id = #{employeeId}")
-    List<AttendanceApprovalDto> findApprovalInfoByEmployeeId(String employeeId);
+    List<AttendanceApprovalRequestDto> findApprovalInfoByEmployeeId(String employeeId);
 
 
 

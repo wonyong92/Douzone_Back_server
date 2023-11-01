@@ -1,20 +1,19 @@
 package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.vo.vo1.request.*;
+import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/employee")
@@ -26,73 +25,67 @@ public class EmployeeController1 {
 
 
     @PostMapping("/attendance")
-    @Transactional
-    public ResponseEntity<Object> makeAttendanceInfo() {
-        String employeeId ="emp01";
-        LocalDate attendanceDate = LocalDate.now();
-        LocalDateTime existingStartTime = employeeService1.getStartTimeByEmployeeIdAndDate(employeeId, attendanceDate);
-        LocalDateTime startTime = LocalDateTime.now();
-        AttendanceInfoStartDto attendanceInfoStartDto = new AttendanceInfoStartDto();
-        attendanceInfoStartDto.setEmployeeId(employeeId);
-        attendanceInfoStartDto.setAttendanceDate(attendanceDate);
-        attendanceInfoStartDto.setStartTime(startTime);
+    public ResponseEntity<AttendanceInfoResponseDto> startWork(AttendanceInfoStartRequestDto requestDto) {
+        // 직접 할당한 더미 데이터
+        String employeeId = "emp03";
 
-        if (existingStartTime != null) {
-            log.info("출근시간이 있습니다");
-            return ResponseEntity.badRequest().body("출근시간이 있습니다");
-        }
-        int result = employeeService1.startTime(attendanceInfoStartDto);
-
-        if (result == 0) {
-            log.info("출근 데이터가 안담김");
-            return ResponseEntity.badRequest().body("출근 데이터가 안담김");
+        if(!employeeValidation(employeeId)){
+            log.info("not collect validationcheck" + employeeId);
+            return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok(attendanceInfoStartDto);
+
+        AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
+
+        // 결과에 따라 응답을 반환한다
+        if (responseDto == null) {
+            log.info("Failed to record attendance for employeeId: " + employeeId);
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(responseDto);
     }
 
-    /*
-    세션에서 employeeId 가져온다 지금은 하드코딩중
-     existingStartTime에 출근시간을 조회하는 데이터를 담아옵니다
-     만약 출근시간이 있으면  badrequest와 할께 출근시간이있습니다 body에담아서반환
-     dto가 데이터가 없으면  badrequest와 할께 데이터가 안담김을 body에 담아서 반환한다
-    모든요청이 정상적이면 AttendanceEndDto 내용을 body에 사원id 퇴근시간 현재날짜를 반한환다
-    */
 
 
-    @PostMapping("/leave")
-    @Transactional
-    public ResponseEntity<Object>makeLeaveInformation(){
-        String employeeId ="emp01";
-        LocalDate attendanceDate = LocalDate.now();
-        LocalDateTime endTime = LocalDateTime.now();
-        AttendanceInfoEndDto attendanceInfoEndDto = new AttendanceInfoEndDto();
-        attendanceInfoEndDto.setEmployeeId(employeeId);
-        attendanceInfoEndDto.setAttendanceDate(attendanceDate);
-        attendanceInfoEndDto.setEndTime(endTime);
-
-        //출근시간 유무확인
-        LocalDateTime existingStartTime = employeeService1.getStartTimeByEmployeeIdAndDate(employeeId, attendanceDate);
-        if (existingStartTime == null) {
-            log.info("출근정보가 없습니다");
-            return ResponseEntity.badRequest().body("출근정보가없습니다");
-        }
-
-        //퇴근시간 유무확인
-        LocalDateTime existingEndTime = employeeService1.getEndTimeByEmployeeIdAndDate(employeeId,attendanceDate);
-        if (existingEndTime != null) {
-            log.info("퇴근시간이 있습니다");
-            return ResponseEntity.badRequest().body("퇴근시간이있습니다");
-        }
-        int result = employeeService1.endTime(attendanceInfoEndDto);
-
-        if (result == 0) {
-            log.info("퇴근 정보 데이터가 안담김");
-            return ResponseEntity.badRequest().body("퇴근 정보 데이터가 안담겼습니다");
-        }
-
-        return ResponseEntity.ok(attendanceInfoEndDto);
-    }
+//    @PostMapping("/attendance")
+//    public ResponseEntity<AttendanceInfoStartRequestDto> makeAttendanceInfo() {
+//        String employeeId = "emp01";
+//
+//
+//        if (!employeeValidation(employeeId)) {
+//            log.info("Invalid employee ID: " + employeeId);
+//            return ResponseEntity.badRequest().body(employeeService1.startTime(employeeId));
+//        }
+//
+//
+//
+//        return ResponseEntity.ok().body(employeeService1.startTime(employeeId));
+//    }
+//
+//
+//    /*
+//    세션에서 employeeId 가져온다 지금은 하드코딩중
+//     existingStartTime에 출근시간을 조회하는 데이터를 담아옵니다
+//     만약 출근시간이 있으면  badrequest와 할께 출근시간이있습니다 body에담아서반환
+//     dto가 데이터가 없으면  badrequest와 할께 데이터가 안담김을 body에 담아서 반환한다
+//    모든요청이 정상적이면 AttendanceEndDto 내용을 body에 사원id 퇴근시간 현재날짜를 반한환다
+//    */
+//
+//
+//
+//    @PostMapping("/leave")
+//    public ResponseEntity<AttendanceInfoEndRequestDto> makeLeaveInformation() {
+//        String employeeId = "emp01";
+//
+//        if (!employeeValidation(employeeId)) {
+//            log.info("Invalid employee ID: " + employeeId);
+//            return ResponseEntity.badRequest().body(employeeService1.endTime(employeeId));
+//        }
+//
+//
+//        return ResponseEntity.ok().body(employeeService1.endTime(employeeId));
+//    }
 
     /*
     세션에서 employeeId 가져온다 지금은 하드코딩중
@@ -110,7 +103,7 @@ public class EmployeeController1 {
 
     //년월일 타사원정보검색 년월만 입력하면 년월만 입력데이터 적용되게 구현//manager로 넘길메서드
     @GetMapping("/attendance_info/{employee_id}/")
-    public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfEmployeeByDay(
+    public ResponseEntity<List<AttendanceInfoRequestDto>> getAttendanceInfoOfEmployeeByDay(
             @PathVariable("employee_id") String employeeId,
             @RequestParam("year") int year,
             @RequestParam("month") int month,
@@ -126,7 +119,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceInfoDto> attendanceInfo;
+        List<AttendanceInfoRequestDto> attendanceInfo;
 
         if (day != null) {
             // 일 데이터가 있으면 해당 날짜로 검색
@@ -152,10 +145,10 @@ public class EmployeeController1 {
 
     //년월일 자신의 근태정보조회 년월만 입력하면 년월만 입력데이터 적용되게 구현
     @GetMapping("/attendance_info/")
-    public ResponseEntity<List<AttendanceInfoDto>> getAttendanceInfoOfMineByDay(HttpServletRequest request,
-                                                                                @RequestParam("year") int year,
-                                                                                @RequestParam("month") int month,
-                                                                                @RequestParam(value = "day", required = false) Integer day) {
+    public ResponseEntity<List<AttendanceInfoRequestDto>> getAttendanceInfoOfMineByDay(HttpServletRequest request,
+                                                                                       @RequestParam("year") int year,
+                                                                                       @RequestParam("month") int month,
+                                                                                       @RequestParam(value = "day", required = false) Integer day) {
 
         HttpSession session = request.getSession();
         // String employeeId = (String) session.getAttribute("employeeId");
@@ -171,7 +164,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceInfoDto> attendanceInfo;
+        List<AttendanceInfoRequestDto> attendanceInfo;
 
         if (day != null) {
             LocalDate attendanceDate = LocalDate.of(year, month, day);
@@ -205,7 +198,7 @@ public class EmployeeController1 {
 
     //자신의 근태 승인요청
     @PostMapping("/approve")
-    public ResponseEntity<AttendanceApprovalDto> makeApproveRequest(HttpServletRequest request) {
+    public ResponseEntity<AttendanceApprovalRequestDto> makeApproveRequest(HttpServletRequest request) {
         Long attendanceInfoId = Long.valueOf("1");
         String employeeId = "emp01";
 
@@ -221,7 +214,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        AttendanceApprovalDto attendanceApprovalDto = employeeService1.approveAttendance(attendanceInfoId, employeeId);
+        AttendanceApprovalRequestDto attendanceApprovalDto = employeeService1.approveAttendance(attendanceInfoId, employeeId);
         return ResponseEntity.ok(attendanceApprovalDto);
     }
 
@@ -238,7 +231,7 @@ public class EmployeeController1 {
 
     //자신의 근태승인내역
     @GetMapping("/approves")
-    public ResponseEntity<List<AttendanceApprovalDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
+    public ResponseEntity<List<AttendanceApprovalRequestDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
         HttpSession session = request.getSession();
 
         String employeeId= "emp01";
@@ -253,7 +246,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceApprovalDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
+        List<AttendanceApprovalRequestDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
 
         if (approvalInfoDtos.isEmpty()) {
             log.info("No approval history found for employeeId: " + employeeId);

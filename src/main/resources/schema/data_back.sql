@@ -33,10 +33,24 @@ VALUES
 INSERT INTO attendance_info (employee_id, attendance_date)
 VALUES ('emp01', CURDATE());
 
+INSERT INTO attendance_info (employee_id, attendance_date)
+VALUES ('emp02', CURDATE());
+
+# INSERT INTO attendance_info (employee_id, attendance_date)
+# VALUES ('emp03', CURDATE());
+
+INSERT INTO attendance_info (employee_id, attendance_date)
+VALUES ('emp04', CURDATE());
+
+INSERT INTO attendance_info (employee_id, attendance_date)
+VALUES ('emp05', CURDATE());
+
+
+
 #사원조회
 select * from attendance_info;
-# INSERT INTO attendance_info (employee_id, attendance_date, start_time)
-# VALUES ('emp01', CURDATE(), '2023-10-31 09:00:00')
+INSERT INTO attendance_info (employee_id, attendance_date)
+VALUES ('emp03', '2023-10-31 09:00:00')
 # ON DUPLICATE KEY UPDATE start_time = '2023-10-31 09:00:00';
 #
 #

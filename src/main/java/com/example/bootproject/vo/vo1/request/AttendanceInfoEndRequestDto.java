@@ -5,12 +5,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 //퇴근
 @Data
 @NoArgsConstructor
-public class AttendanceInfoEndDto {
+public class AttendanceInfoEndRequestDto {
 
     private String employeeId;
 

@@ -1,12 +1,9 @@
 package com.example.bootproject.service.service1;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
 import com.example.bootproject.vo.vo1.request.EmployeeRequest;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
 
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 
@@ -20,6 +17,6 @@ public interface ManagerService1 {
             (RegularTimeAdjustmentHistoryDto dto, String employeeId);
 
     //근태이상승인요청 내역
-    List<AttendanceApprovalDto> getAttendanceApprovalInfoDto(String employeeId);
+    List<AttendanceApprovalRequestDto> getAttendanceApprovalInfoDto(String employeeId);
 
 }

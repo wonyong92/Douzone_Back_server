@@ -9,7 +9,7 @@ import java.sql.Time;
 //근태정보
 @Data
 @NoArgsConstructor
-public class AttendanceInfoDto {
+public class AttendanceInfoRequestDto {
 
     private Long attendanceInfoId;
 
