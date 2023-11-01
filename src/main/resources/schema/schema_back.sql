@@ -12,6 +12,8 @@ drop table if exists vacation_quantity_setting;
 drop table if exists regular_time_adjustment_history;
 drop table if exists admin;
 drop table if exists employee;
+drop table if exists vacation_request_state_category;
+drop table if exists attendance_appeal_request_status;
 
 
 create table admin
@@ -45,10 +47,15 @@ CREATE TABLE attendance_info
     start_time                 timestamp,
     end_time                   timestamp,
     attendance_date            DATE DEFAULT (CURRENT_DATE) NOT NULL,
-    PRIMARY KEY (employee_id, attendance_date),
-    UNIQUE (attendance_info_id),
+    PRIMARY KEY (attendance_info_id),
+    UNIQUE (employee_id,attendance_date),
     CONSTRAINT attendance_info_ibfk_1 FOREIGN KEY (employee_id) REFERENCES employee (employee_id),
     CONSTRAINT attendance_info_ibfk_2 FOREIGN KEY (attendance_status_category) REFERENCES attendance_status_category (`key`)
+);
+
+create table attendance_appeal_request_status
+(
+    attendance_appeal_request_status_key varchar(10) not null primary key
 );
 
 create table attendance_appeal_request
@@ -66,7 +73,9 @@ create table attendance_appeal_request
     constraint attendance_appeal_request_ibfk_1
         foreign key (attendance_info_id) references attendance_info (attendance_info_id),
     constraint attendance_appeal_request_ibfk_2
-        foreign key (employee_id) references employee (employee_id)
+        foreign key (employee_id) references employee (employee_id),
+    constraint attendance_appeal_request_ibfk_3
+        foreign key (status) references attendance_appeal_request_status (attendance_appeal_request_status_key)
 );
 
 create table attendance_approval
@@ -109,19 +118,29 @@ create table vacation_adjusted_history
 
 create table vacation_category
 (
-    vacation_category_key varchar(10) not null primary key,
-        admit_time            int         not null
+    vacation_category_key varchar(10) not null
+        primary key,
+    admit_time            int         not null
 );
 
-CREATE TABLE vacation_quantity_setting
+create table vacation_quantity_setting
 (
-    setting_key  INT PRIMARY KEY AUTO_INCREMENT,
-    freshman     INT NOT NULL,
-    senior       INT NOT NULL,
-    setting_time TIMESTAMP DEFAULT NOW() NOT NULL,
+    setting_key  int      not null
+        primary key auto_increment,
+    freshman     int      not null,
+    senior       int      not null,
+    setting_time timestamp default Now() not null,
     target_date  TIMESTAMP DEFAULT (CONCAT(YEAR(NOW()) + 1, '-01-01 00:00:00')) NOT NULL,
-    employee_id  VARCHAR(10) NOT NULL
+    employee_id varchar(10) not null,
+    constraint vacation_quantity_setting_ibfk_1
+        foreign key (employee_id) references employee (employee_id)
 );
+
+create table vacation_request_state_category
+(
+    vacation_request_state_category_key varchar(10) not null primary key
+);
+
 
 create table vacation_request
 (
@@ -129,31 +148,32 @@ create table vacation_request
         primary key auto_increment,
     vacation_category_key       varchar(10) not null,
     employee_id                 varchar(10) not null,
-    result                      varchar(10) not null,
+    vacation_request_state_category_key  varchar(10) not null,
     vacation_quantity           int         not null,
-    vacation_start_time         timestamp    not null,
-    vacation_end_time           timestamp    not null,
-    vacation_related_start_time timestamp    not null,
-    vacation_related_end_time   timestamp    not null,
+    vacation_start_date         date not null,
+    vacation_end_date           date not null,
     reason                      text        not null,
     vacation_request_time timestamp default(now()),
     reason_for_rejection text,
     constraint vacation_request_ibfk_1
         foreign key (vacation_category_key) references vacation_category (vacation_category_key),
     constraint vacation_request_ibfk_2
-        foreign key (employee_id) references employee (employee_id)
+        foreign key (employee_id) references employee (employee_id),
+    constraint vacation_request_ibfk_3
+        foreign key (vacation_request_state_category_key) references vacation_request_state_category (vacation_request_state_category_key)
 );
-
 
 CREATE TABLE `regular_time_adjustment_history`
 (
     `regular_time_adjustment_history_id` BIGINT   NOT NULL PRIMARY KEY auto_increment,
     `target_date`                        DATE     NOT NULL DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY)),
-    `adjusted_start_time`                timestamp NOT NULL,
-    `adjusted_end_time`                  timestamp NOT NULL,
+    `adjusted_start_time`                TIME NOT NULL,
+    `adjusted_end_time`                  TIME NOT NULL,
     `reason`                             TEXT     NOT NULL,
     `regular_time_adjustment_time`       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    employee_id varchar(10) NOT NULL
+    `employee_id` varchar(10) not null,
+    constraint regular_time_adjustment_history_ibfk_1
+        foreign key (employee_id) references employee (employee_id)
 );
 
 create table `auth`
@@ -164,3 +184,4 @@ create table `auth`
     logout_time datetime    null,
     primary key (login_id, ip)
 );
+
