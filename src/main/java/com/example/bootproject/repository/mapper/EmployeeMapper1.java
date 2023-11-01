@@ -1,7 +1,6 @@
 package com.example.bootproject.repository.mapper;
 
 import com.example.bootproject.vo.vo1.request.*;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -21,7 +20,7 @@ public interface EmployeeMapper1 {
 
     //응답 근태정보테이블
     @Select("SELECT * FROM attendance_info WHERE employee_id = #{employeeId} AND attendance_date = #{AttendanceDate}")
-    AttendanceInfoResponseDto findByAttendanceKey( String employeeId , LocalDate AttendanceDate);
+    com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto findattendanceInfo(String employeeId , LocalDate AttendanceDate);
 
 
 
@@ -33,9 +32,9 @@ public interface EmployeeMapper1 {
 
 
     //퇴근기록
-    @Insert("UPDATE attendance_info SET end_time = #{endTime} " +
-            "WHERE employee_id = #{employeeId} AND attendance_date = #{attendanceDate}")
-    int endTime(AttendanceInfoEndRequestDto attendanceInfoEndRequestDto);
+    @Insert("UPDATE attendance_info SET end_time = #{dto.endTime} " +
+            "WHERE employee_id = #{dto.employeeId} AND attendance_date = #{dto.attendanceDate}")
+    int endTimeRequest(@Param("dto") AttendanceInfoEndRequestDto dto);
 
     //퇴근내역찾기
     @Select("SELECT end_time FROM attendance_info " +

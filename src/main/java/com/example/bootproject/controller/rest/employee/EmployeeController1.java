@@ -4,9 +4,7 @@ import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -24,8 +22,9 @@ public class EmployeeController1 {
     private final EmployeeService1 employeeService1;
 
 
+    //출근처리
     @PostMapping("/attendance")
-    public ResponseEntity<AttendanceInfoResponseDto> startWork(AttendanceInfoStartRequestDto requestDto) {
+        public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(AttendanceInfoStartRequestDto requestDto) {
         // 직접 할당한 더미 데이터
         String employeeId = "emp03";
 
@@ -34,8 +33,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-
-        AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
+      AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
 
         // 결과에 따라 응답을 반환한다
         if (responseDto == null) {
@@ -45,58 +43,39 @@ public class EmployeeController1 {
 
         return ResponseEntity.ok(responseDto);
     }
+/*
+세션에 employeeId validation체크
+세션에 DTO의 내용이 null값이때 badrequest
+ */
 
 
 
-//    @PostMapping("/attendance")
-//    public ResponseEntity<AttendanceInfoStartRequestDto> makeAttendanceInfo() {
-//        String employeeId = "emp01";
-//
-//
-//        if (!employeeValidation(employeeId)) {
-//            log.info("Invalid employee ID: " + employeeId);
-//            return ResponseEntity.badRequest().body(employeeService1.startTime(employeeId));
-//        }
-//
-//
-//
-//        return ResponseEntity.ok().body(employeeService1.startTime(employeeId));
-//    }
-//
-//
-//    /*
-//    세션에서 employeeId 가져온다 지금은 하드코딩중
-//     existingStartTime에 출근시간을 조회하는 데이터를 담아옵니다
-//     만약 출근시간이 있으면  badrequest와 할께 출근시간이있습니다 body에담아서반환
-//     dto가 데이터가 없으면  badrequest와 할께 데이터가 안담김을 body에 담아서 반환한다
-//    모든요청이 정상적이면 AttendanceEndDto 내용을 body에 사원id 퇴근시간 현재날짜를 반한환다
-//    */
-//
-//
-//
-//    @PostMapping("/leave")
-//    public ResponseEntity<AttendanceInfoEndRequestDto> makeLeaveInformation() {
-//        String employeeId = "emp01";
-//
-//        if (!employeeValidation(employeeId)) {
-//            log.info("Invalid employee ID: " + employeeId);
-//            return ResponseEntity.badRequest().body(employeeService1.endTime(employeeId));
-//        }
-//
-//
-//        return ResponseEntity.ok().body(employeeService1.endTime(employeeId));
-//    }
+    //톼근처리
+    @PostMapping("/leave")
+    public ResponseEntity<AttendanceInfoResponseDto> makeLeaveInformation(AttendanceInfoEndRequestDto requestDto){
 
-    /*
-    세션에서 employeeId 가져온다 지금은 하드코딩중
-     existingstartTime에 출근시간을 조회하는 데이터를 담아옵니다
-     만약 출근시간이 없으면  badrequest와 할께 출근시간이없습니다 body에담아서반환
-     existingEndTime에 퇴근시간을 조회하는 데이터를 담아옵니다
-     만약 퇴근시간이 있으면  badrequest와 할께 퇴근시간이있습니다 body에담아서반환
-     dto가 데이터가 없으면  badrequest와 할께 데이터가 안담김을 body에 담아서 반환한다
-    모든요청이 정상적이면 AttendanceEndDto 내용을 body에 사원id 퇴근시간요청내용을 반한환다
-    */
+        String employeeId = "emp03";
 
+        if(!employeeValidation(employeeId)){
+            log.info("not collect validationcheck" + employeeId);
+            return ResponseEntity.badRequest().build();
+        }
+
+        AttendanceInfoResponseDto responseDto = employeeService1.makeEndResponse(requestDto,employeeId);
+
+        if (responseDto == null) {
+            log.info("Failed to record attendance for employeeId: " + employeeId);
+            return ResponseEntity.badRequest().build();
+        }
+
+
+
+        return ResponseEntity.ok(responseDto);
+    }
+/*
+세션에 employeeId validation체크
+세션에 DTO의 내용이 null값이때 badrequest
+ */
 
 
 

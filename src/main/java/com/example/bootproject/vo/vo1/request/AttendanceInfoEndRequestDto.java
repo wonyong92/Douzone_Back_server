@@ -15,6 +15,7 @@ public class AttendanceInfoEndRequestDto {
 
     private LocalDate attendanceDate;
 
+
     private LocalDateTime endTime;
 
 

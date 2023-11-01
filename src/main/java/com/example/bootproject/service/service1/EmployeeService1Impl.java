@@ -22,35 +22,13 @@ public class EmployeeService1Impl implements EmployeeService1 {
         private final EmployeeMapper1 employeeMapper1;
 
 
-        //출근시간데이터확인
-//        @Override
-//        public AttendanceInfoStartRequestDto makestartTime(String employeeId) {
-//                LocalDate attendanceDate = LocalDate.now();
-//                LocalDateTime startStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId,attendanceDate);
-//
-//                if (startStartTime != null) {
-//
-//                        log.info("출석시간이 있습니다");
-//                        return null;
-//                }else {
-//
-//                }
-//                LocalDateTime startTime = LocalDateTime.now();
-//
-//                AttendanceInfoStartRequestDto attendanceInfoStartDto = new AttendanceInfoStartRequestDto();
-//                attendanceInfoStartDto.setEmployeeId(employeeId);
-//                attendanceInfoStartDto.setAttendanceDate(attendanceDate);
-//                attendanceInfoStartDto.setStartTime(startTime);
-//
-//                int result = Math.toIntExact(employeeMapper1.startTime(attendanceInfoStartDto));
-//
-//                return attendanceInfoStartDto;
-//        }
 
 
 
 
 
+
+        //출근기록
         @Override
         public AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto, String employeeId) {
                 LocalDate attendanceDate = LocalDate.now();
@@ -68,10 +46,10 @@ public class EmployeeService1Impl implements EmployeeService1 {
                         dto.setStartTime(startTime);
 
                         // DB에 출근 시간 기록
-                        int attendanceKey = employeeMapper1.startTimeRequest(dto);
-                        if (attendanceKey > 0) {
-                                // 기록된 출근 정보를 바탕으로 AttendanceInfoResponseDto 가져오기
-                                AttendanceInfoResponseDto responseDto = employeeMapper1.findByAttendanceKey(employeeId,attendanceDate);
+                        int attendanceInfo = employeeMapper1.startTimeRequest(dto);
+                        if (attendanceInfo > 0) {
+                                // 기록된 출근 정보를 바탕으로 AttendanceInfoEndRequestDto 가져오기
+                              AttendanceInfoResponseDto responseDto = employeeMapper1.findattendanceInfo(employeeId,attendanceDate);
                                 if (responseDto != null) {
                                         // 조회 성공
                                         return responseDto;
@@ -87,41 +65,65 @@ public class EmployeeService1Impl implements EmployeeService1 {
                 }
         }
 
-//        @Override
-//                public AttendanceInfoEndRequestDto endTime (String employeeId){
-//                        AttendanceInfoEndRequestDto attendanceInfoEndRequestDto = new AttendanceInfoEndRequestDto();
-//                        LocalDate currentDate = LocalDate.now();
-//                        LocalDateTime existingEndTime = employeeMapper1.getEndTimeByEmployeeIdAndDate(employeeId, currentDate);
-//                        LocalDateTime findstartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId, currentDate);
-//
-//                        if (existingEndTime != null) {
-//                                log.info("퇴근기록이있습니다");
-//                                return null;
-//                        }
-//
-//                        if (findstartTime == null) {
-//                                log.info("출근기록이없습니다");
-//                                return null;
-//                        }
-//
-//                        LocalDateTime endTime = LocalDateTime.now();
-//                        attendanceInfoEndRequestDto.setEmployeeId(employeeId);
-//                        attendanceInfoEndRequestDto.setAttendanceDate(currentDate);
-//                        attendanceInfoEndRequestDto.setEndTime(endTime);
-//
-//                        int affectedRows = employeeMapper1.endTime(attendanceInfoEndRequestDto);
-//
-//                        //데이터가 비어있는지 확인
-//                        if (affectedRows == 0) {
-//                                log.info("결과가 비어 있습니다.");
-//                        } else {
-//                                log.info("결과가 비어 있지 않습니다. 영향을 받은 행의 수: {}", affectedRows);
-//                        }
-//
-//
-//                        return attendanceInfoEndRequestDto;
-//                }
-//        }
+                /*
+출근기록이 있으면 로그로 출근기록확인 null값 반환
+400에러
+아니면 200
+만약 출근기록이 제대로 넘어오면 출근기록 리턴
+400에러
+기록된 출근정보를 바탕으로
+
+ */
+
+
+        //퇴근기록
+        @Override
+        public AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto, String employeeId) {
+                LocalDate attendanceDate=LocalDate.now();
+                LocalDateTime findStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId,attendanceDate);
+                LocalDateTime findEndTime = employeeMapper1.getEndTimeByEmployeeIdAndDate(employeeId,attendanceDate);
+
+                if(findStartTime == null){
+                        log.info("출근기록이있습니다");
+                        return null;
+                } else if(findEndTime!= null){
+
+                        log.info("퇴근기록이있습니다");
+                        return null;
+                }else{
+                        LocalDateTime endTime = LocalDateTime.now();
+                        dto.setEmployeeId(employeeId);
+                        dto.setAttendanceDate(attendanceDate);
+                        dto.setEndTime(endTime);
+
+                        int endKey = employeeMapper1.endTimeRequest(dto);
+                        if(endKey >0){
+                                AttendanceInfoResponseDto responseDto = employeeMapper1.findattendanceInfo(employeeId,attendanceDate);
+                                if(responseDto !=null){
+                                        return responseDto;
+                                }else{
+                                        log.info("출근정보를 조회하는데 실패하였습니다");
+                                        return null;
+                                }
+                        }
+                        else {
+                                log.info("기록에 실패하셨습니다");
+                                return null;
+                        }
+
+
+                }
+
+        }
+
+        /*
+ 출근기록이 있으면 로그로 출근기록확인 null값 반환
+아니면 200
+만약 출근기록이 제대로 넘어오면 출근기록 리턴
+400에러
+기록된 출근정보를 바탕으로
+
+ */
 
 
         //사원 년,월,일 사원근태정보검색
@@ -138,7 +140,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
 
         //자신의 근태승인요청
-        @Transactional
+
         public AttendanceApprovalRequestDto approveAttendance(Long attendanceInfoId, String employeeId) {
                 // 1. "지각" 상태 정보 가져오기
                 AttendanceStatusCategoryRequestDto lateStatus = employeeMapper1.findLateStatus();

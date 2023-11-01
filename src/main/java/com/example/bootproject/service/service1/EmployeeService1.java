@@ -16,7 +16,8 @@ public interface EmployeeService1 {
 
 
 
-//    AttendanceInfoEndRequestDto endTime(String employeeId);
+    //퇴근내역
+    AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto , String employeeId);
 
 
     //타사원년월일
