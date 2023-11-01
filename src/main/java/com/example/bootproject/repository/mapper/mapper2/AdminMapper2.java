@@ -12,12 +12,20 @@ import java.util.List;
 @Mapper
 public interface AdminMapper2 {
 
-    // 사원의 정보를 전체 select함
-    @Select("SELECT * FROM employee")
-    public List<EmployeeDto> getEmpInfo();
+    // employee 테이블의 employee_id, password, name, attendance_manager, hire_year을 SELECT
+    @Select("SELECT employee_id as employeeId, password, name, attendance_manager as attendanceManager, hire_year as hireYear\n" +
+            "FROM employee\n" +
+            "ORDER BY ${orderByCondition} ${desc}\n" +
+            "LIMIT ${size} OFFSET ${startrow};")
+    public List<EmployeeDto> getEmpInfo(int currentPage, int size, String orderByCondition, int startrow,String desc);
 
-    // 특정 사원 번호를 가진 사원의 정보를 select함
-    @Select("SELECT * FROM employee WHERE employee_id= #{employeeId}")
+
+    // employee 테이블의 employee_id, password, name, attendance_manager, hire_year을 select 하여 특정 사원 번호 가진 사원의 정보 반환
+    @Select("SELECT employee_id as employeeId, password, name, attendance_manager as attendanceManager, hire_year as hireYear FROM employee WHERE employee_id= #{employeeId}")
     public EmployeeDto getOneEmpInfo(String employeeId);
+
+
+    @Select("select count(*) from employee;")
+    public int getEmpInfoTotalRow();
 
 }
