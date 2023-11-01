@@ -14,9 +14,8 @@ import java.util.List;
 
 public interface ManagerService2 {
     public List<VacationRequestDto> getAllVacationHistory(String date);
-    public VacationRequestDto getEmpReqVacationHistory(String employeeId);
+    public List<VacationRequestDto> getEmpReqVacationHistory(String employeeId);
     public List<SettingWorkTimeDto> getSettingWorkTime();
     public List<VacationQuantitySettingDto> getVacationSettingHistory();
     public List<VacationRequestDto> getHistoryOfRejectedVacationOfEmployee(String employeeId);
-
 }
