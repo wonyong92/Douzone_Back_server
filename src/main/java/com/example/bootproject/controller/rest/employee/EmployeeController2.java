@@ -84,39 +84,5 @@ public class EmployeeController2 {
 
     }
 
-    // 타 사원의 연차 사용 이력 조회 메서드
-    /* TODO : 추후 권한 확인 추가 */
-    @GetMapping("/employee/vacation/use/{employee_id}")
-    public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryOfUsedVacationOfEmployee(@PathVariable(name = "employee_id") String id,@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder) {
-        if(authCheckApi()){
-            if(validationId(id)){
-                int currentPage = validationPageNum(getPageNum);
-                String sort = validationSort(getSort);
-                String sortOrder = validationDesc(getSortOrder);
-                PagingRequestWithIdDto pagingRequestWithIdDto = new PagingRequestWithIdDto(currentPage,sort,sortOrder,id);
 
-                Page<List<VacationRequestDto>> result = empService2.getHistoryOfUsedVacationOfEmployee(pagingRequestWithIdDto);
-                log.info("getHistoryOfUsedVacationOfEmployee result : {}", result);
-                if (result.getData().isEmpty()) {
-                    return ResponseEntity.noContent().build(); //204 No Content
-                }
-                return ResponseEntity.ok(result); //200 OK
-            }
-            log.info("Validation failed for id: {}", id);
-            return ResponseEntity.badRequest().build(); //400 bad request
-
-        }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
-
-        /*
-        * 근태 담당자 권한 확인
-        * 권한 확인 성공시 -> id의 validation 체크
-        *               -> validation 체크 성공시 타 사원의 연차 사용 이력 데이터 반환 받음
-        *                  반환한 데이터가 비어있을 때 : 204 No Content 반환
-        *                  반환한 데이터가 비어있지 않을 때
-        *  : 200 OK 반환
-        *               -> validation 체크 실패 시 400 Bad Request 반환
-        * 권한 확인 실패시 -> 403 ERROR 발생
-        * */
-    }
 }

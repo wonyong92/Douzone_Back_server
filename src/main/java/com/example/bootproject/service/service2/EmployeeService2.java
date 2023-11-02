@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface EmployeeService2 {
     public Page<List<VacationRequestDto>> getHistoryOfVacationOfMine (PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto);
-    public Page<List<VacationRequestDto>> getHistoryOfUsedVacationOfEmployee(PagingRequestWithIdDto pagingRequestWithIdDto);
+
 }
