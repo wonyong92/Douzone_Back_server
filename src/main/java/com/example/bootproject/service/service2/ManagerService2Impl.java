@@ -29,13 +29,8 @@ public class ManagerService2Impl implements  ManagerService2{
         int startRow = (pagingRequestWithDateDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
 
         String orderByCondition = pagingRequestWithDateDto.getSort(); // 정렬할 컬럼 이름
-            //alias 필요 확인
-        if(orderByCondition=="name"){
-            orderByCondition = "e."+orderByCondition;
-        }
-        else{
-            orderByCondition="v."+orderByCondition;
-        }
+        orderByCondition = (orderByCondition.equals("name")?"E.":"V.")+orderByCondition;
+
         List<VacationRequestDto> getData = manMapper2.getAllVacationHistory(size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder(),pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         if(getData.isEmpty()){
            // return 빈 리스트의 Page
