@@ -2,10 +2,9 @@ package com.example.bootproject.service.service1;
 
 
 import com.example.bootproject.repository.mapper.EmployeeMapper1;
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
-import com.example.bootproject.vo.vo1.request.AttendanceStatusCategoryRequestDto;
+
+import com.example.bootproject.vo.vo1.request.*;
+import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -139,31 +138,35 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
         //자신의 근태승인요청
 
-        public AttendanceApprovalRequestDto approveAttendance(Long attendanceInfoId, String employeeId) {
+        public AttendanceApprovalResponseDto approveAttendance(AttendanceApprovalUpdateRequestDto updaterequestdto , AttendanceApprovalInsertRequestDto insertrequestdto,
+                                                               String employeeId, Long attendanceInfoId) {
+
                 // 1. "지각" 상태 정보 가져오기
                 AttendanceStatusCategoryRequestDto lateStatus = employeeMapper1.findLateStatus();
 
                 // 2. 근태 상태 업데이트
-                AttendanceInfoResponseDto attendanceInfoResponseDto = new AttendanceInfoResponseDto();
-                attendanceInfoResponseDto.setAttendanceInfoId(attendanceInfoId);
-                attendanceInfoResponseDto.setAttendanceStatusCategory(lateStatus.getKey());
-                int updatedRows = employeeMapper1.updateAttendanceStatus(attendanceInfoResponseDto);
+                updaterequestdto.setAttendanceStatusCategory(lateStatus.getKey());
+                updaterequestdto.setAttendanceInfoId(attendanceInfoId);
+                int updatedRows = employeeMapper1.updateAttendanceStatus(updaterequestdto);
 
+                insertrequestdto.setAttendanceInfoId(attendanceInfoId);
+                insertrequestdto.setEmployeeId(employeeId);
                 // 3. 근태 승인 정보 삽입
-                int insertedRows = employeeMapper1.insertAttendanceApproval(attendanceInfoId, employeeId);
+                int insertedRows = employeeMapper1.insertAttendanceApproval(insertrequestdto);
 
                 // 4. 근태 승인 정보를 DTO로 변환하여 반환
-                AttendanceApprovalRequestDto attendanceApprovalDto = new AttendanceApprovalRequestDto();
+                AttendanceApprovalResponseDto attendanceApprovalDto = new AttendanceApprovalResponseDto();
                 attendanceApprovalDto.setAttendanceInfoId(attendanceInfoId);
-                attendanceApprovalDto.setAttendanceApprovalDate(LocalDate.now()); // 승인 날짜 설정
+                attendanceApprovalDto.setAttendanceApprovalDate(LocalDateTime.now()); // 승인 날짜 설정
                 attendanceApprovalDto.setEmployeeId(employeeId);
+                AttendanceApprovalResponseDto attendanceApprovalResponseDto = employeeMapper1.findAttendanceApproval(employeeId,attendanceInfoId);
 
-                return attendanceApprovalDto;
+                return attendanceApprovalResponseDto;
         }
 
 
         @Override
-        public List<AttendanceApprovalRequestDto> findApprovalInfoByMine(String employeeId) {
+        public List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId) {
                 return employeeMapper1.findApprovalInfoByMine(employeeId);
         }
 

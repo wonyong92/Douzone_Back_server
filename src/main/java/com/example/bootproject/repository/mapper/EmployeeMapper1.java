@@ -1,9 +1,7 @@
 package com.example.bootproject.repository.mapper;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
-import com.example.bootproject.vo.vo1.request.AttendanceStatusCategoryRequestDto;
+import com.example.bootproject.vo.vo1.request.*;
+import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import org.apache.ibatis.annotations.*;
 
@@ -88,14 +86,18 @@ public interface EmployeeMapper1 {
 
 
     //attendance_info테이블에 대리키를 조회해 현재상태를 만약 근태이상이라고 있으면 이거를 인정한 지각이라는 데이터로 변경한다
-    @Update("UPDATE attendance_info SET attendance_status_category = #{dto.attendanceStatusCategory} WHERE attendance_info_id = #{attendanceInfoId}")
-    int updateAttendanceStatus(@Param("dto") AttendanceInfoResponseDto attendanceInfoResponseDto);
+    @Update("UPDATE attendance_info SET attendance_status_category = #{dto.attendanceStatusCategory} WHERE attendance_info_id = #{dto.attendanceInfoId}")
+    int updateAttendanceStatus(@Param("dto") AttendanceApprovalUpdateRequestDto attendanceApprovalUpdateRequestDto);
 //    dto보단 key만 적는다
 
     //근태정보--승인 테이블에 승인을 한 내역을 남긴다
-    @Insert("INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id) VALUES (#{attendanceInfoId}, NOW(), #{employeeId})")
-    int insertAttendanceApproval(Long attendanceInfoId, String employeeId);
+    @Insert("INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id) VALUES (#{dto.attendanceInfoId}, NOW(), #{dto.employeeId})")
+    int insertAttendanceApproval(@Param("dto")AttendanceApprovalInsertRequestDto attendanceApprovalInsertRequestDto);
 
+    @Select("SELECT attendance_approval_id , attendance_info_id , attendance_approval_date , employee_id " +
+            "FROM attendance_approval " +
+            "WHERE employee_id = #{employeeId} AND attendance_info_id = #{attendanceInfoId}")
+    AttendanceApprovalResponseDto findAttendanceApproval(String employeeId , Long attendanceInfoId);
 
 
     //자신의 근태이상승인내역
@@ -103,7 +105,7 @@ public interface EmployeeMapper1 {
             "FROM attendance_approval  " +
             "JOIN employee USING (employee_id) " +
             "WHERE employee_id = #{employeeId}")
-    List<AttendanceApprovalRequestDto> findApprovalInfoByMine(String employeeId);
+    List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId);
 
 
 }

@@ -1,9 +1,11 @@
 package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalInsertRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
+import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.List;
 
 
@@ -29,7 +30,7 @@ public class EmployeeController1 {
     //출근처리
         @PostMapping("/attendance")
             public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(AttendanceInfoStartRequestDto requestDto) {
-            // 직접 할당한 더미 데이터
+            // 직접 할당한 더 미 데이터
             String employeeId = "emp03";
             AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
 
@@ -142,7 +143,7 @@ public class EmployeeController1 {
 
     //자신의 근태 승인요청
     @PostMapping("/approve")
-    public ResponseEntity<AttendanceApprovalRequestDto> makeApproveRequest(HttpServletRequest request) {
+    public ResponseEntity<AttendanceApprovalResponseDto> makeApproveRequest(AttendanceApprovalUpdateRequestDto updaterequestdto , AttendanceApprovalInsertRequestDto insertrequestdto) {
         Long attendanceInfoId = Long.valueOf("1");
         String employeeId = "emp01";
 
@@ -158,8 +159,10 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        AttendanceApprovalRequestDto attendanceApprovalDto = employeeService1.approveAttendance(attendanceInfoId, employeeId);
-        return ResponseEntity.ok(attendanceApprovalDto);
+
+        AttendanceApprovalResponseDto approvalResponseDto = employeeService1.approveAttendance(updaterequestdto ,insertrequestdto, employeeId,attendanceInfoId);
+        log.info(String.valueOf(approvalResponseDto));
+        return ResponseEntity.ok(approvalResponseDto);
     }
 
      /*
@@ -175,7 +178,7 @@ public class EmployeeController1 {
 
     //자신의 근태승인내역
     @GetMapping("/approves")
-    public ResponseEntity<List<AttendanceApprovalRequestDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
+    public ResponseEntity<List<AttendanceApprovalUpdateRequestDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
         HttpSession session = request.getSession();
 
         String employeeId= "emp01";
@@ -190,7 +193,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceApprovalRequestDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
+        List<AttendanceApprovalUpdateRequestDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
 
         if (approvalInfoDtos.isEmpty()) {
             log.info("No approval history found for employeeId: " + employeeId);

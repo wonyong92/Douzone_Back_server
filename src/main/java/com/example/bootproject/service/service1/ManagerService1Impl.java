@@ -1,14 +1,13 @@
 package com.example.bootproject.service.service1;
 
 import com.example.bootproject.repository.mapper.ManagerMapper1;
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class ManagerService1Impl implements ManagerService1{
 
     //타사원에대한 근태승인내역 조회
     @Override
-    public List<AttendanceApprovalRequestDto> getAttendanceApprovalInfoDto(String employeeId) {
+    public List<AttendanceApprovalUpdateRequestDto> getAttendanceApprovalInfoDto(String employeeId) {
         return managerMapper1.findApprovalInfoByEmployeeId(employeeId);
     }
 

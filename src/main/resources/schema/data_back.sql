@@ -30,20 +30,20 @@ VALUES
 # VALUES ('emp01', CURDATE(), '2023-11-01 08:40:00')
 # ON DUPLICATE KEY UPDATE start_time = '2023-11-01 08:30:00';
 
-INSERT INTO attendance_info (employee_id, attendance_date)
-VALUES ('emp01', CURDATE());
-
-INSERT INTO attendance_info (employee_id, attendance_date)
-VALUES ('emp02', CURDATE());
-
 # INSERT INTO attendance_info (employee_id, attendance_date)
-# VALUES ('emp03', CURDATE());
-
-INSERT INTO attendance_info (employee_id, attendance_date)
-VALUES ('emp04', CURDATE());
-
-INSERT INTO attendance_info (employee_id, attendance_date)
-VALUES ('emp05', CURDATE());
+# VALUES ('emp01', CURDATE());
+#
+# INSERT INTO attendance_info (employee_id, attendance_date)
+# VALUES ('emp02', CURDATE());
+#
+# # INSERT INTO attendance_info (employee_id, attendance_date)
+# # VALUES ('emp03', CURDATE());
+#
+# INSERT INTO attendance_info (employee_id, attendance_date)
+# VALUES ('emp04', CURDATE());
+#
+# INSERT INTO attendance_info (employee_id, attendance_date)
+# VALUES ('emp05', CURDATE());
 
 
 
@@ -83,6 +83,9 @@ INSERT INTO attendance_info (attendance_status_category, employee_id, start_time
 select * from attendance_info;
 
 select * from regular_time_adjustment_history;
+
+select *
+from attendance_approval;
 # INSERT INTO regular_time_adjustment_history
 # (target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id)
 # VALUES

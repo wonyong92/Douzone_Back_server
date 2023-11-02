@@ -1,7 +1,7 @@
 package com.example.bootproject.controller.rest.manager;
 import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.service.service1.ManagerService1;
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
@@ -68,7 +68,7 @@ public class ManagerController1 {
 
     //타사원에 대한 근태 이상 승인 내역
     @GetMapping("/approve/{employeeId}")
-    public ResponseEntity<List<AttendanceApprovalRequestDto>> getApprovalInfo(
+    public ResponseEntity<List<AttendanceApprovalUpdateRequestDto>> getApprovalInfo(
             @PathVariable String employeeId) {
 
         if (!ManagerCheckApi()) {
@@ -86,7 +86,7 @@ public class ManagerController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceApprovalRequestDto> approvalInfo = managerService1.getAttendanceApprovalInfoDto(employeeId);
+        List<AttendanceApprovalUpdateRequestDto> approvalInfo = managerService1.getAttendanceApprovalInfoDto(employeeId);
         if (approvalInfo.isEmpty()) {
             log.info("No approval history found for employeeId: " + employeeId);
             return ResponseEntity.noContent().build();

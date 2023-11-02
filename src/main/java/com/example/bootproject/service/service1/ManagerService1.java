@@ -1,6 +1,6 @@
 package com.example.bootproject.service.service1;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 
@@ -17,6 +17,6 @@ public interface ManagerService1 {
             (RegularTimeAdjustmentHistoryRequestDto dto, String employeeId);
 
     //근태이상승인요청 내역
-    List<AttendanceApprovalRequestDto> getAttendanceApprovalInfoDto(String employeeId);
+    List<AttendanceApprovalUpdateRequestDto> getAttendanceApprovalInfoDto(String employeeId);
 
 }
