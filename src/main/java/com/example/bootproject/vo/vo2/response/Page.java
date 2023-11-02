@@ -25,4 +25,13 @@ public class Page<T> {
     private int page;
     //전체 요소 개수
     private int totalElement;
+
+    public Page(T data, boolean hasNext, String sort, String desc, int page, int totalElement) {
+        this.data = data;
+        this.hasNext = hasNext;
+        this.sort = sort;
+        this.desc = desc;
+        this.page = page;
+        this.totalElement = totalElement;
+    }
 }
