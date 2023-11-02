@@ -1,6 +1,10 @@
 package com.example.bootproject.repository.mapper;
 
-import com.example.bootproject.vo.vo1.request.*;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceStatusCategoryRequestDto;
+import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -19,9 +23,10 @@ public interface EmployeeMapper1 {
 
 
     //응답 근태정보테이블
-    @Select("SELECT * FROM attendance_info WHERE employee_id = #{employeeId} AND attendance_date = #{AttendanceDate}")
-    com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto findattendanceInfo(String employeeId , LocalDate AttendanceDate);
-
+    @Select("SELECT regular_time_adjustment_history_id, target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id " +
+            "FROM regular_time_adjustment_history " +
+            "WHERE employee_id = #{employeeId} AND target_date = #{AttendanceDate}")
+    AttendanceInfoResponseDto findattendanceInfo(String employeeId , LocalDate AttendanceDate);
 
 
     //출근내역찾기
@@ -45,21 +50,24 @@ public interface EmployeeMapper1 {
 
 
 
-    //타사원년월일 사원근태정보검색
+    //사원년월일 사원근태정보검색
     @Select("SELECT " +
+            "attendance_info_id,"+
             "employee_id, " +
             "attendance_date, " +
             "attendance_status_category, " +
             "start_time, " +
             "end_time " +
             "FROM attendance_info " +
-            "WHERE attendance_date = #{attendance_date} AND employee_id = #{employeeId} " +
-            "ORDER BY employeeId")
-    List<AttendanceInfoRequestDto> selectAttendanceByDate(LocalDate attendanceDate , String employeeId);
+            "WHERE attendance_date = #{attendanceDate} AND employee_id = #{employeeId} " +
+            "ORDER BY employee_id")
+    List<AttendanceInfoResponseDto> selectAttendanceByDate(LocalDate attendanceDate , String employeeId);
 
 
-    //타사원년월 사원근태정보검색
+
+    //사원년월 사원근태정보검색
     @Select("SELECT " +
+            "attendance_info_id, " +
             "employee_id, " +
             "attendance_date, " +
             "attendance_status_category, " +
@@ -67,10 +75,11 @@ public interface EmployeeMapper1 {
             "end_time " +
             "FROM attendance_info " +
             "WHERE employee_id = #{employeeId} " +
-            "AND attendance_date >= #{startDate} " +
-            "AND attendance_date <= #{endDate} " +
+            "AND YEAR(attendance_date) = #{year} " +
+            "AND MONTH(attendance_date) = #{month} " +
             "ORDER BY attendance_date")
-    List<AttendanceInfoRequestDto> selectAttendanceByMonthAndEmployee(LocalDate startDate, LocalDate endDate, String employeeId);
+    List<AttendanceInfoResponseDto> selectAttendanceByMonthAndEmployee(int year, int month, String employeeId);
+
 
 //세션에서 attendance_info정보를 찾아오는걸로 변경
     //'지각' key값을 찾는 쿼리문이다
@@ -79,8 +88,8 @@ public interface EmployeeMapper1 {
 
 
     //attendance_info테이블에 대리키를 조회해 현재상태를 만약 근태이상이라고 있으면 이거를 인정한 지각이라는 데이터로 변경한다
-    @Update("UPDATE attendance_info SET attendance_status_category = #{attendanceStatusCategory} WHERE attendance_info_id = #{attendanceInfoId}")
-    int updateAttendanceStatus(AttendanceInfoRequestDto attendanceInfoRequestDto);
+    @Update("UPDATE attendance_info SET attendance_status_category = #{dto.attendanceStatusCategory} WHERE attendance_info_id = #{attendanceInfoId}")
+    int updateAttendanceStatus(@Param("dto") AttendanceInfoResponseDto attendanceInfoResponseDto);
 //    dto보단 key만 적는다
 
     //근태정보--승인 테이블에 승인을 한 내역을 남긴다
@@ -90,10 +99,10 @@ public interface EmployeeMapper1 {
 
 
     //자신의 근태이상승인내역
-    @Select("SELECT e.employee_id, e.name, a.attendance_approval_date " +
-            "FROM attendance_approval a " +
-            "JOIN employee e ON a.employee_id = e.employee_id " +
-            "WHERE e.employee_id = #{employeeId}")
+    @Select("SELECT employee_id, name, attendance_approval_date " +
+            "FROM attendance_approval  " +
+            "JOIN employee USING (employee_id) " +
+            "WHERE employee_id = #{employeeId}")
     List<AttendanceApprovalRequestDto> findApprovalInfoByMine(String employeeId);
 
 

@@ -1,6 +1,9 @@
 package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
-import com.example.bootproject.vo.vo1.request.*;
+
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 
@@ -23,26 +27,27 @@ public class EmployeeController1 {
 
 
     //출근처리
-    @PostMapping("/attendance")
-        public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(AttendanceInfoStartRequestDto requestDto) {
-        // 직접 할당한 더미 데이터
-        String employeeId = "emp03";
+        @PostMapping("/attendance")
+            public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(AttendanceInfoStartRequestDto requestDto) {
+            // 직접 할당한 더미 데이터
+            String employeeId = "emp03";
+            AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
 
-        if(!employeeValidation(employeeId)){
-            log.info("not collect validationcheck" + employeeId);
-            return ResponseEntity.badRequest().build();
+            // 결과에 따라 응답을 반환한다
+            if (responseDto == null) {
+                log.info("반환값이 null이다: " + employeeId);
+                return ResponseEntity.badRequest().build();
+            }
+
+            if(!employeeValidation(employeeId)){
+                log.info("employeeId not collect validationcheck" + employeeId);
+                return ResponseEntity.badRequest().build();
+            }//로그인에서
+
+
+
+            return ResponseEntity.ok(responseDto);
         }
-
-      AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
-
-        // 결과에 따라 응답을 반환한다
-        if (responseDto == null) {
-            log.info("Failed to record attendance for employeeId: " + employeeId);
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(responseDto);
-    }
 /*
 세션에 employeeId validation체크
 세션에 DTO의 내용이 null값이때 badrequest
@@ -61,7 +66,7 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        AttendanceInfoResponseDto responseDto = employeeService1.makeEndResponse(requestDto,employeeId);
+      AttendanceInfoResponseDto responseDto = employeeService1.makeEndResponse(requestDto,employeeId);
 
         if (responseDto == null) {
             log.info("Failed to record attendance for employeeId: " + employeeId);
@@ -80,54 +85,15 @@ public class EmployeeController1 {
 
 
 
-    //년월일 타사원정보검색 년월만 입력하면 년월만 입력데이터 적용되게 구현//manager로 넘길메서드
-    @GetMapping("/attendance_info/{employee_id}/")
-    public ResponseEntity<List<AttendanceInfoRequestDto>> getAttendanceInfoOfEmployeeByDay(
-            @PathVariable("employee_id") String employeeId,
-            @RequestParam("year") int year,
-            @RequestParam("month") int month,
-            @RequestParam(value = "day", required = false) Integer day) {
 
-        if (!employeeValidation(employeeId)) {
-            log.info("Invalid employee ID: " + employeeId);
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (day != null && !isValidDate(year, month, day)) {
-            log.info("Invalid date: year={}, month={}, day={}", year, month, day);
-            return ResponseEntity.badRequest().build();
-        }
-
-        List<AttendanceInfoRequestDto> attendanceInfo;
-
-        if (day != null) {
-            // 일 데이터가 있으면 해당 날짜로 검색
-            LocalDate attendanceDate = LocalDate.of(year, month, day);
-            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
-        } else {
-            // 일 데이터가 없으면 해당 월로 검색
-            LocalDate startDate = LocalDate.of(year, month, 1);
-            LocalDate endDate = startDate.plusMonths(1).minusDays(1);
-            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, employeeId);
-        }
-
-        if (attendanceInfo.isEmpty()) {
-            log.info("No attendance records found for employeeId: " + employeeId);
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(attendanceInfo);
-    }
-
-     //TODO: 모든 내역조회에 페이징네이션 적용
 
 
     //년월일 자신의 근태정보조회 년월만 입력하면 년월만 입력데이터 적용되게 구현
     @GetMapping("/attendance_info/")
-    public ResponseEntity<List<AttendanceInfoRequestDto>> getAttendanceInfoOfMineByDay(HttpServletRequest request,
-                                                                                       @RequestParam("year") int year,
-                                                                                       @RequestParam("month") int month,
-                                                                                       @RequestParam(value = "day", required = false) Integer day) {
+    public ResponseEntity<List<AttendanceInfoResponseDto>> getAttendanceInfoOfMineByDay(HttpServletRequest request,
+                                                                                        @RequestParam("year") int year,
+                                                                                        @RequestParam("month") int month,
+                                                                                        @RequestParam(value = "day", required = false) Integer day) {
 
         HttpSession session = request.getSession();
         // String employeeId = (String) session.getAttribute("employeeId");
@@ -137,25 +103,24 @@ public class EmployeeController1 {
             return ResponseEntity.badRequest().build();
         }
 
-        String tempEmployeeId = "emp01";
+        String employeeId = "emp01";
 
-        if (!employeeValidation(tempEmployeeId)) {
+        if (!employeeValidation(employeeId)) {
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceInfoRequestDto> attendanceInfo;
+        List<AttendanceInfoResponseDto> attendanceInfo;
 
         if (day != null) {
             LocalDate attendanceDate = LocalDate.of(year, month, day);
-            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, tempEmployeeId);
+            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
         } else {
-            LocalDate startDate = LocalDate.of(year, month, 1);
-            LocalDate endDate = startDate.plusMonths(1).minusDays(1);
-            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(startDate, endDate, tempEmployeeId);
+            LocalDate attendanceDate = LocalDate.of(year, month ,1);
+            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year,month, employeeId);
         }
 
         if (attendanceInfo.isEmpty()) {
-            log.info("No attendance records found for employeeId: {}", tempEmployeeId);
+            log.info("No attendance records found for employeeId: {}", employeeId);
             return ResponseEntity.noContent().build();
         }
 

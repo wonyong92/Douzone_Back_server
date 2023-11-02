@@ -1,7 +1,8 @@
 package com.example.bootproject.service.service1;
 
-
-import com.example.bootproject.vo.vo1.request.*;
+import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
+import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 
 
@@ -11,20 +12,21 @@ import java.util.List;
 public interface EmployeeService1 {
 
 
-    //출근내역
-    AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto, String employeeId);
+    //출근요청
+    com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto, String employeeId);
 
 
 
-    //퇴근내역
-    AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto , String employeeId);
+    //퇴근요청
+    com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto , String employeeId);
 
 
-    //타사원년월일
-    List<AttendanceInfoRequestDto> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId);
+    //사원년월일검색
+    List<AttendanceInfoResponseDto> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId);
 
-    //타사원년월
-    List<AttendanceInfoRequestDto> getAttendanceByMonthAndEmployee(LocalDate startDate, LocalDate endDate, String employeeId);
+    //사원년월검색
+    List<AttendanceInfoResponseDto> getAttendanceByMonthAndEmployee(int year , int month, String employeeId);
+
 
     //자신의 근태승인요청
     AttendanceApprovalRequestDto approveAttendance(Long attendanceInfoId, String employeeId);

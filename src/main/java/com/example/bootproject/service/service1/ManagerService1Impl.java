@@ -2,61 +2,53 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.repository.mapper.ManagerMapper1;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
-import com.example.bootproject.vo.vo1.request.EmployeeRequest;
-import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
+import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ManagerService1Impl implements ManagerService1{
 
     private final ManagerMapper1 managerMapper1;
 
-    @Autowired
-    public ManagerService1Impl(ManagerMapper1 managerMapper1) {
-        this.managerMapper1 = managerMapper1;
-
-    }
 
 
-
-
-    //사원의 id와 근태관리자여부 true/false를 담음
     @Override
-    public EmployeeRequest findattendancemanager(String employeeId, boolean attendance_manager) {
-        return  managerMapper1.findattendancemanager(employeeId,attendance_manager);
-
-    }
-
-
-
-
-
     //정규출퇴근시간 설정 사원아이디는 위에 있는 사원아이디를 담기위해 작성
-    public RegularTimeAdjustmentHistoryDto insertRegularTimeAdjustmentHistory
-            (RegularTimeAdjustmentHistoryDto dto, String employeeId) {
+    public RegularTimeAdjustmentHistoryResponseDto insertRegularTimeAdjustmentHistory
+            (RegularTimeAdjustmentHistoryRequestDto dto, String employeeId) {
+        //현재 설정한 시간
         LocalDateTime regularTimeAdjustmentTime = LocalDateTime.now();
 
-        // 대상 사원이 출석 관리자인지 확인
-        EmployeeRequest targetEmployee = managerMapper1.findattendancemanager(employeeId, true);
 
-        if (targetEmployee != null && targetEmployee.isAttendanceManager()) {
-            // 대상 사원의 employee_id를 설정
             dto.setEmployeeId(employeeId);
-            // 현재 시간을 설정
             dto.setRegularTimeAdjustmentTime(regularTimeAdjustmentTime);
 
-            // DB에 데이터 삽입
-            managerMapper1.insertregulartimeadjustmenthistory(dto);
+            log.info("DTO Content: {}", dto);
+            int requestInfo = managerMapper1.insertregulartimeadjustment(dto,employeeId);
+
+            RegularTimeAdjustmentHistoryResponseDto responseDto = managerMapper1.selectregulartimeadjustment(employeeId);
+
+
 
             // 결과 반환
-            return dto;
+        if (responseDto != null) {
+            // 결과가 존재하면 그대로 반환
+            return responseDto;
         } else {
-            throw new IllegalStateException("Target employee is not an attendance manager or does not exist.");
+            // 결과가 없으면 로그를 남기고 null 반환 또는 예외 처리
+            log.info("No data found for employeeId: {}", employeeId);
+            return null; // 또는 적절한 예외를 던지거나 기타 처리
         }
+
     }
 
     //타사원에대한 근태승인내역 조회

@@ -1,16 +1,21 @@
 package com.example.bootproject.controller.rest.manager;
+import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.service.service1.ManagerService1;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalRequestDto;
-import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryDto;
+import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
+import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
+import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+
+import static com.example.bootproject.controller.rest.employee.EmployeeController1.isValidDate;
 
 
 @RestController
@@ -21,25 +26,29 @@ public class ManagerController1 {
 
     private final ManagerService1 managerService1;
 
+    private final EmployeeService1 employeeService1;
+
     //정규출퇴근시간 설정
     @PostMapping("/adjustment")
-    public ResponseEntity<RegularTimeAdjustmentHistoryDto> setWorkTime(RegularTimeAdjustmentHistoryDto dto, HttpServletRequest httpServletRequest,
-                                                                       @RequestBody RegularTimeAdjustmentHistoryDto request) {
-        log.info("RegularTimeAdjustmentHistroyDto dto{}:",dto);
-        if (!ManagerCheckApi()) {
-            // 권한이 없다면 403 Forbidden 응답을 반환합니다.
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+    public ResponseEntity<RegularTimeAdjustmentHistoryResponseDto> setWorkTime(
+            @ModelAttribute RegularTimeAdjustmentHistoryRequestDto dto) {
 
-        HttpSession session = httpServletRequest.getSession();
+//        log.info("RegularTimeAdjustmentHistroyDto dto{}:",dto);
+//        if (ManagerCheckApi()) {
+//            // 권한이 없다면 403 Forbidden 응답을 반환합니다.
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+
+        log.info("request{}",dto);
 
         String employeeId = "emp01";
 
-            RegularTimeAdjustmentHistoryDto result = managerService1.insertRegularTimeAdjustmentHistory(request, employeeId);
-        if (result!=null) {
-            log.info("성공적으로 데이터를 받았습니다: {}", result);
-            return ResponseEntity.ok(result);
+            RegularTimeAdjustmentHistoryResponseDto responseDto = managerService1.insertRegularTimeAdjustmentHistory(dto, employeeId);
+        if (responseDto!=null) {
+            log.info("성공적으로 데이터를 받았습니다: {}", responseDto);
+            return ResponseEntity.ok(responseDto);
         } else {
+            log.info("안좋은 데이터를 받았습니다: {}", responseDto);
             return ResponseEntity.badRequest().build();
         }
 
@@ -100,6 +109,48 @@ public class ManagerController1 {
     만약 테이블에 데이터가 없으면 204요청
     */
 
+
+    //타사원근태정보조회년월일
+    @GetMapping("/attendance_info/{employee_id}/")
+    public ResponseEntity<List<AttendanceInfoResponseDto>> getAttendanceInfoOfEmployeeByDay(
+            @PathVariable("employee_id") String employeeId,
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            @RequestParam(value = "day", required = false) Integer day) {
+
+//        if (!employeeValidation(employeeId)) {
+//            log.info("Invalid employee ID: " + employeeId);
+//            return ResponseEntity.badRequest().build();
+//        }
+
+        if (day != null && !isValidDate(year, month, day)) {
+            log.info("Invalid date: year={}, month={}, day={}", year, month, day);
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<AttendanceInfoResponseDto> attendanceInfo;
+
+
+        if (day != null) {
+            // 일 데이터가 있으면 해당 날짜로 검색
+            LocalDate attendanceDate = LocalDate.of(year, month, day);
+            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
+        } else {
+            // 일 데이터가 없으면 해당 월로 검색
+            YearMonth yearMonth = YearMonth.of(year, month);
+            LocalDate firstDayOfMonth = yearMonth.atDay(1);
+            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year,month, employeeId);
+        }
+
+//        if (attendanceInfo.isEmpty()) {
+//            log.info("No attendance records found for employeeId: " + employeeId);
+//            return ResponseEntity.noContent().build();
+//        }
+
+        return ResponseEntity.ok(attendanceInfo);
+    }
+
+    //TODO: 모든 내역조회에 페이징네이션 적용
 
     public boolean ManagerCheckApi(){
         return true;
