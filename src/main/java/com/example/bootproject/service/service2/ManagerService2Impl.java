@@ -29,8 +29,8 @@ public class ManagerService2Impl implements  ManagerService2{
         int startRow = (pagingRequestWithDateDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
 
         String orderByCondition = pagingRequestWithDateDto.getSort(); // 정렬할 컬럼 이름
-        orderByCondition = (orderByCondition.equals("name")?"E.":"V.")+orderByCondition;
-
+//        orderByCondition = (orderByCondition.equals("name")?"E.":"V.")+orderByCondition;
+        log.info("size, orderByCondition,startRow,sortOrder : {},{},{},{}",size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder());
         List<VacationRequestDto> getData = manMapper2.getAllVacationHistory(size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder(),pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         log.info("manMapper2.getEmpInfo의 getData : {}",getData);
         if(getData.isEmpty()){
@@ -48,67 +48,29 @@ public class ManagerService2Impl implements  ManagerService2{
     }
 
     @Override
-    public Page<List<VacationRequestDto>> getHistoryOfUsedVacationOfEmployee(PagingRequestWithIdDto pagingRequestWithIdDto) {
-        Page<List<VacationRequestDto>> result = new Page<>();
-        int size = result.getSize(); // Page 객체로부터 size를 가져옴
-        int startRow = (pagingRequestWithIdDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
-        int totalRowCount = manMapper2.getHistoryOfUsedVacationOfMineTotalRow(pagingRequestWithIdDto.getId()); // 전제 행
-        int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
-        String orderByCondition = pagingRequestWithIdDto.getSort(); // 정렬할 컬럼 이름
-        if(orderByCondition=="name"){
-            orderByCondition = "e."+orderByCondition;
-        }
-        else{
-            orderByCondition="v."+orderByCondition;
-        }
+    public Page<List<VacationRequestDto>> getHistoryVacationOfEmployee(PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto) {
+        int size = PAGE_SIZE; // Page 객체로부터 size를 가져옴
+        int startRow = (pagingRequestWithIdStatusDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
+        String orderByCondition = pagingRequestWithIdStatusDto.getSort(); // 정렬할 컬럼 이름
+
         /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationRequestDto> getData =  manMapper2.getHistoryOfUsedVacationOfEmployee(size,orderByCondition,startRow,pagingRequestWithIdDto.getSortOrder(), pagingRequestWithIdDto.getId());
+        List<VacationRequestDto> getData =  manMapper2.getHistoryOfVacationOfEmployee(size,orderByCondition,startRow,pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getId(),pagingRequestWithIdStatusDto.getStatus());
+        log.info("empMapper2.getHistoryOfRejectedVacationOfMine()의 getData : {}",getData);
 
-        log.info("empMapper2.getHistoryOfUsedVacationOfEmployee()의 getData : {}",getData);
-
-        result.setData(getData);
-        if(pagingRequestWithIdDto.getCurrentPage()<lastPageNumber){
-            result.setHasNext(true);
+        if(getData.isEmpty()){
+            return new Page<List<VacationRequestDto>>();
         }
-        result.setSort(pagingRequestWithIdDto.getSort());
-        result.setDesc(pagingRequestWithIdDto.getSortOrder());
-        result.setPage(pagingRequestWithIdDto.getCurrentPage());
-        result.setTotalElement(totalRowCount);
 
-        return result;
-
-
-    }
-
-    @Override
-    public Page<List<VacationRequestDto>> getEmpReqVacationHistory(PagingRequestWithIdDto pagingRequestWithIdDto) {
-        Page<List<VacationRequestDto>> result = new Page<>();
-        int size = result.getSize(); // Page 객체로부터 size를 가져옴
-        int startRow = (pagingRequestWithIdDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
-        int totalRowCount = manMapper2.getEmpReqVaationHistoryCount(pagingRequestWithIdDto.getId()); // 전제 행
+        int totalRowCount = manMapper2.getHistoryOfVacationOfEmployeeTotalRow(pagingRequestWithIdStatusDto.getId(),pagingRequestWithIdStatusDto.getStatus()); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
-        String orderByCondition = pagingRequestWithIdDto.getSort(); // 정렬할 컬럼 이름
-        if(orderByCondition=="name"){
-            orderByCondition = "e."+orderByCondition;
-        }
-        else{
-            orderByCondition="v."+orderByCondition;
-        }
-        /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationRequestDto> getData =  manMapper2.getEmpReqVacationHistory(size,orderByCondition,startRow,pagingRequestWithIdDto.getSortOrder(), pagingRequestWithIdDto.getId());
-        log.info("manMapper2.getEmpReqVacationHistory의 getData : {}",getData);
+        boolean isLastPage = (pagingRequestWithIdStatusDto.getCurrentPage()<lastPageNumber?true:false);
 
-        result.setData(getData);
-        if(pagingRequestWithIdDto.getCurrentPage()<lastPageNumber){
-            result.setHasNext(true);
-        }
-        result.setSort(pagingRequestWithIdDto.getSort());
-        result.setDesc(pagingRequestWithIdDto.getSortOrder());
-        result.setPage(pagingRequestWithIdDto.getCurrentPage());
-        result.setTotalElement(totalRowCount);
-
+        Page<List<VacationRequestDto>> result = new Page<>(getData,isLastPage,pagingRequestWithIdStatusDto.getSort(),pagingRequestWithIdStatusDto.getSortOrder(),pagingRequestWithIdStatusDto.getCurrentPage(),totalRowCount);
         return result;
     }
+
+
+
     @Override
     public Page<List<SettingWorkTimeDto>> getSettingWorkTime(PagingRequestDto pagingRequestDto) {
 
@@ -161,35 +123,5 @@ public class ManagerService2Impl implements  ManagerService2{
 
     }
 
-    @Override
-    public Page<List<VacationRequestDto>> getHistoryOfRejectedVacationOfEmployee(PagingRequestWithIdDto pagingRequestWithIdDto) {
 
-        Page<List<VacationRequestDto>> result = new Page<>();
-        int size = result.getSize(); // Page 객체로부터 size를 가져옴
-        int startRow = (pagingRequestWithIdDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
-        int totalRowCount = manMapper2.getHistoryOfRejectedVacationOfEmployeeCount(pagingRequestWithIdDto.getId()); // 전제 행
-        int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
-        String orderByCondition = pagingRequestWithIdDto.getSort(); // 정렬할 컬럼 이름
-        if(orderByCondition=="name"){
-            orderByCondition = "e."+orderByCondition;
-        }
-        else{
-            orderByCondition="v."+orderByCondition;
-        }
-        /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationRequestDto> getData =  manMapper2.getHistoryOfRejectedVacationOfEmployee(size,orderByCondition,startRow,pagingRequestWithIdDto.getSortOrder(), pagingRequestWithIdDto.getId());
-        log.info("manMapper2.getHistoryOfRejectedVacationOfEmployee의 getData : {}",getData);
-
-        result.setData(getData);
-        if(pagingRequestWithIdDto.getCurrentPage()<lastPageNumber){
-            result.setHasNext(true);
-        }
-        result.setSort(pagingRequestWithIdDto.getSort());
-        result.setDesc(pagingRequestWithIdDto.getSortOrder());
-        result.setPage(pagingRequestWithIdDto.getCurrentPage());
-        result.setTotalElement(totalRowCount);
-
-        return result;
-
-    }
 }

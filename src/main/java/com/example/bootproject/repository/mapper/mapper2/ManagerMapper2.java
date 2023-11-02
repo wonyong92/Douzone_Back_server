@@ -16,8 +16,8 @@ public interface ManagerMapper2 {
     /* vacation_request 테이블의 vacation_request_time 컬럼의 값을 '%Y-%m-%d'로 변환 하고,
        변환 값이 매개변수 date와 일치하는 데이터만 select함
     */
-    @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name " +
-            "FROM vacation_request V inner join employee E on V.employee_id = E.employee_id WHERE DATE_FORMAT(V.vacation_request_time,'%Y-%m-%d')=#{date} " +
+    @Select("SELECT vacation_request_key as vacationRequestKey, vacation_category_key as vacationCategoryKey, employee_id as employeeId, vacation_request_state_category_key as vacationRequestStateCategoryKey, vacation_quantity as vacationQuantity, vacation_start_date as vacationStartDate, vacation_end_date as vacationEndDate, reason, vacation_request_time as vacationRequestTime, reason_for_rejection as reasonForRejection,name " +
+            "FROM vacation_request  inner join employee using(employee_id) WHERE DATE_FORMAT(vacation_request_time,'%Y-%m-%d')=#{date} " +
             "ORDER BY ${orderByCondition} ${sortOrder} " +
             "LIMIT ${size} OFFSET ${startRow};")
     public List<VacationRequestDto> getAllVacationHistory(int size, String orderByCondition, int startRow,String sortOrder, String date);
@@ -28,15 +28,18 @@ public interface ManagerMapper2 {
 
 
     // result 값이 승인 이면서 타 사원의 연차 사용 이력 데이터를 가져와 반환함
-    @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name " +
-            "FROM VACATION_REQUEST V INNER JOIN EMPLOYEE E ON V.employee_id = E.employee_id " +
-            "WHERE v.vacation_request_state_category_key='승인' AND V.EMPLOYEE_ID=#{id} " +
+    @Select("SELECT vacation_request_key as vacationRequestKey, vacation_category_key as vacationCategoryKey, employee_id as employeeId, vacation_request_state_category_key as vacationRequestStateCategoryKey, vacation_quantity as vacationQuantity, vacation_start_date as vacationStartDate, vacation_end_date as vacationEndDate, reason, vacation_request_time as vacationRequestTime, reason_for_rejection as reasonForRejection,name " +
+            "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id) " +
+            "WHERE vacation_request_state_category_key like CONCAT('%', #{status}, '%') AND EMPLOYEE_ID=#{id} " +
             "ORDER BY ${orderByCondition} ${sortOrder} " +
             "LIMIT ${size} OFFSET ${startRow} ;")
-    public List<VacationRequestDto> getHistoryOfUsedVacationOfEmployee(int size, String orderByCondition, int startRow,String sortOrder,String id);
+    public List<VacationRequestDto> getHistoryOfVacationOfEmployee(int size, String orderByCondition, int startRow,String sortOrder,String id,String status);
 
-    @Select("select count(*) from VACATION_REQUEST V INNER JOIN EMPLOYEE E ON V.employee_id = E.employee_id WHERE V.vacation_request_state_category_key='승인' AND V.EMPLOYEE_ID=#{id};")
-    public int getHistoryOfUsedVacationOfMineTotalRow(String id);
+    @Select("select count(*) from VACATION_REQUEST V INNER JOIN EMPLOYEE E ON V.employee_id = E.employee_id WHERE V.vacation_request_state_category_key LIKE '%${status}%' AND V.EMPLOYEE_ID=#{id};")
+    public int getHistoryOfVacationOfEmployeeTotalRow(String id,String status);
+
+
+
 
     // 특정 사원번호를 가진 사원의 데이터를 select 함
     @Select("SELECT V.vacation_request_key as vacationRequestKey, V.vacation_category_key as vacationCategoryKey, V.employee_id as employeeId, V.vacation_request_state_category_key as vacationRequestStateCategoryKey, V.vacation_quantity as vacationQuantity, V.vacation_start_date as vacationStartDate, V.vacation_end_date as vacationEndDate, V.reason, V.vacation_request_time as vacationRequestTime, V.reason_for_rejection as reasonForRejection,E.name " +

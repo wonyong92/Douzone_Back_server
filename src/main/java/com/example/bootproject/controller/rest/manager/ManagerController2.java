@@ -45,13 +45,13 @@ public class ManagerController2 {
     }
 
     public String validationSort(String getSort){
-        return (getSort.matches("^[a-zA-Z_]+$")?getSort:"");
+        return (getSort.matches("^[a-zA-Z_]+$")?getSort:"''");
     }
 
 
 
     public String validationDesc(String getSortOrder){
-        return (getSortOrder.matches("^(desc|DESC|)$")?getSortOrder:"");
+        return (getSortOrder.matches("^(desc|DESC|)$")?getSortOrder:"''");
     }
 
     public boolean validationDate(int year, int month, int day) { //날짜 Validation 확인
@@ -67,19 +67,24 @@ public class ManagerController2 {
         return true; // 이외의 경우는 true 반환
     }
 
+    public String validationStatus(String getStatus){
+        return (getStatus.matches("^(승인|반려|)$")?getStatus:"");
+    }
+
     //전체 연차 요청 정보 조회 메서드
     /*TODO : 추후 권한 확인 추가*/
 
     @GetMapping("/manager/vacation/requests")
-    public ResponseEntity<Page<List<VacationRequestDto>>> getRequestVacationInformationOfAll(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day, @RequestParam(name = "page") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder) {
+    public ResponseEntity<Page<List<VacationRequestDto>>> getRequestVacationInformationOfAll(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day, @RequestParam(name = "page",defaultValue = "") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder) {
         if (authCheckApi()) {
             //페이징 코드
             if ( validationDate(year, month, day)) {
                 int currentPage = validationPageNum(getPageNum);
                 String sort = validationSort(getSort);
                 String sortOrder = validationDesc(getSortOrder);
-
+                log.info("getRequestVacationInformationOfAll의 sort, sortOrder : {} {}",sort,sortOrder);
                 String date = String.format("%04d-%02d-%02d", year, month, day); // year-month-day 형태의 문자열로 변환
+
                 PagingRequestWithDateDto pagingRequestWithDateDto = new PagingRequestWithDateDto(currentPage, sort, sortOrder, date);
 
                 Page<List<VacationRequestDto>> result = manService2.getAllVacationHistory(pagingRequestWithDateDto); // 전체 사원 정보 반환
@@ -110,18 +115,19 @@ public class ManagerController2 {
          * */
     }
 
-    // 타 사원의 연차 사용 이력 조회 메서드
+    // 타 사원의 연차 이력 조회 메서드
     /* TODO : 추후 권한 확인 추가 */
-    @GetMapping("/manager/vacation/use/{employee_id}")
-    public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryOfUsedVacationOfEmployee(@PathVariable(name = "employee_id") String id,@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder) {
+    @GetMapping("/manager/vacation/history/{employee_id}")
+    public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryVacationOfEmployee(@PathVariable(name = "employee_id") String id,@RequestParam(name = "page", defaultValue = "") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder,@RequestParam(name="status",defaultValue = "") String getStatus) {
         if(authCheckApi()){
             if(validationId(id)){
                 int currentPage = validationPageNum(getPageNum);
                 String sort = validationSort(getSort);
                 String sortOrder = validationDesc(getSortOrder);
-                PagingRequestWithIdDto pagingRequestWithIdDto = new PagingRequestWithIdDto(currentPage,sort,sortOrder,id);
+                String status = validationStatus(getStatus);
+                PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(currentPage,sort,sortOrder,id,status);
 
-                Page<List<VacationRequestDto>> result = manService2.getHistoryOfUsedVacationOfEmployee(pagingRequestWithIdDto);
+                Page<List<VacationRequestDto>> result = manService2.getHistoryVacationOfEmployee(pagingRequestWithIdStatusDto);
                 log.info("getHistoryOfUsedVacationOfEmployee result : {}", result);
                 if (result.getData().isEmpty()) {
                     return ResponseEntity.noContent().build(); //204 No Content
@@ -146,46 +152,10 @@ public class ManagerController2 {
          * */
     }
 
-    //타 사원의 연차 요청 정보 조회 메서드
-    /*TODO : 추후 권한 확인 추가*/
-    @GetMapping("/manager/vacation/requests/{employee_id}")
-    public ResponseEntity<Page<List<VacationRequestDto>>> getRequestVacationInformationOfEmployee(@PathVariable(name = "employee_id") String id, @RequestParam(name = "page") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder) {
-        if (authCheckApi()) {
-
-            if (validationId(id)) {
-                int currentPage = validationPageNum(getPageNum);
-                String sort = validationSort(getSort);
-                String sortOrder = validationDesc(getSortOrder);
-
-                PagingRequestWithIdDto pagingRequestWithIdDto = new PagingRequestWithIdDto(currentPage, sort, sortOrder, id);
-
-                Page<List<VacationRequestDto>> result = manService2.getEmpReqVacationHistory(pagingRequestWithIdDto);
-                log.info("getEmpReqVacationHistory result : {}", result);
-                if (result.getData().isEmpty()) {
-                    return ResponseEntity.noContent().build(); //204 No Content
-                }
-                return ResponseEntity.ok(result); //200 OK
-            }
-            log.info("Validation failed for id: {}", id);
-            return ResponseEntity.badRequest().build(); //400 Bad Request
-        }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
-        /*
-         * 근태 담당자 권한 확인
-         * 권한 확인 성공 시 -> 경로변수로 받아온 id의 validation 확인
-         *                -> validation 확인 성공시 타 사원의 연차 요청 정보 반환 받음
-         *                   반환 값이 비어있을 때 - 204 No Content 응답 반환
-         *                   반환 값이 비어있지 않을 때 - 200 OK 응답 반환
-         *                -> validation 확인 실패 시 400 Bad Request 반환
-         * 권한 확인 실패 시 -> 403 ERROR 반환
-         * */
-    }
-
-
     // 정규 출/퇴근 시간 설정 내역 확인 메서드
     /*TODO : 추후 권한 확인 추가*/
     @GetMapping("/manager/setting_history/work_time")
-    public ResponseEntity<Page<List<SettingWorkTimeDto>>> settingWorkTime(@RequestParam(name = "page") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder) {
+    public ResponseEntity<Page<List<SettingWorkTimeDto>>> settingWorkTime(@RequestParam(name = "page",defaultValue = "") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder) {
         if (authCheckApi()) {
             int currentPage = validationPageNum(getPageNum);
             String sort = validationSort(getSort);
@@ -216,7 +186,6 @@ public class ManagerController2 {
     @GetMapping("/manager/vacation/setting_history/vacation_default")
     public ResponseEntity<Page<List<VacationQuantitySettingDto>>> getHistoryOfvacationDefaultSetting(@RequestParam(name = "page") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder) {
         if (authCheckApi()) {
-
             int currentPage = validationPageNum(getPageNum);
             String sort = validationSort(getSort);
             String sortOrder = validationDesc(getSortOrder);
@@ -241,38 +210,7 @@ public class ManagerController2 {
          * */
     }
 
-    // 타 사원의 반려된 연차 이력 조회 메서드
-    /* TODO : 추후 권한 확인 추가 */
-    @GetMapping("/manager/vacation/reject/{employee_id}")
-    public ResponseEntity<Page<List<VacationRequestDto>>> getHistoryOfRejectedVacationOfEmployee(@PathVariable(name = "employee_id") String id, @RequestParam(name = "page") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder) {
-        if (authCheckApi()) {
 
-            if ( validationId(id)) {
-                int currentPage = validationPageNum(getPageNum);
-                String sort = validationSort(getSort);
-                String sortOrder = validationDesc(getSortOrder);
-                PagingRequestWithIdDto pagingRequestWithIdDto = new PagingRequestWithIdDto(currentPage, sort, sortOrder, id);
 
-                Page<List<VacationRequestDto>> result = manService2.getHistoryOfRejectedVacationOfEmployee(pagingRequestWithIdDto);
-                log.info("getHistoryOfRejectedVacationOfEmployee의 result : {}", result);
-                if (result.getData().isEmpty()) {
-                    return ResponseEntity.noContent().build(); //204 No Content
-                }
-                return ResponseEntity.ok(result); //200 OK
-            }
-            log.info("Validation failed for id: {}", id);
-            return ResponseEntity.badRequest().build(); //400 Bad Request
-        }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        /*
-         * 근태 담당자 권한 확인
-         * 권한 확인 성공 시 -> id validation check
-         *                -> id validation check 성공시 타 사원의 반려된 연차 이력 정보 반환 받음
-         *                   가져온 데이터가 비었을 때 - 204 No Content 반환
-         *                   가져온 데이터가 비어있지 않을 때 - 200 OK 반환
-         *                -> id validation check 실패시 400 Bad Request 반환
-         * 권한 확인 실패 시 -> 403 error 반환
-         * */
-
-    }
 }
+
