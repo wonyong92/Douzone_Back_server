@@ -97,28 +97,26 @@ public class ManagerService2Impl implements  ManagerService2{
 
     @Override
     public Page<List<VacationQuantitySettingDto>> getVacationSettingHistory(PagingRequestDto pagingRequestDto) {
-
-        Page<List<VacationQuantitySettingDto>> result = new Page<>();
-        int size = result.getSize(); // Page 객체로부터 size를 가져옴
+        int size = PAGE_SIZE; // Page 객체로부터 size를 가져옴
         int startRow = (pagingRequestDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
-
-        int totalRowCount = manMapper2.getVacationSettingHistoryCount(); // 전제 행
-        int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
+
         /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
         List<VacationQuantitySettingDto> getData =  manMapper2.getVacationSettingHistory(size,orderByCondition,startRow,pagingRequestDto.getSortOrder());
         log.info("manMapper2.getVacationSettingHistory의 getData : {}",getData);
 
-        result.setData(getData);
-        if(pagingRequestDto.getCurrentPage()<lastPageNumber){
-            result.setHasNext(true);
+        if(getData.isEmpty()){
+            return new Page<List<VacationQuantitySettingDto>>();
         }
-        result.setSort(pagingRequestDto.getSort());
-        result.setDesc(pagingRequestDto.getSortOrder());
-        result.setPage(pagingRequestDto.getCurrentPage());
-        result.setTotalElement(totalRowCount);
 
+        int totalRowCount = manMapper2.getVacationSettingHistoryCount(); // 전제 행
+        int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
+        boolean isLastPage = (pagingRequestDto.getCurrentPage()<lastPageNumber?true:false);
+
+        Page<List<VacationQuantitySettingDto>> result = new Page<>(getData,isLastPage,pagingRequestDto.getSort(),pagingRequestDto.getSortOrder(),pagingRequestDto.getCurrentPage(),totalRowCount);
         return result;
+
+
 
     }
 
