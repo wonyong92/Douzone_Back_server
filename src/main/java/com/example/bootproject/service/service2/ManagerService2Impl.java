@@ -32,6 +32,7 @@ public class ManagerService2Impl implements  ManagerService2{
         orderByCondition = (orderByCondition.equals("name")?"E.":"V.")+orderByCondition;
 
         List<VacationRequestDto> getData = manMapper2.getAllVacationHistory(size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder(),pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
+        log.info("manMapper2.getEmpInfo의 getData : {}",getData);
         if(getData.isEmpty()){
            // return 빈 리스트의 Page
             return new Page<List<VacationRequestDto>>();
@@ -39,19 +40,9 @@ public class ManagerService2Impl implements  ManagerService2{
 
         int totalRowCount = manMapper2.getAllVacationRequestCountByDate(pagingRequestWithDateDto.getDate()); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
-        log.info("manMapper2.getEmpInfo의 getData : {}",getData);
+        boolean isLastPage = (pagingRequestWithDateDto.getCurrentPage()<lastPageNumber?true:false);
 
-        Page<List<VacationRequestDto>> result = new Page<>();
-        result.setData(getData);
-
-        if(pagingRequestWithDateDto.getCurrentPage()<lastPageNumber){
-            result.setHasNext(true);
-        }
-
-        result.setSort(pagingRequestWithDateDto.getSort());
-        result.setDesc(pagingRequestWithDateDto.getSortOrder());
-        result.setPage(pagingRequestWithDateDto.getCurrentPage());
-        result.setTotalElement(totalRowCount);
+        Page<List<VacationRequestDto>> result = new Page<>(getData,isLastPage, pagingRequestWithDateDto.getSort(),pagingRequestWithDateDto.getSortOrder(),pagingRequestWithDateDto.getCurrentPage(),totalRowCount);
 
         return result;
     }
