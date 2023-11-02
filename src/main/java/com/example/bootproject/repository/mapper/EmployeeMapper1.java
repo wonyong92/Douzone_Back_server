@@ -1,6 +1,7 @@
 package com.example.bootproject.repository.mapper;
 
 import com.example.bootproject.vo.vo1.request.*;
+import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import org.apache.ibatis.annotations.*;
@@ -100,12 +101,20 @@ public interface EmployeeMapper1 {
     AttendanceApprovalResponseDto findAttendanceApproval(String employeeId , Long attendanceInfoId);
 
 
+
     //자신의 근태이상승인내역
     @Select("SELECT employee_id, name, attendance_approval_date " +
             "FROM attendance_approval  " +
             "JOIN employee USING (employee_id) " +
             "WHERE employee_id = #{employeeId}")
     List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId);
+
+    //본인의 조정 요청 이력 조회
+    @Select("SELECT attendance_appeal_request_id, status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id, attendance_appeal_request_time, reason_for_rejection " +
+            "FROM attendance_appeal_request " +
+            "WHERE employee_id = #{employeeId}")
+    AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
+
 
 
 }

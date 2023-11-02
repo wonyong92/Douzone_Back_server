@@ -4,6 +4,7 @@ package com.example.bootproject.service.service1;
 import com.example.bootproject.repository.mapper.EmployeeMapper1;
 
 import com.example.bootproject.vo.vo1.request.*;
+import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
 
 
+        //TODO 예외처리 컨트롤러로 보내기
         //출근요청
         @Override
         public AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto, String employeeId) {
@@ -138,36 +140,43 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
         //자신의 근태승인요청
 
-        public AttendanceApprovalResponseDto approveAttendance(AttendanceApprovalUpdateRequestDto updaterequestdto , AttendanceApprovalInsertRequestDto insertrequestdto,
+        public AttendanceApprovalResponseDto approveAttendance(
                                                                String employeeId, Long attendanceInfoId) {
 
-                // 1. "지각" 상태 정보 가져오기
                 AttendanceStatusCategoryRequestDto lateStatus = employeeMapper1.findLateStatus();
+                log.info("지각 상태 정보를 가져왔습니다: {}", lateStatus);
 
                 // 2. 근태 상태 업데이트
-                updaterequestdto.setAttendanceStatusCategory(lateStatus.getKey());
-                updaterequestdto.setAttendanceInfoId(attendanceInfoId);
-                int updatedRows = employeeMapper1.updateAttendanceStatus(updaterequestdto);
+                AttendanceApprovalUpdateRequestDto updateRequestDto = new AttendanceApprovalUpdateRequestDto(
+                        lateStatus.getKey(),
+                        attendanceInfoId
+                );
+                int updatedRows = employeeMapper1.updateAttendanceStatus(updateRequestDto);
+                log.info("근태 상태를 업데이트 했습니다. 업데이트된 행의 수: {}", updatedRows);
 
-                insertrequestdto.setAttendanceInfoId(attendanceInfoId);
-                insertrequestdto.setEmployeeId(employeeId);
                 // 3. 근태 승인 정보 삽입
-                int insertedRows = employeeMapper1.insertAttendanceApproval(insertrequestdto);
+                AttendanceApprovalInsertRequestDto insertRequestDto = new AttendanceApprovalInsertRequestDto(
+                        attendanceInfoId,
+                        employeeId
+                );
+                int insertedRows = employeeMapper1.insertAttendanceApproval(insertRequestDto);
+                log.info("근태 승인 정보를 삽입했습니다. 삽입된 행의 수: {}", insertedRows);
 
-                // 4. 근태 승인 정보를 DTO로 변환하여 반환
-                AttendanceApprovalResponseDto attendanceApprovalDto = new AttendanceApprovalResponseDto();
-                attendanceApprovalDto.setAttendanceInfoId(attendanceInfoId);
-                attendanceApprovalDto.setAttendanceApprovalDate(LocalDateTime.now()); // 승인 날짜 설정
-                attendanceApprovalDto.setEmployeeId(employeeId);
-                AttendanceApprovalResponseDto attendanceApprovalResponseDto = employeeMapper1.findAttendanceApproval(employeeId,attendanceInfoId);
-
-                return attendanceApprovalResponseDto;
+                // 4. 근태 승인 정보를 검색하여 반환
+                return employeeMapper1.findAttendanceApproval(employeeId, attendanceInfoId);
         }
 
 
+        //자신의 근태 승인내역
         @Override
         public List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId) {
                 return employeeMapper1.findApprovalInfoByMine(employeeId);
+        }
+
+        //본인의 조정요청이력조회
+        @Override
+        public AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId) {
+                return employeeMapper1.findAttendanceInfoByMine(employeeId);
         }
 
 

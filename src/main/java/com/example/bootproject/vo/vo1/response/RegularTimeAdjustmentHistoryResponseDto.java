@@ -1,5 +1,6 @@
 package com.example.bootproject.vo.vo1.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,7 +12,7 @@ import java.util.Date;
 
 
 @Data
-@NoArgsConstructor
+@AllArgsConstructor
 public class RegularTimeAdjustmentHistoryResponseDto {
 
     private Long regularTimeAdjustmentHistoryId;

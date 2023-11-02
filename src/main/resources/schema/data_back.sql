@@ -86,6 +86,25 @@ select * from regular_time_adjustment_history;
 
 select *
 from attendance_approval;
+
+INSERT INTO attendance_appeal_request
+(status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id, attendance_appeal_request_time, reason_for_rejection)
+VALUES
+    ('PENDING', '지각으로 인한 근태 조정 요청', 1, '2023-11-03 09:10:00', '2023-11-03 18:10:00', 'emp01', NOW(), NULL),
+    ('REJECTED', '조기 퇴근에 대한 조정 요청', 2, '2023-11-04 08:50:00', '2023-11-04 16:00:00', 'emp02', NOW(), '정당한 이유 없음'),
+    ('APPROVED', '병가로 인한 전일 근무시간 조정', 3, '2023-11-05 00:00:00', '2023-11-05 00:00:00', 'emp03', NOW(), NULL),
+    ('PENDING', '외출로 인한 근태 조정 요청', 4, '2023-11-06 08:30:00', '2023-11-06 15:30:00', 'emp04', NOW(), NULL),
+    ('APPROVED', '업무상 필요에 의한 조정', 5, '2023-11-07 10:30:00', '2023-11-07 19:30:00', 'emp05', NOW(), NULL),
+    ('REJECTED', '개인 사유에 의한 근태 조정 요청', 6, '2023-11-08 09:00:00', '2023-11-08 17:00:00', 'emp06', NOW(), '근거 불충분'),
+    ('PENDING', '교통사고로 인한 조정 요청', 7, '2023-11-09 08:45:00', '2023-11-09 17:45:00', 'emp07', NOW(), NULL),
+    ('APPROVED', '대중교통 지연에 따른 출근시간 조정', 8, '2023-11-10 08:40:00', '2023-11-10 17:40:00', 'emp08', NOW(), NULL),
+    ('REJECTED', '예상치 못한 개인 사정으로 인한 조정 요청', 9, '2023-11-11 08:55:00', '2023-11-11 17:55:00', 'emp09', NOW(), '증빙 자료 미제출'),
+    ('PENDING', '아동 돌봄으로 인한 조정 요청', 10, '2023-11-12 09:05:00', '2023-11-12 18:05:00', 'emp10', NOW(), NULL);
+
+
+
+select *
+from attendance_appeal_request;
 # INSERT INTO regular_time_adjustment_history
 # (target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id)
 # VALUES

@@ -1,10 +1,10 @@
 package com.example.bootproject.controller.rest.employee;
 import com.example.bootproject.service.service1.EmployeeService1;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalInsertRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
+import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -143,7 +143,7 @@ public class EmployeeController1 {
 
     //자신의 근태 승인요청
     @PostMapping("/approve")
-    public ResponseEntity<AttendanceApprovalResponseDto> makeApproveRequest(AttendanceApprovalUpdateRequestDto updaterequestdto , AttendanceApprovalInsertRequestDto insertrequestdto) {
+    public ResponseEntity<AttendanceApprovalResponseDto> makeApproveRequest() {
         Long attendanceInfoId = Long.valueOf("1");
         String employeeId = "emp01";
 
@@ -160,7 +160,7 @@ public class EmployeeController1 {
         }
 
 
-        AttendanceApprovalResponseDto approvalResponseDto = employeeService1.approveAttendance(updaterequestdto ,insertrequestdto, employeeId,attendanceInfoId);
+        AttendanceApprovalResponseDto approvalResponseDto = employeeService1.approveAttendance( employeeId,attendanceInfoId);
         log.info(String.valueOf(approvalResponseDto));
         return ResponseEntity.ok(approvalResponseDto);
     }
@@ -178,38 +178,93 @@ public class EmployeeController1 {
 
     //자신의 근태승인내역
     @GetMapping("/approves")
-    public ResponseEntity<List<AttendanceApprovalUpdateRequestDto>> getHistoryOfApproveOfMine(HttpServletRequest request){
+    public ResponseEntity<List<AttendanceApprovalUpdateRequestDto>> getHistoryOfApproveOfMine(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
-        String employeeId= "emp01";
+        String employeeId = (String) session.getAttribute("EMPLOYEE_ID"); // 세션에서 사원 ID를 가져옵니다.
 
-        if(employeeId == null){
-            log.info("EmployeeId is missing");
+        // 사원 ID가 세션에 없는 경우, 로그를 남기고 No Content를 반환합니다.
+        if (employeeId == null || employeeId.trim().isEmpty()) {
+            log.info("사원 ID가 누락되었습니다.");
             return ResponseEntity.noContent().build();
         }
 
-        if(!employeeValidation(employeeId)){
-            log.info("not collect validationcheck" + employeeId);
+        // 사원 ID의 유효성을 검증합니다.
+        if (!employeeValidation(employeeId)) {
+            log.info("유효하지 않은 사원 ID입니다: {}", employeeId);
             return ResponseEntity.badRequest().build();
         }
 
+        // 사원의 승인 이력을 조회합니다.
         List<AttendanceApprovalUpdateRequestDto> approvalInfoDtos = employeeService1.findApprovalInfoByMine(employeeId);
 
-        if (approvalInfoDtos.isEmpty()) {
-            log.info("No approval history found for employeeId: " + employeeId);
+        // 조회된 승인 이력이 없는 경우, 로그를 남기고 No Content를 반환합니다.
+        if (approvalInfoDtos == null || approvalInfoDtos.isEmpty()) {
+            log.info("해당 사원의 승인 이력이 존재하지 않습니다: {}", employeeId);
             return ResponseEntity.noContent().build();
         }
 
-        return  ResponseEntity.ok(approvalInfoDtos);
+        // 승인 이력이 있는 경우, 조회된 승인 이력 목록을 반환합니다.
+        return ResponseEntity.ok(approvalInfoDtos);
     }
 
+
+
+
+
     /*
-    세션에서 attendanceInfoId와 employeeId 가져오기
-    사원id나 근태정보id가 안넘어올경우 오류코드
-    데이터가 들어올시 log데이터가 넘어옴
-    사원id validation체크
-    모든 조건 성공시 approvaInfoDtos을 출력한다
-     */
+    - 세션에서 사원 ID를 추출한다. (현재 코드는 임시로 고정값 'emp01'을 사용하고 있다)
+    - 사원 ID가 넘어오지 않을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
+    - 사원 ID에 대한 유효성 검사를 수행한다.
+    - 유효성 검사에 실패할 경우, 로그를 남기고 400 Bad Request 응답을 반환한다.
+    - 사원 ID에 대한 근태 승인 이력을 조회한다.
+    - 조회된 승인 이력이 없을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
+    - 조회에 성공한 경우, 승인 이력 목록을 담아 200 OK 응답과 함께 반환한다.
+*/
+
+
+    //자신의근태조정내역
+    @GetMapping("/appeal/requests")
+    public ResponseEntity<AttendanceAppealMediateResponseDto> getAppealRequestHistoryOfMine(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        String employeeId = (session != null) ? (String) session.getAttribute("employeeId") : null;
+
+
+        if (employeeId == null) {
+            log.info("세션에서 사원 ID를 찾을 수 없습니다.");
+            return ResponseEntity.noContent().build();
+        }
+
+
+        if (!employeeValidation(employeeId)) {
+            log.info("유효하지 않은 사원 ID: {}", employeeId);
+            return ResponseEntity.badRequest().build();
+        }
+
+
+        AttendanceAppealMediateResponseDto responseDto = employeeService1.findAttendanceInfoByMine(employeeId);
+
+
+        if (responseDto == null) {
+            log.info("해당 사원의 근태 이의 신청 이력이 없습니다: {}", employeeId);
+            return ResponseEntity.noContent().build();
+        }
+
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+
+     /*
+    - 세션에서 사원 ID를 추출한다. (현재 코드는 임시로 고정값 'emp01'을 사용하고 있다)
+    - 사원 ID가 넘어오지 않을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
+    - 사원 ID에 대한 유효성 검사를 수행한다.
+    - 유효성 검사에 실패할 경우, 로그를 남기고 400 Bad Request 응답을 반환한다.
+    - 사원 ID에 대한 근태 승인 이력을 조회한다.
+    - 조회된 승인 이력이 없을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
+    - 조회에 성공한 경우, 승인 이력 목록을 담아 200 OK 응답과 함께 반환한다.
+    */
 
 
 
