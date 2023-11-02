@@ -29,28 +29,37 @@ public class AdminController2 {
         return employeeId.matches("^[0-9]+$"); // 숫자로 구성 되어 있는지 확인
     }
 
-    public boolean validationPageNum(int currentPage){ //요청 받은 페이지에 대한 validation check
-        return currentPage>0;
+    public int validationPageNum(String getPageNum){ //요청 받은 페이지에 대한 validation check
+        try{
+            int currentPage = Integer.parseInt(getPageNum); // 쿼리파라미터로 받아온 페이지 번호를 int 형으로 변환
+            return (currentPage>0?currentPage:1);
+        }catch (NumberFormatException e){
+            return 1;
+        }
     }
 
-    public boolean validationSort(String sort){
-        return sort.matches("^[a-zA-Z_]+$");
+    public String validationSort(String getSort){
+        return (getSort.matches("^[a-zA-Z_]+$")?getSort:"");
     }
 
-    public boolean validationDesc(String sortOrder){
-        return sortOrder.matches("^(desc|DESC|)$");
+
+
+    public String validationDesc(String getSortOrder){
+        return (getSortOrder.matches("^(desc|DESC|)$")?getSortOrder:"");
     }
 
 
     // 전체 사원 정보 조회 메서드
     /* TODO : 추후 권한 확인 추가 */
     @GetMapping("/admin/employee/information")
-    public ResponseEntity <Page<List<EmployeeDto>>> getEmployeesInformation(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String sort, @RequestParam(name="sortOrder", defaultValue = "") String sortOrder) {
+    public ResponseEntity <Page<List<EmployeeDto>>> getEmployeesInformation(@RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder) {
         if(authCheckApi()){
             //페이징 코드
-            int currentPage = Integer.parseInt(getPageNum); // 쿼리파라미터로 받아온 페이지 번호를 int 형으로 변환
-            if(validationPageNum(currentPage)&&validationSort(sort)&&validationDesc(sortOrder)){
                 // 페이지 번호, Sort 할 컬럼에 대한 validation check
+                int currentPage = validationPageNum(getPageNum);
+                String sort = validationSort(getSort);
+                String sortOrder = validationDesc(getSortOrder);
+
                 PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage,sort,sortOrder);
                 Page<List<EmployeeDto>> result = adminService.getEmpInfo(pagingRequestDto); // 전체 사원 정보 반환
                 log.info("getEmpInfo result : {}",result);
@@ -58,8 +67,7 @@ public class AdminController2 {
                     return ResponseEntity.noContent().build(); // 204 No Content
                 }
                 return ResponseEntity.ok(result); // 200 OK
-            }
-            return ResponseEntity.badRequest().build(); //400 Bad Request
+
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 ERROR
         /*

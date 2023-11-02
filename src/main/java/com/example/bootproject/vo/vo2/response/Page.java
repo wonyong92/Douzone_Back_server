@@ -1,14 +1,20 @@
 package com.example.bootproject.vo.vo2.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-//        페이지네이션을 위한 쿼리 파라미터 목록 : page=int, sort=string, desc=boolean
+// 페이지네이션을 위한 쿼리 파라미터 목록 : page=int, sort=string, desc=boolean
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Page<T> {
+    public static int PAGE_SIZE = 10;
+
     //제네릭으로 여러 데이터 타입을 처리
     private T data;
     //사이즈는 10으로 고정
-    private int size = 10;
+    private int size = PAGE_SIZE;
     //다음 페이지가 남았는지
     private boolean hasNext;
     //정렬 대상 컬럼 이름

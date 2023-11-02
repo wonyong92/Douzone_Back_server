@@ -53,11 +53,11 @@ public class EmployeeService2Impl implements  EmployeeService2{
     }
 
     @Override
-    public Page<List<VacationRequestDto>> getHistoryOfRejectedVacationOfMine(PagingRequestWithIdDto pagingRequestWithIdDto) {
+    public Page<List<VacationRequestDto>> getHistoryOfRejectedVacationOfMine(PagingRequestWithIdDto pagingRequestWithIdDto,String status) {
         Page<List<VacationRequestDto>> result = new Page<>();
         int size = result.getSize(); // Page 객체로부터 size를 가져옴
         int startRow = (pagingRequestWithIdDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
-        int totalRowCount = empMapper2.getHistoryOfRejectedVacationOfMineTotalRow(pagingRequestWithIdDto.getId()); // 전제 행
+        int totalRowCount = empMapper2.getHistoryOfRejectedVacationOfMineTotalRow(pagingRequestWithIdDto.getId(),status); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         String orderByCondition = pagingRequestWithIdDto.getSort(); // 정렬할 컬럼 이름
         if(orderByCondition=="name"){
@@ -67,7 +67,7 @@ public class EmployeeService2Impl implements  EmployeeService2{
             orderByCondition="v."+orderByCondition;
         }
         /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationRequestDto> getData =  empMapper2.getHistoryOfRejectedVacationOfMine(size,orderByCondition,startRow,pagingRequestWithIdDto.getSortOrder(), pagingRequestWithIdDto.getId());
+        List<VacationRequestDto> getData =  empMapper2.getHistoryOfRejectedVacationOfMine(size,orderByCondition,startRow,pagingRequestWithIdDto.getSortOrder(), pagingRequestWithIdDto.getId(),status);
 
         log.info("empMapper2.getHistoryOfRejectedVacationOfMine()의 getData : {}",getData);
 
