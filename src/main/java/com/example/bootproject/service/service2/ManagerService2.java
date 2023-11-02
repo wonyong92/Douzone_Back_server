@@ -11,5 +11,5 @@ public interface ManagerService2 {
     public Page<List<VacationRequestDto>> getEmpReqVacationHistory(PagingRequestWithIdDto pagingRequestWithIdDto);
     public Page<List<SettingWorkTimeDto>> getSettingWorkTime(PagingRequestDto pagingRequestDto);
     public Page<List<VacationQuantitySettingDto>> getVacationSettingHistory(PagingRequestDto pagingRequestDto);
-    public List<VacationRequestDto> getHistoryOfRejectedVacationOfEmployee(String employeeId);
+    public Page<List<VacationRequestDto>> getHistoryOfRejectedVacationOfEmployee(PagingRequestWithIdDto pagingRequestWithIdDto);
 }
