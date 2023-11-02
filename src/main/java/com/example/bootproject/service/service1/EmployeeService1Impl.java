@@ -170,14 +170,30 @@ public class EmployeeService1Impl implements EmployeeService1 {
         //자신의 근태 승인내역
         @Override
         public List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId) {
-                return employeeMapper1.findApprovalInfoByMine(employeeId);
+                List<AttendanceApprovalUpdateRequestDto> approvalInfoList = employeeMapper1.findApprovalInfoByMine(employeeId);
+
+                // 로그를 남깁니다.
+                log.info("사원 ID {}에 대한 승인 정보 목록: {}", employeeId, approvalInfoList);
+
+                return approvalInfoList;
         }
 
-        //본인의 조정요청이력조회
+        // 본인의 조정요청이력조회
         @Override
         public AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId) {
-                return employeeMapper1.findAttendanceInfoByMine(employeeId);
+                AttendanceAppealMediateResponseDto attendanceInfo = employeeMapper1.findAttendanceInfoByMine(employeeId);
+
+                // 로그를 남깁니다.
+                log.info("사원 ID {}에 대한 조정요청 목록: {}", employeeId, attendanceInfo);
+
+                return attendanceInfo;
         }
+
+
+
+
+
+
 
 
 }

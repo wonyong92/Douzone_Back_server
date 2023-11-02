@@ -3,6 +3,7 @@ import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.service.service1.ManagerService1;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
+import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -150,7 +151,50 @@ public class ManagerController1 {
         return ResponseEntity.ok(attendanceInfo);
     }
 
+
+    //자신의 조정요청조회
+    @GetMapping("/appeal/requests/{employeeId}")
+    public ResponseEntity<AttendanceAppealMediateResponseDto> getAppealHistoryOfEmployee(@PathVariable String employeeId) {
+
+
+
+
+
+//        if (employeeId == null) {
+//            log.info("세션에서 사원 ID를 찾을 수 없습니다.");
+//            return ResponseEntity.noContent().build();
+//        }
+
+
+        if (employeeValidation(employeeId)) {
+            log.info("유효하지 않은 사원 ID: {}", employeeId);
+            return ResponseEntity.badRequest().build();
+        }
+
+
+        AttendanceAppealMediateResponseDto responseDto = employeeService1.findAttendanceInfoByMine(employeeId);
+
+
+        if (responseDto == null) {
+            log.info("해당 사원의 근태 이의 신청 이력이 없습니다: {}", employeeId);
+            return ResponseEntity.noContent().build();
+        }
+
+
+        return ResponseEntity.ok(responseDto);
+    }
+
     //TODO: 모든 내역조회에 페이징네이션 적용
+
+    /*
+    - 쿼리파라미터로 ID를 추출한다.
+    - 사원 ID가 넘어오지 않을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
+    - 사원 ID에 대한 유효성 검사를 수행한다.
+    - 유효성 검사에 실패할 경우, 로그를 남기고 400 Bad Request 응답을 반환한다.
+    - 사원 ID에 대한 근태 승인 이력을 조회한다.
+    - 조회된 승인 이력이 없을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
+    - 조회에 성공한 경우, 승인 이력 목록을 담아 200 OK 응답과 함께 반환한다.
+    */
 
     public boolean ManagerCheckApi(){
         return true;

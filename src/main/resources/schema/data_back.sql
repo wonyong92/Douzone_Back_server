@@ -86,7 +86,7 @@ select * from regular_time_adjustment_history;
 
 select *
 from attendance_approval;
-
+#
 INSERT INTO attendance_appeal_request
 (status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id, attendance_appeal_request_time, reason_for_rejection)
 VALUES

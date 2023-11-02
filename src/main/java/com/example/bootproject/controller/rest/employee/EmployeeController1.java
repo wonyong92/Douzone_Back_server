@@ -225,16 +225,16 @@ public class EmployeeController1 {
 
     //자신의근태조정내역
     @GetMapping("/appeal/requests")
-    public ResponseEntity<AttendanceAppealMediateResponseDto> getAppealRequestHistoryOfMine(HttpServletRequest request) {
+    public ResponseEntity<AttendanceAppealMediateResponseDto> getAppealRequestHistoryOfMine() {
 
-        HttpSession session = request.getSession(false);
-        String employeeId = (session != null) ? (String) session.getAttribute("employeeId") : null;
+        ;
+        String employeeId = "emp01";
 
 
-        if (employeeId == null) {
-            log.info("세션에서 사원 ID를 찾을 수 없습니다.");
-            return ResponseEntity.noContent().build();
-        }
+//        if (employeeId == null) {
+//            log.info("세션에서 사원 ID를 찾을 수 없습니다.");
+//            return ResponseEntity.noContent().build();
+//        }
 
 
         if (!employeeValidation(employeeId)) {

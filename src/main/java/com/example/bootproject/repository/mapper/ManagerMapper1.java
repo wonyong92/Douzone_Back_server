@@ -2,6 +2,7 @@ package com.example.bootproject.repository.mapper;
 
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
+import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -37,6 +38,12 @@ public interface ManagerMapper1 {
             "JOIN employee e ON a.employee_id = e.employee_id " +
             "WHERE e.employee_id = #{employeeId}")
     List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByEmployeeId(String employeeId);
+
+    //타사원의조정요청내역
+    @Select("SELECT attendance_appeal_request_id, status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id, attendance_appeal_request_time, reason_for_rejection " +
+            "FROM attendance_appeal_request " +
+            "WHERE employee_id = #{employeeId}")
+    AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
 
 
 

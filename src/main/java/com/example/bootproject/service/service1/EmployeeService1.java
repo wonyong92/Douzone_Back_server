@@ -40,6 +40,7 @@ public interface EmployeeService1 {
     List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId);
 
 
+    //자신의조정요청이력조회
     AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
 
 

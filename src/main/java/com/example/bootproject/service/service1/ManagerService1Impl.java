@@ -3,6 +3,7 @@ package com.example.bootproject.service.service1;
 import com.example.bootproject.repository.mapper.ManagerMapper1;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
+import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ public class ManagerService1Impl implements ManagerService1{
 
 
 
+    //출퇴근시간설정
     @Override
     //정규출퇴근시간 설정 사원아이디는 위에 있는 사원아이디를 담기위해 작성
     public RegularTimeAdjustmentHistoryResponseDto insertRegularTimeAdjustmentHistory
@@ -54,6 +56,11 @@ public class ManagerService1Impl implements ManagerService1{
     @Override
     public List<AttendanceApprovalUpdateRequestDto> getAttendanceApprovalInfoDto(String employeeId) {
         return managerMapper1.findApprovalInfoByEmployeeId(employeeId);
+    }
+
+    @Override
+    public AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId) {
+        return managerMapper1.findAttendanceInfoByMine(employeeId);
     }
 
 
