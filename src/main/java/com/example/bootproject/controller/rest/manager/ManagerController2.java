@@ -90,6 +90,7 @@ public class ManagerController2 {
                 return ResponseEntity.ok(result); // 200 OK
             }
             //로그
+            log.info("Validation failed for year, month, day: {},{},{}", year, month, day);
             return ResponseEntity.badRequest().build(); //400 Bad Request
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -129,6 +130,7 @@ public class ManagerController2 {
                 }
                 return ResponseEntity.ok(result); //200 OK
             }
+            log.info("Validation failed for id: {}", id);
             return ResponseEntity.badRequest().build(); //400 Bad Request
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
@@ -152,6 +154,7 @@ public class ManagerController2 {
             int currentPage = validationPageNum(getPageNum);
             String sort = validationSort(getSort);
             String sortOrder = validationDesc(getSortOrder);
+
             PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage, sort, sortOrder);
             Page<List<SettingWorkTimeDto>> result = manService2.getSettingWorkTime(pagingRequestDto);
             log.info("getSettingWorkTime result : {}", result);
@@ -181,6 +184,7 @@ public class ManagerController2 {
             int currentPage = validationPageNum(getPageNum);
             String sort = validationSort(getSort);
             String sortOrder = validationDesc(getSortOrder);
+
             PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage, sort, sortOrder);
             Page<List<VacationQuantitySettingDto>> result = manService2.getVacationSettingHistory(pagingRequestDto);
             log.info("getVacationSettingHistory result : {}", result);
@@ -220,6 +224,7 @@ public class ManagerController2 {
                 }
                 return ResponseEntity.ok(result); //200 OK
             }
+            log.info("Validation failed for id: {}", id);
             return ResponseEntity.badRequest().build(); //400 Bad Request
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);

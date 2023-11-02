@@ -39,6 +39,7 @@ public class ManagerService2Impl implements  ManagerService2{
         List<VacationRequestDto> getData = manMapper2.getAllVacationHistory(size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder(),pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         if(getData.isEmpty()){
            // return 빈 리스트의 Page
+            return new Page<List<VacationRequestDto>>();
         }
 
         int totalRowCount = manMapper2.getAllVacationRequestCountByDate(pagingRequestWithDateDto.getDate()); // 전제 행

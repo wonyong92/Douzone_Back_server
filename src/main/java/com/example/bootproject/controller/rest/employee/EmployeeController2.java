@@ -1,10 +1,7 @@
 package com.example.bootproject.controller.rest.employee;
 
 import com.example.bootproject.service.service2.EmployeeService2;
-import com.example.bootproject.vo.vo2.response.Page;
-import com.example.bootproject.vo.vo2.response.PagingRequestDto;
-import com.example.bootproject.vo.vo2.response.PagingRequestWithIdDto;
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
+import com.example.bootproject.vo.vo2.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,50 +46,26 @@ public class EmployeeController2 {
         return (getSortOrder.matches("^(desc|DESC|)$")?getSortOrder:"");
     }
 
-    // 본인의 연차 사용 이력 조회 메서드
-    /* TODO : 추후 권한 확인 추가 */
-    @GetMapping("/employee/vacation/use")
-    public ResponseEntity<Page<List<VacationRequestDto>>> getHistoryOfUsedVacationOfMine(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder) {
-        if (authCheckApi()) {
-
-            int currentPage = validationPageNum(getPageNum);
-            String sort = validationSort(getSort);
-            String sortOrder = validationDesc(getSortOrder);
-            String id = "1234"; // session에서 가져온 id 값
-
-            PagingRequestWithIdDto pagingRequestWithIdDto = new PagingRequestWithIdDto(currentPage,sort,sortOrder,id);
-
-            Page<List<VacationRequestDto>> result = empService2.getHistoryOfUsedVacationOfMine(pagingRequestWithIdDto);
-            log.info("getHistoryOfUsedVacationOfMine result : {}", result);
-            if (result.getData().isEmpty()) {
-                return ResponseEntity.noContent().build(); //204 No Content
-            }
-                return ResponseEntity.ok(result); //200 OK
-
-        }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
-        /*
-         * 사원 권한 확인
-         * 사원 권한 확인 성공 시 -> 자신의 연차 사용 이력 데이터 반환 받음
-         *                        리턴 받은 데이터가 비어있으면 204 No Content 응답 반환
-         *                        리턴 받은 데이터가 비어있지 않으면 200 OK 응답 반환
-         * 사원 권한 인증 실패시 -> 403 ERROR 반환
-         * */
+    public String validationStatus(String getStatus){
+        return (getStatus.matches("^(승인|반려|)$")?getStatus:"");
     }
 
-    // 본인의 반려된 연차 이력 조회 메서드
+
+    // 본인의 연차 이력 조회 메서드 (승인, 반려, 전체 필터링 가능)
     /* TODO : 추후 권한 확인 추가 */
-    @GetMapping("/employee/vacation/reject")
-    public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryOfRejectedVacationOfMine(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder, @RequestParam(name="status",defaultValue = "") String status) {
+    @GetMapping("/employee/vacation/history")
+    public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryOfVacationOfMine(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder, @RequestParam(name="status",defaultValue = "") String getStatus) {
         //status validation check 추가 필요
 
         if(authCheckApi()){
             int currentPage = validationPageNum(getPageNum);
             String sort = validationSort(getSort);
             String sortOrder = validationDesc(getSortOrder);
+            String status = validationStatus(getStatus);
             String id = "1234"; // session에서 가져온 id 값
-            PagingRequestWithIdDto pagingRequestWithIdDto = new PagingRequestWithIdDto(currentPage,sort,sortOrder,id);
-            Page<List<VacationRequestDto>> result = empService2.getHistoryOfRejectedVacationOfMine(pagingRequestWithIdDto,status);
+
+            PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(currentPage,sort,sortOrder,id,status);
+            Page<List<VacationRequestDto>> result = empService2.getHistoryOfVacationOfMine(pagingRequestWithIdStatusDto);
             log.info("getHistoryOfRejectedVacationOfMine result : {}", result);
             if (result.getData().isEmpty()) {
                 return ResponseEntity.noContent().build(); //204 No Content
@@ -129,6 +102,7 @@ public class EmployeeController2 {
                 }
                 return ResponseEntity.ok(result); //200 OK
             }
+            log.info("Validation failed for id: {}", id);
             return ResponseEntity.badRequest().build(); //400 bad request
 
         }
