@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class Employee {
-    String employee_id;
+    String employeeId;
     String name;
     String password;
     boolean attendanceManager = false;
