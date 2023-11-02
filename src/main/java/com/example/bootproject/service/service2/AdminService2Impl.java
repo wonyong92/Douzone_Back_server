@@ -4,6 +4,7 @@ import com.example.bootproject.repository.mapper.mapper2.AdminMapper2;
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
 import com.example.bootproject.vo.vo2.response.Page;
 import com.example.bootproject.vo.vo2.response.PagingRequestDto;
+import com.example.bootproject.vo.vo2.response.VacationRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.bootproject.vo.vo2.response.Page.PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
@@ -21,28 +24,23 @@ public class AdminService2Impl implements AdminService2 {
     @Override
     public Page<List<EmployeeDto>> getEmpInfo(PagingRequestDto pagingRequestDto) {
 
-        Page<List<EmployeeDto>> result = new Page<>();
-        int size = result.getSize(); // Page 객체로부터 size를 가져옴
+        int size = PAGE_SIZE; // Page 객체로부터 size를 가져옴
         int startRow = (pagingRequestDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
-        int totalRowCount = mapper.getEmpInfoTotalRow(); // 전제 행
-        int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
-
         List<EmployeeDto> getData = mapper.getEmpInfo(size,orderByCondition,startRow,pagingRequestDto.getSortOrder()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         log.info("mapper.getEmpInfo()의 getData : {}",getData);
 
-
-        result.setData(getData);
-        if(pagingRequestDto.getCurrentPage()<lastPageNumber){
-            result.setHasNext(true);
+        if(getData.isEmpty()){
+            return new Page<List<EmployeeDto>>();
         }
-        result.setSort(pagingRequestDto.getSort());
-        result.setDesc(pagingRequestDto.getSortOrder());
-        result.setPage(pagingRequestDto.getCurrentPage());
-        result.setTotalElement(totalRowCount);
 
+        int totalRowCount = mapper.getEmpInfoTotalRow(); // 전제 행
+        int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
+        boolean isLastPage = (pagingRequestDto.getCurrentPage()<lastPageNumber?true:false);
 
+        Page<List<EmployeeDto>> result = new Page<>(getData,isLastPage,pagingRequestDto.getSort(),pagingRequestDto.getSortOrder(),pagingRequestDto.getCurrentPage(),totalRowCount);
         return result;
+
 
         // mapper.getEmpInfo()의 결과가 에러일 경우 500 에러 발생
         //    => DB의 연결을 끊어 에러 발생 가능, DB의 주소 값을 바꾸어 에러 발생 가능

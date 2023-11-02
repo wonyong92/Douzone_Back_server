@@ -37,17 +37,17 @@ public class EmployeeController2 {
     }
 
     public String validationSort(String getSort){
-        return (getSort.matches("^[a-zA-Z_]+$")?getSort:"");
+        return (getSort.matches("^[a-zA-Z_]+$")?getSort:"''");
     }
 
 
 
     public String validationDesc(String getSortOrder){
-        return (getSortOrder.matches("^(desc|DESC|)$")?getSortOrder:"");
+        return (getSortOrder.matches("^(desc|DESC|)$")?getSortOrder:"''");
     }
 
     public String validationStatus(String getStatus){
-        return (getStatus.matches("^(승인|반려|)$")?getStatus:"");
+        return (getStatus.matches("^(승인|반려|)$")?getStatus:"''");
     }
 
 

@@ -68,7 +68,7 @@ public class ManagerController2 {
     }
 
     public String validationStatus(String getStatus){
-        return (getStatus.matches("^(승인|반려|)$")?getStatus:"");
+        return (getStatus.matches("^(승인|반려|)$")?getStatus:"''");
     }
 
     //전체 연차 요청 정보 조회 메서드
