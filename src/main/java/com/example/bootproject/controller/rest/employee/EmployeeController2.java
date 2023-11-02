@@ -54,7 +54,7 @@ public class EmployeeController2 {
     // 본인의 연차 이력 조회 메서드 (승인, 반려, 전체 필터링 가능)
     /* TODO : 추후 권한 확인 추가 */
     @GetMapping("/employee/vacation/history")
-    public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryOfVacationOfMine(@RequestParam(name = "page") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder, @RequestParam(name="status",defaultValue = "") String getStatus) {
+    public ResponseEntity <Page<List<VacationRequestDto>>> getHistoryOfVacationOfMine(@RequestParam(name = "page", defaultValue = "") String getPageNum, @RequestParam(name="sort", defaultValue = "") String getSort, @RequestParam(name="sortOrder", defaultValue = "") String getSortOrder, @RequestParam(name="status",defaultValue = "") String getStatus) {
         //status validation check 추가 필요
 
         if(authCheckApi()){
