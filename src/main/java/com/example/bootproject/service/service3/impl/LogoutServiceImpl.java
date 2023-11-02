@@ -57,7 +57,7 @@ public class LogoutServiceImpl implements LogoutService {
                 return response;
             }
         }
-        log.info("login 정보가 없이 로그아웃 요청 발생 {}", IpAnalyzer.getClientIp(req));
+        log.info("login 정보가 없이 로그아웃 요청 발생 - 다시 로그인하고 로그아웃 하세요 {}", IpAnalyzer.getClientIp(req));
         return null;
     }
 }

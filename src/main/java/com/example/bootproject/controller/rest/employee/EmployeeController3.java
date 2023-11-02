@@ -30,18 +30,15 @@ public class EmployeeController3 {
     private final AppealService appealService;
     private final EmployeeService employeeService;
 
-    @GetMapping("/employee/information/{employee_id}")
-    public String getInformationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
-        return "getInformationOfEmployee";
-    }
-
     @GetMapping("/employee/information")
     public ResponseEntity<Employee> getInformationOfMine(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session == null) {
+            log.info("권한이 없는 사용자의 접근 발생 - 로그인 정보가 없거나 근태관리자가 아닙니다");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (session.getAttribute("admin") != null) {
+            log.info("admin에서는 지원하지 않는 기능 : 사원 정보 조회");
             return ResponseEntity.badRequest().build();
         }
 

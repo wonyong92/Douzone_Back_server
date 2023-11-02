@@ -145,6 +145,10 @@ public class LoginServiceImpl implements LoginService {
                     /*업데이트 후 재조회*/
                     loginResult = employeeLoginMapper.employeeLogin(dto);
                     log.info("employee form 재로그인 {}", loginResult);
+                    if (session == null) {
+                        session = req.getSession(true);
+                        log.info("기존 로그인 정보가 있으나 JSESSIONID 쿠키 삭제로 세션을 찾지 못하여 다사 세션 생성");
+                    }
                     session.setAttribute("loginId", loginResult.getLoginId());
                     session.setAttribute("ip", loginResult.getIp());
                     session.setAttribute("manager", loginResult.isManager());
@@ -161,7 +165,10 @@ public class LoginServiceImpl implements LoginService {
                 /*로그인 성공 후 재조회*/
                 loginResult = employeeLoginMapper.employeeLogin(dto);
                 log.info("employee form 최초 로그인 {}", loginResult);
-                session = req.getSession(true);
+                if (session == null) {
+                    session = req.getSession(true);
+                    log.info("새롭게 세션 생성");
+                }
                 session.setAttribute("loginId", loginResult.getLoginId());
                 session.setAttribute("ip", loginResult.getIp());
                 session.setAttribute("manager", loginResult.isManager());
@@ -220,6 +227,10 @@ public class LoginServiceImpl implements LoginService {
                     /*업데이트 후 재조회*/
                     loginResult = adminLoginMapper.adminLogin(dto);
                     log.info("admin form 재로그인 {}", loginResult);
+                    if (session == null) {
+                        session = req.getSession(true);
+                        log.info("기존 로그인 정보가 있으나 JSESSIONID 쿠키 삭제로 세션을 찾지 못하여 다사 세션 생성");
+                    }
                     session.setAttribute("loginId", loginResult.getLoginId());
                     session.setAttribute("ip", loginResult.getIp());
                     session.setAttribute("admin", true);
@@ -236,7 +247,10 @@ public class LoginServiceImpl implements LoginService {
                 /*로그인 성공 후 재조회*/
                 loginResult = adminLoginMapper.adminLogin(dto);
                 log.info("admin form 최초 로그인 {}", loginResult);
-                session = req.getSession();
+                if (session == null) {
+                    session = req.getSession(true);
+                    log.info("새롭게 세션 생성");
+                }
                 session.setAttribute("loginId", loginResult.getLoginId());
                 session.setAttribute("ip", loginResult.getIp());
                 session.setAttribute("admin", true);

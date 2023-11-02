@@ -1,7 +1,9 @@
 package com.example.bootproject.controller.rest.manager;
 
+import com.example.bootproject.entity.Employee;
 import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 import com.example.bootproject.service.service3.api.AppealService;
+import com.example.bootproject.service.service3.api.EmployeeService;
 import com.example.bootproject.service.service3.api.ManagerService;
 import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.system.util.IpAnalyzer;
@@ -31,7 +33,7 @@ import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE
 public class ManagerController3 {
     private final VacationService vacationService;
     private final AppealService appealService;
-    private final EmployeeMapper employeeMapper;
+    private final EmployeeService employeeService;
     private final ManagerService managerService;
 
     private int validationPageNum(String page) { //요청 받은 페이지에 대한 validation check
@@ -191,5 +193,24 @@ public class ManagerController3 {
         return false;
     }
 
+    @GetMapping("/manager/information/{employee_id}")
+    public ResponseEntity<Employee> getInformationOfEmployee(@PathVariable(name = "employee_id") String employeeId, HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("manager") == null || !(boolean) session.getAttribute("manager")) {
+            log.info("권한이 없는 사용자의 접근 발생 - 로그인 정보가 없거나 근태관리자가 아닙니다");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
+        if (session.getAttribute("admin") != null) {
+            log.info("admin에서는 지원하지 않는 기능 : 사원 정보 조회");
+            return ResponseEntity.badRequest().build();
+        }
+
+        Employee result = employeeService.findEmployeeInfoById(employeeId);
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        }
+        log.info("조회 결과 없음 혹은 실패");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
