@@ -1,12 +1,16 @@
 package com.example.bootproject.controller.rest.manager;
 
+import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 import com.example.bootproject.service.service3.api.AppealService;
+import com.example.bootproject.service.service3.api.ManagerService;
 import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationAdjustRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
+import com.example.bootproject.vo.vo3.response.Page;
 import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
+import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationAdjustResponseDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REJECTED;
 
@@ -26,19 +31,57 @@ import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE
 public class ManagerController3 {
     private final VacationService vacationService;
     private final AppealService appealService;
+    private final EmployeeMapper employeeMapper;
+    private final ManagerService managerService;
+
+    private int validationPageNum(String page) { //요청 받은 페이지에 대한 validation check
+        try {
+            int pageNum = Integer.parseInt(page);
+            if (pageNum < 1) {
+                return 1;
+            }
+            return pageNum;
+        } catch (Exception e) {
+            log.info("잘못된 페이지 번호 입력 => 1 페이지로 자동 설정");
+            return 1;
+        }
+    }
+
+    public String validationSort(String sort) {
+        if (sort.matches("^[a-zA-Z_]+$")) {
+            return sort;
+        }
+        return "";
+    }
+
+    public String validationDesc(String desc) {
+        if (desc.matches("^(desc|DESC|)$")) {
+            return desc;
+        }
+        return "";
+    }
 
     @GetMapping("/manager/employees")
-    public String getEmployeeList() {
-        return "getEmployeeList";
+    public ResponseEntity<Page<List<EmployeeResponseDto>>> getEmployeeList(HttpServletRequest req, @RequestParam(name = "page", defaultValue = "1") String page, @RequestParam(name = "sort", defaultValue = "''") String sort, @RequestParam(name = "desc", defaultValue = "") String desc) {
+        if (isManager(req)) {
+            int currentPage = validationPageNum(page);
+            String sortColumn = validationSort(sort);
+            String descCheck = validationDesc(desc);
+            log.info("get Employee list - validation result : {} {} {}", currentPage, sortColumn, descCheck);
+
+            Page<List<EmployeeResponseDto>> result = managerService.getEmployeeList(currentPage, sortColumn, descCheck);
+            log.info("getEmpInfo result : {}", result);
+            if (result.getData().isEmpty()) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.ok(result); // 200 OK
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 ERROR
     }
 
     @PostMapping("/manager/vacation/process")
     public ResponseEntity<VacationRequestResponseDto> processVacationRequest(@ModelAttribute VacationProcessRequestDto dto, HttpServletRequest req) {
-
-//        - 동시에 한명의 근태 담당자 만 처리
-//        1. 근태 담당자 권한 확인
-//        2. form을 통해 연차 요청id, 처리 데이터(승인.반려 여부, 사유)를 가져온다
-
         if (isManager(req)) {
             String status = dto.getVacationRequestStateCategoryKey();
             if (status.equals(VACATION_REQUEST_STATE_REJECTED)) {
@@ -141,8 +184,11 @@ public class ManagerController3 {
             log.info("ip 변경 발생");
             return false;
         }
-
-        return (boolean) session.getAttribute("manager");
+        if (session.getAttribute("manager") != null && (boolean) session.getAttribute("manager")) {
+            return true;
+        }
+        log.info("ip 변경 발생");
+        return false;
     }
 
 
