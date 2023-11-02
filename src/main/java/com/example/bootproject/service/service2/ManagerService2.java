@@ -1,5 +1,6 @@
 package com.example.bootproject.service.service2;
 
+import com.example.bootproject.vo.vo2.request.DefaultVacationRequestDto;
 import com.example.bootproject.vo.vo2.response.*;
 
 import java.time.LocalDate;
@@ -12,5 +13,7 @@ public interface ManagerService2 {
 
     public Page<List<SettingWorkTimeDto>> getSettingWorkTime(PagingRequestDto pagingRequestDto);
     public Page<List<VacationQuantitySettingDto>> getVacationSettingHistory(PagingRequestDto pagingRequestDto);
+
+    public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto, String id);
 
 }

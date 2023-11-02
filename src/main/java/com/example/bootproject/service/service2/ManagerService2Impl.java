@@ -1,15 +1,18 @@
 package com.example.bootproject.service.service2;
 
 import com.example.bootproject.repository.mapper.mapper2.ManagerMapper2;
+import com.example.bootproject.vo.vo2.request.DefaultVacationRequestDto;
 import com.example.bootproject.vo.vo2.response.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Array;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +120,29 @@ public class ManagerService2Impl implements  ManagerService2{
         return result;
 
 
+
+    }
+
+    @Override
+    @Transactional
+    public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto, String id) { //dto에는 1년 미만 일 때 개수, 1년 이상일 때 개수, 대상 날짜의 데이터만 존재함
+
+        // RequestDto :freshman, senior, settingTime, targetDate, employeeId
+        LocalDateTime nowDateTime = LocalDateTime.now();
+
+        dto.setEmployeeId(id);
+        dto.setSettingTime(nowDateTime);
+
+        int insertReturn = manMapper2.insertDefaultVacation(dto); //데이터 insert
+        if(insertReturn<=0){
+            return new DefaultVacationResponseDto(-1);
+        }
+        log.info("insertReturn : {}",insertReturn);
+
+        DefaultVacationResponseDto result = manMapper2.getDefaultVacationResponseDto(id);
+        log.info("manMapper2.getDefaultVacationResponseDto(id) result : {}",result);
+
+        return result; // 데이터 select해서 반환
 
     }
 
