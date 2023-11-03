@@ -5,9 +5,7 @@ import com.example.bootproject.vo.vo2.response.DefaultVacationResponseDto;
 import com.example.bootproject.vo.vo2.response.SettingWorkTimeDto;
 import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
 import com.example.bootproject.vo.vo2.response.VacationRequestDto;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -71,10 +69,11 @@ public interface ManagerMapper2 {
 
 
     // 근속 연수에 따른 기본 연차 개수 설정
-    @Insert("INSERT INTO vacation_quantity_setting(freshman,senior,setting_time,target_date,employee_id) values(#{freshman},#{senior},#{settingTime},#{targetDate},#{employeeId})")
+    @Insert("INSERT INTO vacation_quantity_setting(freshman,senior,target_date,employee_id) values(#{freshman},#{senior},#{targetDate},#{employeeId})")
+    @Options(useGeneratedKeys = true, keyProperty = "settingKey")
     public int insertDefaultVacation(DefaultVacationRequestDto dto);
 
-    @Select("SELECT * FROM vacation_quantity_setting WHERE employee_id = #{id} ORDER BY setting_time desc LIMIT 1;")
-    public DefaultVacationResponseDto getDefaultVacationResponseDto(String id);
+    @Select("SELECT * FROM vacation_quantity_setting WHERE setting_key=#{generatedKey};")
+    public DefaultVacationResponseDto getDefaultVacationResponseDto(int generatedKey);
 
 }

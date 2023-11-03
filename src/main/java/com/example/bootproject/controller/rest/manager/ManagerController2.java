@@ -79,14 +79,17 @@ public class ManagerController2 {
     }
 
 
-    public boolean validationTargetDate(LocalDate targetDate) { // 최소 오늘 이후 이면서  'yyyy-MM-dd' 형식 인지 확인
+    public boolean validationTargetDate(LocalDate targetDate) { // 최소 내년 이면서  'yyyy-MM-dd' 형식 인지 확인
 
         // targetDate가 yyyy-MM-dd 형식인지 확인
         if (targetDate.toString().matches("^(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])")) {
+
             // 현재 날짜 가져오기
             LocalDate today = LocalDate.now();
-            // targetDate가 최소 내일 이상인지 확인
-            return !today.isAfter(targetDate);
+
+            // targetDate의 년도를 가져와서 현재 년도보다 큰지 확인
+            return targetDate.getYear() > today.getYear();
+
         }
         return false; // yyyy-MM-dd 형식이 아니면 유효성 검사 실패
     }
@@ -235,33 +238,28 @@ public class ManagerController2 {
 
     // 근속 연수에 따른 연차 개수 설정
     @PostMapping("/manager/setting/vacation_default")
-    public ResponseEntity<DefaultVacationResponseDto> setDefaultVacation(DefaultVacationRequestDto requestDto) {
+    public ResponseEntity<DefaultVacationResponseDto> setDefaultVacation(@ModelAttribute DefaultVacationRequestDto requestDto) {
+
+        log.info("requestDto.getEmployeeId() : {}",requestDto.getEmployeeId());
 
         if(authCheckApi()){
             /* requestDto의 항목에 대한 validation check - 값 오류 혹은 비워있는지 확인*/
             if(validationFreshman(requestDto.getFreshman())&&validationSenior(requestDto.getSenior())&&validationTargetDate(requestDto.getTargetDate())){
+
                 String id="1234"; //세션에서 가져온 ID
-                DefaultVacationResponseDto defaultVacationResponseDto = manService2.makeDefaultVacationResponse(requestDto,id);
+                requestDto.setEmployeeId(id);
+
+                DefaultVacationResponseDto defaultVacationResponseDto = manService2.makeDefaultVacationResponse(requestDto);
                 log.info("manService2.makeDefaultVacationResponse(requestDto,id)의 결과 : {}",defaultVacationResponseDto);
-                if(defaultVacationResponseDto == null){
-                    log.info("defaultVacationResponseDto is null");
-                    return ResponseEntity.noContent().build(); //응답 데이터 없음 204 No Content
-                }
-                if(defaultVacationResponseDto.getFreshman()==-1){
-                    log.info("insert 오류 발생");
-                    return ResponseEntity.unprocessableEntity().build(); //422 에러 리턴 - 요청은 올바르게 되었으나, 처리가 올바르게 이뤄지지 못함
-                }
+
                 log.info("OK");
                 return ResponseEntity.ok(defaultVacationResponseDto); //200 OK
             }
             log.info("validation check fail");
             return ResponseEntity.badRequest().build(); // 400 에러
 
-
-
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 에러
-
 
 
     }

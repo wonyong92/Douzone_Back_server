@@ -1,10 +1,7 @@
 package com.example.bootproject.service.service2;
 
 import com.example.bootproject.repository.mapper.mapper2.AdminMapper2;
-import com.example.bootproject.vo.vo2.response.EmployeeDto;
-import com.example.bootproject.vo.vo2.response.Page;
-import com.example.bootproject.vo.vo2.response.PagingRequestDto;
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
+import com.example.bootproject.vo.vo2.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,9 @@ public class AdminService2Impl implements AdminService2 {
         log.info("mapper.getEmpInfo()의 getData : {}",getData);
 
         if(getData.isEmpty()){
-            return new Page<List<EmployeeDto>>();
+            Page<List<EmployeeDto>> pageObj = new Page();
+            pageObj.setData(new ArrayList<>());
+            return pageObj;
         }
 
         int totalRowCount = mapper.getEmpInfoTotalRow(); // 전제 행

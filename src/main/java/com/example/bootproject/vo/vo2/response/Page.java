@@ -4,15 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 // 페이지네이션을 위한 쿼리 파라미터 목록 : page=int, sort=string, desc=boolean
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Page<T> {
+public class Page<T > {
     public static int PAGE_SIZE = 10;
 
     //제네릭으로 여러 데이터 타입을 처리
-    private T data;
+    private T data ;
     //사이즈는 10으로 고정
     private int size = PAGE_SIZE;
     //다음 페이지가 남았는지

@@ -30,7 +30,9 @@ public class EmployeeService2Impl implements  EmployeeService2{
         log.info("empMapper2.getHistoryOfRejectedVacationOfMine()의 getData : {}",getData);
 
         if(getData.isEmpty()){
-            return new Page<List<VacationRequestDto>>();
+            Page<List<VacationRequestDto>> pageObj = new Page();
+            pageObj.setData(new ArrayList<>());
+            return pageObj;
         }
 
         int totalRowCount = empMapper2.getHistoryOfVacationOfMineTotalRow(pagingRequestWithIdStatusDto.getId(),pagingRequestWithIdStatusDto.getStatus()); // 전제 행

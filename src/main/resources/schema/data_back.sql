@@ -31,7 +31,7 @@ insert into vacation_request(vacation_category_key, employee_id, vacation_reques
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity, vacation_start_date, vacation_end_date,  vacation_request_time, reason,reason_for_rejection) values("a","5678","반려",1,"2023-07-01","2023-07-10","2023-07-01 15:00:00","a","안돼 돌아가요");
 
 insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(11,14,"2023-10-26 09:00:00","1234");
-insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(12,14,"2023-10-27 09:00:00","1234");
+/*insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(12,14,"2023-10-27 09:00:00","1234");
 insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(13,24,"2023-10-28 09:00:00","1234");
 insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(14,24,"2023-10-29 09:00:00","5678");
 insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(15,24,"2023-10-16 09:00:00","1234");
@@ -43,7 +43,7 @@ insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) 
 insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(21,34,"2023-10-5 09:00:00","1234");
 insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(21,44,"2023-10-7 09:00:00","1234");
 insert into vacation_quantity_setting(freshman,senior,setting_time,employee_id) values(20,24,"2023-10-8 09:00:00","5678");
-
+*/
 
 INSERT INTO regular_time_adjustment_history(TARGET_DATE, adjusted_start_time,adjusted_end_time,reason,regular_time_adjustment_time,employee_id) values("2023-01-01","09:00:00","16:00:00","집에 일찍 가고싶어서","2022-12-31 09:00:00","1234");
 INSERT INTO regular_time_adjustment_history(TARGET_DATE, adjusted_start_time,adjusted_end_time,reason,regular_time_adjustment_time,employee_id) values("2023-02-01","09:00:00","16:00:00","집에 일찍 가고싶어서","2022-12-31 09:00:00","1234");

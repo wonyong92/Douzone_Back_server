@@ -22,6 +22,7 @@ import static com.example.bootproject.vo.vo2.response.Page.PAGE_SIZE;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ManagerService2Impl implements  ManagerService2{
 
     private final ManagerMapper2 manMapper2;
@@ -36,9 +37,11 @@ public class ManagerService2Impl implements  ManagerService2{
         log.info("size, orderByCondition,startRow,sortOrder : {},{},{},{}",size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder());
         List<VacationRequestDto> getData = manMapper2.getAllVacationHistory(size,orderByCondition,startRow,pagingRequestWithDateDto.getSortOrder(),pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
         log.info("manMapper2.getEmpInfo의 getData : {}",getData);
+
         if(getData.isEmpty()){
-           // return 빈 리스트의 Page
-            return new Page<List<VacationRequestDto>>();
+            Page<List<VacationRequestDto>> pageObj = new Page();
+            pageObj.setData(new ArrayList<>());
+            return pageObj;
         }
 
         int totalRowCount = manMapper2.getAllVacationRequestCountByDate(pagingRequestWithDateDto.getDate()); // 전제 행
@@ -61,7 +64,9 @@ public class ManagerService2Impl implements  ManagerService2{
         log.info("empMapper2.getHistoryOfRejectedVacationOfMine()의 getData : {}",getData);
 
         if(getData.isEmpty()){
-            return new Page<List<VacationRequestDto>>();
+            Page<List<VacationRequestDto>> pageObj = new Page();
+            pageObj.setData(new ArrayList<>());
+            return pageObj;
         }
 
         int totalRowCount = manMapper2.getHistoryOfVacationOfEmployeeTotalRow(pagingRequestWithIdStatusDto.getId(),pagingRequestWithIdStatusDto.getStatus()); // 전제 행
@@ -85,7 +90,9 @@ public class ManagerService2Impl implements  ManagerService2{
         log.info("manMapper2.getSettingWorkTime의 getData : {}",getData);
 
         if(getData.isEmpty()){
-            return new Page<List<SettingWorkTimeDto>>();
+            Page<List<SettingWorkTimeDto>> pageObj = new Page();
+            pageObj.setData(new ArrayList<>());
+            return pageObj;
         }
 
         int totalRowCount = manMapper2.getSettingWorkTimeCount(); // 전제 행
@@ -109,7 +116,9 @@ public class ManagerService2Impl implements  ManagerService2{
         log.info("manMapper2.getVacationSettingHistory의 getData : {}",getData);
 
         if(getData.isEmpty()){
-            return new Page<List<VacationQuantitySettingDto>>();
+            Page<List<VacationQuantitySettingDto>> pageObj = new Page();
+            pageObj.setData(new ArrayList<>());
+            return pageObj;
         }
 
         int totalRowCount = manMapper2.getVacationSettingHistoryCount(); // 전제 행
@@ -124,23 +133,13 @@ public class ManagerService2Impl implements  ManagerService2{
     }
 
     @Override
-    @Transactional
-    public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto, String id) { //dto에는 1년 미만 일 때 개수, 1년 이상일 때 개수, 대상 날짜의 데이터만 존재함
+    public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto) { //dto에는 1년 미만 일 때 개수, 1년 이상일 때 개수, 대상 날짜의 데이터만 존재함
 
-        // RequestDto :freshman, senior, settingTime, targetDate, employeeId
-        LocalDateTime nowDateTime = LocalDateTime.now();
+        manMapper2.insertDefaultVacation(dto); //데이터 insert
 
-        dto.setEmployeeId(id);
-        dto.setSettingTime(nowDateTime);
+        DefaultVacationResponseDto result = manMapper2.getDefaultVacationResponseDto(dto.getSettingKey());
+        log.info("manMapper2.getDefaultVacationResponseDto(dto.getSettingKey())의 result : {}",result);
 
-        int insertReturn = manMapper2.insertDefaultVacation(dto); //데이터 insert
-        if(insertReturn<=0){
-            return new DefaultVacationResponseDto(-1);
-        }
-        log.info("insertReturn : {}",insertReturn);
-
-        DefaultVacationResponseDto result = manMapper2.getDefaultVacationResponseDto(id);
-        log.info("manMapper2.getDefaultVacationResponseDto(id) result : {}",result);
 
         return result; // 데이터 select해서 반환
 

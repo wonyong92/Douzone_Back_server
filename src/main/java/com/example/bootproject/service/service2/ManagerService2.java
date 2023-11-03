@@ -14,6 +14,6 @@ public interface ManagerService2 {
     public Page<List<SettingWorkTimeDto>> getSettingWorkTime(PagingRequestDto pagingRequestDto);
     public Page<List<VacationQuantitySettingDto>> getVacationSettingHistory(PagingRequestDto pagingRequestDto);
 
-    public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto, String id);
+    public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto);
 
 }
