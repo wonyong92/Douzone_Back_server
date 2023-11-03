@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class EmployeeInsertRequestDto {
+public class EmployeeUpdateRequestDto {
 
     private String employeeId;
 
@@ -18,5 +18,8 @@ public class EmployeeInsertRequestDto {
 
     private Boolean attendanceManager;
 
+    @DateTimeFormat(pattern = "yyyy")
     private LocalDate hireYear;
+
+
 }

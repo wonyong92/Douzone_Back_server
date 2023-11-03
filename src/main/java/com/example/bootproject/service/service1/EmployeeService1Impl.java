@@ -40,6 +40,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
                         log.info("출근기록이있습니다");
                         return null;
                 } else {
+
                         // 출근 시간이 아직 기록되지 않은 경우
                         LocalDateTime startTime = LocalDateTime.now();
                         dto.setEmployeeId(employeeId);

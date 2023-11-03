@@ -22,9 +22,9 @@ public interface EmployeeMapper1 {
 
 
     //응답 근태정보테이블
-    @Select("SELECT regular_time_adjustment_history_id, target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id " +
-            "FROM regular_time_adjustment_history " +
-            "WHERE employee_id = #{employeeId} AND target_date = #{AttendanceDate}")
+    @Select("SELECT * " +
+            "FROM attendance_info " +
+            "WHERE employee_id = #{employeeId} AND attendance_date = #{AttendanceDate}")
     AttendanceInfoResponseDto findattendanceInfo(String employeeId , LocalDate AttendanceDate);
 
 

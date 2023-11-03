@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class EmployeeInsertResponseDto {
+public class EmployeeResponseDto {
 
     private String employeeId;
 

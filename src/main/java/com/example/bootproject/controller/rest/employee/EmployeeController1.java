@@ -31,19 +31,25 @@ public class EmployeeController1 {
         @PostMapping("/attendance")
             public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(AttendanceInfoStartRequestDto requestDto) {
             // 직접 할당한 더 미 데이터
-            String employeeId = "emp03";
+            String employeeId = "emp01";
             AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
 
-            // 결과에 따라 응답을 반환한다
-            if (responseDto == null) {
-                log.info("반환값이 null이다: " + employeeId);
-                return ResponseEntity.badRequest().build();
-            }
 
-            if(!employeeValidation(employeeId)){
-                log.info("employeeId not collect validationcheck" + employeeId);
-                return ResponseEntity.badRequest().build();
-            }//로그인에서
+//            if(!employeeValidation(employeeId)){
+//                log.info("not collect validationcheck" + employeeId);
+//                return ResponseEntity.badRequest().build();
+//            }
+
+            // 결과에 따라 응답을 반환한다
+//            if (responseDto == null) {
+//                log.info("반환값이 null이다: " + employeeId);
+//                return ResponseEntity.badRequest().build();
+//            }
+
+//            if(!employeeValidation(employeeId)){
+//                log.info("employeeId not collect validationcheck" + employeeId);
+//                return ResponseEntity.badRequest().build();
+//            }//로그인에서
 
 
 
@@ -60,12 +66,12 @@ public class EmployeeController1 {
     @PostMapping("/leave")
     public ResponseEntity<AttendanceInfoResponseDto> makeLeaveInformation(AttendanceInfoEndRequestDto requestDto){
 
-        String employeeId = "emp03";
-
-        if(!employeeValidation(employeeId)){
-            log.info("not collect validationcheck" + employeeId);
-            return ResponseEntity.badRequest().build();
-        }
+        String employeeId = "emp01";
+//
+//        if(!employeeValidation(employeeId)){
+//            log.info("not collect validationcheck" + employeeId);
+//            return ResponseEntity.badRequest().build();
+//        }
 
       AttendanceInfoResponseDto responseDto = employeeService1.makeEndResponse(requestDto,employeeId);
 
@@ -142,9 +148,8 @@ public class EmployeeController1 {
 
 
     //자신의 근태 승인요청
-    @PostMapping("/approve")
-    public ResponseEntity<AttendanceApprovalResponseDto> makeApproveRequest() {
-        Long attendanceInfoId = Long.valueOf("1");
+    @PostMapping("/approve/{attendanceInfoId}")
+    public ResponseEntity<AttendanceApprovalResponseDto> makeApproveRequest(@PathVariable("attendanceInfoId") Long attendanceInfoId) {
         String employeeId = "emp01";
 
         if (attendanceInfoId == null || employeeId == null) {
@@ -166,12 +171,12 @@ public class EmployeeController1 {
     }
 
      /*
-     //todo 쿼리파리미터
      //todo string데이터가 들어오면 error처리 validation체크
      //todo 권환오류 null값 badrequest 확인해준다 db오류인지 exception
      // todo dto 에다가 데이터를 담아서 보낸다
      //todo 근태이상확인 컨트롤러에 넘겨줘야한다
 
+    쿼리 파라미터로 attendanceInfoid를 찾는다
     세션에서 attendanceInfoId와 employeeId 가져오기
     사원id나 근태정보id가 안넘어올경우 오류코드
     데이터가 들어올시 log데이터가 넘어옴

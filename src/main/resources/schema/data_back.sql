@@ -82,6 +82,8 @@ INSERT INTO attendance_info (attendance_status_category, employee_id, start_time
 
 select * from attendance_info;
 
+SELECT regular_time_adjustment_history_id, target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id FROM regular_time_adjustment_history WHERE employee_id = 'emp01' AND target_date = '11/03/2023 00:00:00.000';
+
 select * from regular_time_adjustment_history;
 
 select *
