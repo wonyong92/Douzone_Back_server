@@ -5,8 +5,10 @@ import com.example.bootproject.service.service3.api.*;
 import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.request.LoginRequestDto;
 import com.example.bootproject.vo.vo3.request.appeal.AppealRequestDto;
+import com.example.bootproject.vo.vo3.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
 import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
+import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
 import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
 import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
@@ -34,7 +36,7 @@ public class EmployeeController3 {
     public ResponseEntity<Employee> getInformationOfMine(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session == null) {
-            log.info("권한이 없는 사용자의 접근 발생 - 로그인 정보가 없거나 근태관리자가 아닙니다");
+            log.info("권한이 없는 사용자의 접근 발생 - 로그인 정보가 없습니다");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (session.getAttribute("admin") != null) {
@@ -53,8 +55,26 @@ public class EmployeeController3 {
     }
 
     @PostMapping("/employee/information")
-    public String modifyEmployeeInformationOfMine() {
-        return "modifyEmployeeInformationOfMine";
+    public ResponseEntity<EmployeeResponseDto> modifyEmployeeInformationOfMine(HttpServletRequest req, @ModelAttribute EmployeeInformationUpdateDto dto) {
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            log.info("권한이 없는 사용자의 접근 발생 - 로그인 정보가 없습니다");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        if (session.getAttribute("admin") != null) {
+            log.info("admin에서는 지원하지 않는 기능 : 사원 정보 조회");
+            return ResponseEntity.badRequest().build();
+        }
+
+        String loginId = checkLoginId(req);
+        EmployeeResponseDto result = employeeService.updateInformation(loginId, dto);
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        }
+        log.info("조회 결과 없음 혹은 실패");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
     @PostMapping("/login")

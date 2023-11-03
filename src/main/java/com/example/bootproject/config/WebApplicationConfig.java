@@ -3,10 +3,12 @@ package com.example.bootproject.config;
 import com.example.bootproject.system.interceptor.LogginInterceptor;
 import com.example.bootproject.system.interceptor.WorkingQueueInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@EnableScheduling
 public class WebApplicationConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
