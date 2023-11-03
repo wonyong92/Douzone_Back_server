@@ -25,7 +25,12 @@ public interface AdminMapper2 {
     public EmployeeDto getOneEmpInfo(String employeeId);
 
 
+    // employee 테이블의 전체 행 select
     @Select("select count(*) from employee;")
     public int getEmpInfoTotalRow();
+
+    // 매개변수로 받아온 id가 employee 테이블에 존재시 1 반환
+    @Select("select count(*) from employee where employee_id=#{id}")
+    public int getEmployeeCheck(String id);
 
 }

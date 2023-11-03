@@ -57,4 +57,10 @@ public class AdminService2Impl implements AdminService2 {
         return result;
     }
 
+    // 받아온 id가 실제 테이블에 존재하는지 확인
+    @Override
+    public int getEmployeeCheck(String id) {
+        return mapper.getEmployeeCheck(id);
+    }
+
 }

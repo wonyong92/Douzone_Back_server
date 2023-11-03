@@ -26,7 +26,9 @@ public class AdminController2 {
     }
 
     public boolean validationId(String employeeId){ // Id Validation 체크
-        return employeeId.matches("^[0-9]+$"); // 숫자로 구성 되어 있는지 확인
+        int idCheck = adminService.getEmployeeCheck(employeeId); //id값이 실제로 테이블에 존재하면 1 반환
+        /* employeeId가 숫자로 구성 되어 있고,  실제로 테이블에 존재하는지 확인 */
+        return employeeId.matches("^[0-9]+$")&&idCheck==1;
     }
 
     public int validationPageNum(String getPageNum){ //요청 받은 페이지에 대한 validation check

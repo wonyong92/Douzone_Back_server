@@ -162,5 +162,10 @@ public class ManagerService2Impl implements  ManagerService2{
        return thisYearSettingVacationValue-approveVacationSum; //기본값 + 조정값 - 승인 튜플 수
     }
 
+    @Override
+    public int getEmployeeCheck(String id) {
+        return manMapper2.getEmployeeCheck(id);
+    }
+
 
 }

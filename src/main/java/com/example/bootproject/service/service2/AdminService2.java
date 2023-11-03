@@ -10,4 +10,6 @@ import java.util.List;
 public interface AdminService2 {
     public Page<List<EmployeeDto>> getEmpInfo(PagingRequestDto pagingRequestDto);
     public EmployeeDto getOneEmpInfo(String employeeId);
+
+    public int getEmployeeCheck (String id);
 }

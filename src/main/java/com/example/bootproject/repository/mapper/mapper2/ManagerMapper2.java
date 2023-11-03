@@ -103,4 +103,8 @@ public interface ManagerMapper2 {
             " WHERE EMPLOYEE_ID=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY='승인';")
     public int getApproveVacationQuantity(String employeeId);
 
+    // 매개변수로 받아온 id가 employee 테이블에 존재시 1 반환
+    @Select("select count(*) from employee where employee_id=#{id}")
+    public int getEmployeeCheck(String id);
+
 }

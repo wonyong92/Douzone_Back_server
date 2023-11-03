@@ -18,4 +18,6 @@ public interface ManagerService2 {
 
     public int getDefaultSettingValue(String employeeId);
 
+    public int getEmployeeCheck(String id);
+
 }

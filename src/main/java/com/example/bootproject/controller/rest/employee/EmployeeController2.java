@@ -23,10 +23,6 @@ public class EmployeeController2 {
         return true;
     }
 
-    public boolean validationId(String employeeId){ //Id Validation 체크
-        return employeeId.matches("^[0-9]*$"); // 숫자로 구성 되어 있는지 확인
-    }
-
     public int validationPageNum(String getPageNum){ //요청 받은 페이지에 대한 validation check
         try{
             int currentPage = Integer.parseInt(getPageNum); // 쿼리파라미터로 받아온 페이지 번호를 int 형으로 변환
@@ -86,6 +82,8 @@ public class EmployeeController2 {
 
     /*TODO : 권한 확인 로직 실제 구현 해야함*/
     /*TODO : Session에서 아이디 값 받아오도록 해야함*/
+
+    // 본인의 잔여 연차 개수 확인
     @GetMapping("/employee/vacation/remain")
     public ResponseEntity<Integer> getRemainOfVacationOfMine() {
         if(authCheckApi()){

@@ -28,7 +28,9 @@ public class ManagerController2 {
     }
 
     public boolean validationId(String id) { // Id Validation 체크
-        return id.matches("^[0-9]+$"); // 숫자로 구성 되어 있는지 확인
+        int idCheck = manService2.getEmployeeCheck(id); //id값이 실제로 테이블에 존재하면 1 반환
+        /* employeeId가 숫자로 구성 되어 있고,  실제로 테이블에 존재하는지 확인 */
+        return id.matches("^[0-9]+$")&&idCheck==1;
     }
 
 
