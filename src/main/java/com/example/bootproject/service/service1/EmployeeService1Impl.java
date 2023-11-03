@@ -27,10 +27,6 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
 
 
-
-
-
-
         //TODO 예외처리 컨트롤러로 보내기
         //출근요청
         @Override
@@ -166,6 +162,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
                 return employeeMapper1.findAttendanceApproval(employeeId, attendanceInfoId);
         }
 
+        //todo  2번조건이 성립되면 3번으로 넘어가게
 
         //자신의 근태 승인내역
         @Override

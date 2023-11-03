@@ -61,6 +61,7 @@ public class ManagerController1 {
     데이터가 제데로 들어오면 log남김
     dto반환데이터가 null이면 400오로 아니면 200응답
     모든 조건 성공시 RegularTimeAdjustmentHistoryDto 출력
+    TODO 데이터에대한 VALIDATIONCHECK는 컨트롤러에서
     */
 
 
@@ -95,6 +96,7 @@ public class ManagerController1 {
 
         return new ResponseEntity<>(approvalInfo, HttpStatus.OK);
     }
+    //TODO 사원id가 존재하는지에대해서 본다 나중에생각
 
 
     /*
@@ -152,12 +154,9 @@ public class ManagerController1 {
     }
 
 
-    //자신의 조정요청조회
+    //타사원 조정요청조회
     @GetMapping("/appeal/requests/{employeeId}")
     public ResponseEntity<AttendanceAppealMediateResponseDto> getAppealHistoryOfEmployee(@PathVariable String employeeId) {
-
-
-
 
 
 //        if (employeeId == null) {
@@ -187,6 +186,7 @@ public class ManagerController1 {
     //TODO: 모든 내역조회에 페이징네이션 적용
 
     /*
+    //TODO LIST 담자....
     - 쿼리파라미터로 ID를 추출한다.
     - 사원 ID가 넘어오지 않을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
     - 사원 ID에 대한 유효성 검사를 수행한다.

@@ -39,7 +39,6 @@ public class ManagerService1Impl implements ManagerService1{
             RegularTimeAdjustmentHistoryResponseDto responseDto = managerMapper1.selectregulartimeadjustment(employeeId);
 
 
-
             // 결과 반환
         if (responseDto != null) {
             // 결과가 존재하면 그대로 반환
@@ -49,7 +48,9 @@ public class ManagerService1Impl implements ManagerService1{
             log.info("No data found for employeeId: {}", employeeId);
             return null; // 또는 적절한 예외를 던지거나 기타 처리
         }
-
+//TODO 사원id는 controller에서받는다
+        //TODO GENERIC KEY사용한다 아니면 데이터가 있느지 확인하고 count로 조회후 true로하든가
+        //
     }
 
     //타사원에대한 근태승인내역 조회

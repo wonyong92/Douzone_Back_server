@@ -166,6 +166,12 @@ public class EmployeeController1 {
     }
 
      /*
+     //todo 쿼리파리미터
+     //todo string데이터가 들어오면 error처리 validation체크
+     //todo 권환오류 null값 badrequest 확인해준다 db오류인지 exception
+     // todo dto 에다가 데이터를 담아서 보낸다
+     //todo 근태이상확인 컨트롤러에 넘겨줘야한다
+
     세션에서 attendanceInfoId와 employeeId 가져오기
     사원id나 근태정보id가 안넘어올경우 오류코드
     데이터가 들어올시 log데이터가 넘어옴
@@ -227,7 +233,6 @@ public class EmployeeController1 {
     @GetMapping("/appeal/requests")
     public ResponseEntity<AttendanceAppealMediateResponseDto> getAppealRequestHistoryOfMine() {
 
-        ;
         String employeeId = "emp01";
 
 

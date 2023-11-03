@@ -85,6 +85,7 @@ public interface EmployeeMapper1 {
     @Select("SELECT * FROM attendance_status_category WHERE `key` = '지각'")
     AttendanceStatusCategoryRequestDto findLateStatus();
 
+    //todo 그럼 자바에서 저장해서 public static final
 
     //attendance_info테이블에 대리키를 조회해 현재상태를 만약 근태이상이라고 있으면 이거를 인정한 지각이라는 데이터로 변경한다
     @Update("UPDATE attendance_info SET attendance_status_category = #{dto.attendanceStatusCategory} WHERE attendance_info_id = #{dto.attendanceInfoId}")
@@ -94,6 +95,9 @@ public interface EmployeeMapper1 {
     //근태정보--승인 테이블에 승인을 한 내역을 남긴다
     @Insert("INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id) VALUES (#{dto.attendanceInfoId}, NOW(), #{dto.employeeId})")
     int insertAttendanceApproval(@Param("dto")AttendanceApprovalInsertRequestDto attendanceApprovalInsertRequestDto);
+
+    //근태이상확인
+    //todo 근태상태가 근태이상인지 확인하고 지각승인을 할 즉 update를 할 내역조회할 쿼리가 필요하다
 
     @Select("SELECT attendance_approval_id , attendance_info_id , attendance_approval_date , employee_id " +
             "FROM attendance_approval " +
@@ -114,6 +118,8 @@ public interface EmployeeMapper1 {
             "FROM attendance_appeal_request " +
             "WHERE employee_id = #{employeeId}")
     AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
+
+
 
 
 
