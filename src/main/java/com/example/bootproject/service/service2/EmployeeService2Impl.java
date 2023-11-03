@@ -43,5 +43,27 @@ public class EmployeeService2Impl implements  EmployeeService2{
         return result;
     }
 
+    @Override
+    public int getRemainOfVacationOfMine(String id) {
+        int year = empMapper2.getHireYear(id); //입사 연도 들고옴
+        log.info("getHireYear(employeeId) : {}",year);
+
+        int setting = empMapper2.getDefaultSettingVacationValue(year); //입사 연도에 따른 기본 연차 설정값 들고옴
+        log.info("empMapper2.getDefaultSettingVacationValue(year) : {}",setting);
+
+        /* 조정된 연차 개수를 들고 와서, 기본 연차 설정 값과 더한 결과*/
+        // 만약 조정된 것이 없다면? 0이 리턴되도록
+        int thisYearSettingVacationValue = setting+empMapper2.getVacationAdjustedHistory(id);
+        log.info("조정된 연차 개수 데이터 : {}",empMapper2.getVacationAdjustedHistory(id));
+        log.info("기본 연차 설정 값 + 조정된 연차 개수 데이터 : {}",thisYearSettingVacationValue);
+        //
+
+        /* 연차 신청 결과 승인인 튜플 중 vacation_quantity의 총합 */
+        int approveVacationSum = empMapper2.getApproveVacationQuantity(id);
+        log.info("올해 연차 승인 개수 합 : {}", approveVacationSum);
+
+        return thisYearSettingVacationValue-approveVacationSum; //기본값 + 조정값 - 승인 튜플 수
+    }
+
 
 }

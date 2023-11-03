@@ -73,9 +73,11 @@ public interface ManagerMapper2 {
     @Select("SELECT * FROM vacation_quantity_setting WHERE setting_key=#{generatedKey};")
     public DefaultVacationResponseDto getDefaultVacationResponseDto(int generatedKey);
 
+    //입사년도 데이터 가져옴
     @Select("SELECT YEAR(hire_year) FROM EMPLOYEE WHERE employee_id=#{id}; ")
     public int getHireYear(String id);
 
+    //작년의 가장 최근 데이터에서 입사연도에 따라서 기본 연차 부여 설정값 가져옴
     @Select("SELECT CASE\n" +
             "        WHEN #{year} = YEAR(NOW()) THEN freshman\n" +
             "        WHEN #{year} < YEAR(now()) THEN senior\n" +
@@ -83,11 +85,11 @@ public interface ManagerMapper2 {
             "FROM vacation_quantity_setting " +
             "WHERE YEAR(setting_time) = YEAR(CURDATE() - INTERVAL 1 YEAR) " +
             "ORDER BY setting_time DESC LIMIT 1;")
-    public int getDefaultSettingVacationValue(int year); //작년의 가장 최근 데이터에서 입사연도에 따라서 기본 연차 부여 설정값 가져옴
+    public int getDefaultSettingVacationValue(int year);
 
 
-
-
+    // 올해 조정된 데이터가 있는지 확인하여 존재시 조정 연차 개수 총합 리턴
+    // 미존재시 0 리턴
     @Select("SELECT IFNULL(sum(adjust_quantity),0) " +
             "FROM vacation_adjusted_history " +
             "WHERE year(adjust_time)=year(now()) AND employee_id = #{employeeId};")

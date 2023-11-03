@@ -84,5 +84,23 @@ public class EmployeeController2 {
 
     }
 
+    /*TODO : 권한 확인 로직 실제 구현 해야함*/
+    /*TODO : Session에서 아이디 값 받아오도록 해야함*/
+    @GetMapping("/employee/vacation/remain")
+    public ResponseEntity<Integer> getRemainOfVacationOfMine() {
+        if(authCheckApi()){
+            String id="1234"; //임의 지정 데이터
+            int setting = empService2.getRemainOfVacationOfMine(id);
+            log.info("남은 연차 수 : {}",setting);
+
+            return ResponseEntity.ok(setting); // 200 OK
+
+        }
+        log.info("권한 에러 발생 (403)");
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
+        }
+
+
+
 
 }
