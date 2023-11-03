@@ -16,4 +16,6 @@ public interface ManagerService2 {
 
     public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto);
 
+    public int getDefaultSettingValue(String employeeId);
+
 }

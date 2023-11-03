@@ -1,10 +1,7 @@
 package com.example.bootproject.repository.mapper.mapper2;
 
 import com.example.bootproject.vo.vo2.request.DefaultVacationRequestDto;
-import com.example.bootproject.vo.vo2.response.DefaultVacationResponseDto;
-import com.example.bootproject.vo.vo2.response.SettingWorkTimeDto;
-import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
+import com.example.bootproject.vo.vo2.response.*;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -75,5 +72,33 @@ public interface ManagerMapper2 {
 
     @Select("SELECT * FROM vacation_quantity_setting WHERE setting_key=#{generatedKey};")
     public DefaultVacationResponseDto getDefaultVacationResponseDto(int generatedKey);
+
+    @Select("SELECT YEAR(hire_year) FROM EMPLOYEE WHERE employee_id=#{id}; ")
+    public int getHireYear(String id);
+
+    @Select("SELECT CASE\n" +
+            "        WHEN #{year} = YEAR(NOW()) THEN freshman\n" +
+            "        WHEN #{year} < YEAR(now()) THEN senior\n" +
+            "       END AS settingValue\n" +
+            "FROM vacation_quantity_setting " +
+            "WHERE YEAR(setting_time) = YEAR(CURDATE() - INTERVAL 1 YEAR) " +
+            "ORDER BY setting_time DESC LIMIT 1;")
+    public int getDefaultSettingVacationValue(int year); //작년의 가장 최근 데이터에서 입사연도에 따라서 기본 연차 부여 설정값 가져옴
+
+
+
+
+    @Select("SELECT IFNULL(sum(adjust_quantity),0) " +
+            "FROM vacation_adjusted_history " +
+            "WHERE year(adjust_time)=year(now()) AND employee_id = #{employeeId};")
+    public int getVacationAdjustedHistory (String employeeId);
+
+
+
+    // 올해 연차 승인 받은 데이터의 수
+    @Select("SELECT SUM(vacation_quantity)" +
+            "FROM vacation_request" +
+            " WHERE EMPLOYEE_ID=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY='승인';")
+    public int getApproveVacationQuantity(String employeeId);
 
 }

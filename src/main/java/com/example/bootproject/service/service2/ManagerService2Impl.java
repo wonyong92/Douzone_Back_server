@@ -6,15 +6,10 @@ import com.example.bootproject.vo.vo2.response.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Array;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.example.bootproject.vo.vo2.response.Page.PAGE_SIZE;
@@ -143,6 +138,28 @@ public class ManagerService2Impl implements  ManagerService2{
 
         return result; // 데이터 select해서 반환
 
+    }
+
+    @Override
+    public int getDefaultSettingValue(String employeeId) {
+       int year = manMapper2.getHireYear(employeeId); //입사 연도 들고옴
+       log.info("getHireYear(employeeId) : {}",year);
+
+       int setting = manMapper2.getDefaultSettingVacationValue(year); //입사 연도에 따른 기본 연차 설정값 들고옴
+       log.info("manMapper2.getDefaultSettingVacationValue(year) : {}",setting);
+
+       /* 조정된 연차 개수를 들고 와서, 기본 연차 설정 값과 더한 결과*/
+        // 만약 조정된 것이 없다면? 0이 리턴되도록
+       int thisYearSettingVacationValue = setting+manMapper2.getVacationAdjustedHistory(employeeId);
+       log.info("조정된 연차 개수 데이터 : {}",manMapper2.getVacationAdjustedHistory(employeeId));
+       log.info("기본 연차 설정 값 + 조정된 연차 개수 데이터 : {}",thisYearSettingVacationValue);
+       //
+
+        /* 연차 신청 결과 승인인 튜플 중 vacation_quantity의 총합 */
+       int approveVacationSum = manMapper2.getApproveVacationQuantity(employeeId);
+       log.info("올해 연차 승인 개수 합 : {}", approveVacationSum);
+
+       return thisYearSettingVacationValue-approveVacationSum; //기본값 + 조정값 - 승인 튜플 수
     }
 
 

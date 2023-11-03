@@ -109,7 +109,7 @@ create table vacation_adjusted_history
         primary key auto_increment,
     employee_id                  varchar(10) null,
     adjust_type                  varchar(10) not null,
-    adjust_time                  timestamp    not null,
+    adjust_time                  timestamp default now() not null,
     adjust_quantity              int         not null,
     reason                       text        not null,
     constraint vacation_adjusted_history_ibfk_1

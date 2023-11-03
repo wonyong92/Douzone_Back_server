@@ -264,6 +264,33 @@ public class ManagerController2 {
 
     }
 
+    //
+    @GetMapping("/manager/vacation/remain/{employee_id}")
+    public ResponseEntity<Integer> getRemainOfVacationOfEmployee(@PathVariable(name = "employee_id") String employeeId) {
+        if(authCheckApi()) {
+            if(validationId(employeeId)){
+                int setting = manService2.getDefaultSettingValue(employeeId);
+                log.info("남은 연차 수 : {}",setting);
+
+                return ResponseEntity.ok(setting); // 200 OK
+            }
+            log.info("id validation fail");
+            return ResponseEntity.badRequest().build(); // 400 Bad Request
+        }
+        log.info("권한 에러 발생 (403)");
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
+
+
+        //  1. 기본 설정 데이터 값 들고옴 - 입사 년도가 올해 이면 freshman, 입사 년도가 올해보다 이전이면 senior 값을 들고온다
+        //    1.1 조정 데이터 있으면
+        //      1.1.1 기본 값에 반영 (+,-)
+        //    1.1 조정 데이터 없으면
+        //      1.1.2 X
+        //  2. 1번 데이터에서 전체 연차 이력에서 승인 개수를 제외함
+
+
+    }
+
 
 
 }
