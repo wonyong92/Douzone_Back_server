@@ -5,6 +5,7 @@ import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
+import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -195,6 +196,10 @@ public class ManagerController1 {
     - 조회된 승인 이력이 없을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
     - 조회에 성공한 경우, 승인 이력 목록을 담아 200 OK 응답과 함께 반환한다.
     */
+
+
+
+
 
     public boolean ManagerCheckApi(){
         return true;

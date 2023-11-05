@@ -7,6 +7,7 @@ import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
+import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -74,7 +75,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
  */
 
-        //퇴근기록
+        //퇴근요청
         @Override
         public AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto, String employeeId) {
                 LocalDate attendanceDate=LocalDate.now();
@@ -186,6 +187,21 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
                 return attendanceInfo;
         }
+
+        //사원검색
+        @Override
+        public List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter) {
+                // 숫자만 있는지 검사합니다.
+                if (searchParameter.matches("\\d+")) {
+                        // 숫자일 경우, employeeId로 검색
+                        return employeeMapper1.searchEmployeeEmployeeId(searchParameter);
+                } else {
+                        // 문자열일 경우, name으로 검색
+                        return employeeMapper1.searchEmployeeName(searchParameter);
+                }
+        }
+
+
 
 
 

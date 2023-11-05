@@ -107,6 +107,23 @@ VALUES
 
 select *
 from attendance_appeal_request;
+
+INSERT INTO employee (employee_id, password, name, attendance_manager, hire_year)
+VALUES
+    ('1001', 'pass123', '김철수', false, '2023-01-10'),
+    ('1002', 'qwerty', '박영희', true, '2022-02-20'),
+    ('1003', '123abc', '이민준', false, '2021-03-15'),
+    ('1004', 'pass456', '최지은', false, '2020-04-08'),
+    ('1005', 'azerty', '황보경', true, '2019-05-21'),
+    ('1006', 'pass789', '김하준', false, '2018-06-30'),
+    ('1007', '789xyz', '손서연', false, '2017-07-14'),
+    ('1008', 'pass000', '정우성', true, '2016-08-23'),
+    ('1009', 'abc123', '한지민', false, '2015-09-01'),
+    ('1010', '654321', '박보검', false, '2014-10-18');
+
+select *
+from employee ;
+
 # INSERT INTO regular_time_adjustment_history
 # (target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id)
 # VALUES

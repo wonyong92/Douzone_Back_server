@@ -7,6 +7,7 @@ import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
+import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
 
 
 import java.time.LocalDate;
@@ -42,6 +43,13 @@ public interface EmployeeService1 {
 
     //자신의조정요청이력조회
     AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
+
+    //사원이름이나사번검색
+    List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter);
+
+
+
+
 
 
 

@@ -4,6 +4,7 @@ import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
+import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -118,6 +119,15 @@ public interface EmployeeMapper1 {
             "FROM attendance_appeal_request " +
             "WHERE employee_id = #{employeeId}")
     AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
+
+
+    //이름검색
+    @Select("SELECT * FROM employee WHERE name LIKE CONCAT('%', #{searchParameter}, '%')")
+    List<EmployeeSearchResponseDto> searchEmployeeName(String searchParameter);
+
+    //사원id검색
+    @Select("SELECT * FROM employee WHERE employee_id LIKE CONCAT('%', #{searchParameter}, '%')")
+    List<EmployeeSearchResponseDto> searchEmployeeEmployeeId(String searchParameter);
 
 
 

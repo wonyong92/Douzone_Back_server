@@ -7,6 +7,7 @@ import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
+import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -277,6 +278,14 @@ public class EmployeeController1 {
     */
 
 
+    @GetMapping("/search")
+    public ResponseEntity<List<EmployeeSearchResponseDto>> searchEmployeeByIdOrNumber(@RequestParam String searchParameter) {
+        List<EmployeeSearchResponseDto> searchResults = employeeService1.searchByEmployeeIdOrName(searchParameter);
+        if (searchResults.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(searchResults);
+    }
 
 
 // 사원id validation check
