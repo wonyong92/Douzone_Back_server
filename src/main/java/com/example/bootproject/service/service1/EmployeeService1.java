@@ -1,17 +1,16 @@
 package com.example.bootproject.service.service1;
 
+import com.example.bootproject.vo.vo1.page.Page;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalInsertRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
-import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
-import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
+import com.example.bootproject.vo.vo1.response.*;
 
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeService1 {
 
@@ -37,15 +36,21 @@ public interface EmployeeService1 {
     //자신의 근태승인요청
     AttendanceApprovalResponseDto approveAttendance(String employeeId, Long attendanceInfoId);
 
+
     //자신의근태이상승인내역
-    List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId);
+    Page<List<AttendanceApprovalUpdateResponseDto> >getApprovalInfoByEmployeeId(String employeeId, int page, String sort, String desc);
 
 
     //자신의조정요청이력조회
-    AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
+    Page<List<AttendanceAppealMediateResponseDto>>findAttendanceInfoByMine(String employeeId,int page , String sort ,String desc);
+
+
+
 
     //사원이름이나사번검색
     List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter);
+
+    boolean employeeExists(String employeeId);
 
 
 

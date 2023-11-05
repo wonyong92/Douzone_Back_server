@@ -1,10 +1,7 @@
 package com.example.bootproject.repository.mapper;
 
 import com.example.bootproject.vo.vo1.request.*;
-import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceApprovalResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
-import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
+import com.example.bootproject.vo.vo1.response.*;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -108,17 +105,47 @@ public interface EmployeeMapper1 {
 
 
     //자신의 근태이상승인내역
-    @Select("SELECT employee_id, name, attendance_approval_date " +
-            "FROM attendance_approval  " +
-            "JOIN employee USING (employee_id) " +
-            "WHERE employee_id = #{employeeId}")
-    List<AttendanceApprovalUpdateRequestDto> findApprovalInfoByMine(String employeeId);
+
+    @Select("SELECT * FROM attendance_approval WHERE employee_id = #{employeeId} ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
+    List<AttendanceApprovalUpdateResponseDto> getAllEmployeeByEmployeeId(
+            @Param("employeeId") String employeeId,
+            @Param("sort") String sort,
+            @Param("desc") String desc,
+            @Param("size") int size,
+            @Param("startRow") int startRow
+    );
+//근태이상승이내역전체갯수조회
+    @Select({
+            "SELECT COUNT(*) FROM attendance_approval WHERE employee_id = #{employeeId}"
+    })
+    int countApprovalInfoByEmployeeId(@Param("employeeId") String employeeId);
+
+
 
     //본인의 조정 요청 이력 조회
-    @Select("SELECT attendance_appeal_request_id, status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id, attendance_appeal_request_time, reason_for_rejection " +
-            "FROM attendance_appeal_request " +
-            "WHERE employee_id = #{employeeId}")
-    AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
+    @Select({
+            "SELECT attendance_appeal_request_id, status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id, attendance_appeal_request_time, reason_for_rejection",
+            "FROM attendance_appeal_request",
+            "WHERE employee_id = #{employeeId}",
+            "ORDER BY ${sort} ${desc}",
+            "LIMIT #{size}",
+            "OFFSET #{startRow}"
+    })
+    List<AttendanceAppealMediateResponseDto> findAttendanceAppealByEmployeeId(
+            @Param("employeeId") String employeeId,
+            @Param("sort") String sort,
+            @Param("desc") String desc,
+            @Param("size") int size,
+            @Param("startRow") int startRow
+    );
+
+//본인의 조정 요청 이력 갯수확인
+    @Select({
+            "SELECT COUNT(*) FROM attendance_appeal_request WHERE employee_id = #{employeeId}"
+    })
+    int countAttendanceAppealByEmployeeId(@Param("employeeId") String employeeId);
+
+
 
 
     //이름검색
@@ -130,6 +157,9 @@ public interface EmployeeMapper1 {
     List<EmployeeSearchResponseDto> searchEmployeeEmployeeId(String searchParameter);
 
 
+
+    @Select("SELECT EXISTS(SELECT 1 FROM employee WHERE employee_id = #{employeeId})")
+    boolean existsById(String employeeId);
 
 
 

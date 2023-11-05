@@ -1,12 +1,10 @@
 package com.example.bootproject.controller.rest.manager;
 import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.service.service1.ManagerService1;
+import com.example.bootproject.vo.vo1.page.Page;
 import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
-import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
-import com.example.bootproject.vo.vo1.response.EmployeeSearchResponseDto;
-import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
+import com.example.bootproject.vo.vo1.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,25 +33,24 @@ public class ManagerController1 {
     public ResponseEntity<RegularTimeAdjustmentHistoryResponseDto> setWorkTime(
             @ModelAttribute RegularTimeAdjustmentHistoryRequestDto dto) {
 
-//        log.info("RegularTimeAdjustmentHistroyDto dto{}:",dto);
-//        if (ManagerCheckApi()) {
-//            // 권한이 없다면 403 Forbidden 응답을 반환합니다.
-//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-//        }
+         log.info("RegularTimeAdjustmentHistoryDto dto{}:", dto);
+         if (ManagerCheckApi()) {
+             // 권한이 없으면 403 금지 응답을 반환합니다.
+             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+         }
 
-        log.info("request{}",dto);
+        log.info("요청 내용{}", dto);
 
-        String employeeId = "emp01";
+        String employeeId = "emp01"; // 이는 예시입니다. 실제 구현에서는 세션 또는 요청에서 직원 ID를 받아야 합니다.
 
-            RegularTimeAdjustmentHistoryResponseDto responseDto = managerService1.insertRegularTimeAdjustmentHistory(dto, employeeId);
-        if (responseDto!=null) {
-            log.info("성공적으로 데이터를 받았습니다: {}", responseDto);
+        RegularTimeAdjustmentHistoryResponseDto responseDto = managerService1.insertRegularTimeAdjustmentHistory(dto, employeeId);
+        if (responseDto != null) {
+            log.info("데이터가 성공적으로 처리되었습니다: {}", responseDto);
             return ResponseEntity.ok(responseDto);
         } else {
-            log.info("안좋은 데이터를 받았습니다: {}", responseDto);
+            log.info("처리할 수 없는 요청입니다: {}", responseDto);
             return ResponseEntity.badRequest().build();
         }
-
     }
 
     /*
@@ -71,32 +68,46 @@ public class ManagerController1 {
 
     //타사원에 대한 근태 이상 승인 내역
     @GetMapping("/approve/{employeeId}")
-    public ResponseEntity<List<AttendanceApprovalUpdateRequestDto>> getApprovalInfo(
-            @PathVariable String employeeId) {
+    public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfMine(
+            @PathVariable("employeeId") String employeeId,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "sort", defaultValue = "attendance_approval_date") String sort,
+            @RequestParam(name = "desc", defaultValue = "DESC") String desc) {
 
-        if (!ManagerCheckApi()) {
-            log.info("Access denied: User does not have manager privileges.");
+        // 'employeeId'가 세션 또는 보안 컨텍스트에서 검색된 것으로 가정합니다.
+
+        if (ManagerCheckApi()) {
+            // 권한이 없으면 403 금지 응답을 반환합니다.
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        if (employeeId == null) {
-            log.info("EmployeeId is missing.");
-            return ResponseEntity.badRequest().build();
+
+        // 'page' 매개변수 유효성 검증
+        if (page < 1) {
+            log.error("유효하지 않은 페이지 번호: {}", page);
+            // 예외를 던지는 대신 에러를 로깅하고 계속 진행합니다.
         }
 
-        if (!employeeValidation(employeeId)) {
-            log.info("Invalid employeeId format: " + employeeId);
-            return ResponseEntity.badRequest().build();
+        // 'sort' 매개변수 유효성 검증
+        if (!(sort.equals("attendance_approval_date") || sort.equals("anotherField"))) {
+            log.error("유효하지 않은 정렬 필드: {}", sort);
+            // 예외를 던지는 대신 에러를 로깅하고 계속 진행합니다.
         }
 
-        List<AttendanceApprovalUpdateRequestDto> approvalInfo = managerService1.getAttendanceApprovalInfoDto(employeeId);
-        if (approvalInfo.isEmpty()) {
-            log.info("No approval history found for employeeId: " + employeeId);
-            return ResponseEntity.noContent().build();
+        // 'desc' 매개변수 유효성 검증
+        if (!(desc.equalsIgnoreCase("ASC") || desc.equalsIgnoreCase("DESC"))) {
+            log.error("유효하지 않은 정렬 방향: {}", desc);
+            // 예외를 던지는 대신 에러를 로깅하고 계속 진행합니다.
         }
 
-        return new ResponseEntity<>(approvalInfo, HttpStatus.OK);
+        // 예외를 던지지 않고 작업을 계속 진행합니다.
+        Page<List<AttendanceApprovalUpdateResponseDto>> approvalPage =
+                managerService1.managerGetApprovalInfoByEmployeeId(employeeId, page, sort, desc);
+
+        // 결과를 반환합니다.
+        return ResponseEntity.ok(approvalPage);
     }
+
     //TODO 사원id가 존재하는지에대해서 본다 나중에생각
 
 
@@ -115,79 +126,89 @@ public class ManagerController1 {
 
 
     //타사원근태정보조회년월일
-    @GetMapping("/attendance_info/{employee_id}/")
+    @GetMapping("/attendance_info/{employeeId}/")
     public ResponseEntity<List<AttendanceInfoResponseDto>> getAttendanceInfoOfEmployeeByDay(
             @PathVariable("employee_id") String employeeId,
             @RequestParam("year") int year,
             @RequestParam("month") int month,
             @RequestParam(value = "day", required = false) Integer day) {
 
-//        if (!employeeValidation(employeeId)) {
-//            log.info("Invalid employee ID: " + employeeId);
-//            return ResponseEntity.badRequest().build();
-//        }
+        if (ManagerCheckApi()) {
+            // 권한이 없으면 403 금지 응답을 반환합니다.
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+//         사원 ID가 유효한지 검증합니다. (현재 이 부분은 주석 처리되어 있습니다.)
+         if (!employeeValidation(employeeId)) {
+             log.info("유효하지 않은 사원 ID: " + employeeId);
+             return ResponseEntity.badRequest().build();
+         }
 
+        // 날짜가 유효한지 검증합니다.
         if (day != null && !isValidDate(year, month, day)) {
-            log.info("Invalid date: year={}, month={}, day={}", year, month, day);
+            log.info("유효하지 않은 날짜: 년도={}, 월={}, 일={}", year, month, day);
             return ResponseEntity.badRequest().build();
         }
 
         List<AttendanceInfoResponseDto> attendanceInfo;
 
-
         if (day != null) {
-            // 일 데이터가 있으면 해당 날짜로 검색
+            // 일자 데이터가 있으면 해당 날짜로 검색합니다.
             LocalDate attendanceDate = LocalDate.of(year, month, day);
             attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
         } else {
-            // 일 데이터가 없으면 해당 월로 검색
+            // 일자 데이터가 없으면 해당 월로 검색합니다.
             YearMonth yearMonth = YearMonth.of(year, month);
             LocalDate firstDayOfMonth = yearMonth.atDay(1);
-            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year,month, employeeId);
+            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year, month, employeeId);
         }
 
-//        if (attendanceInfo.isEmpty()) {
-//            log.info("No attendance records found for employeeId: " + employeeId);
-//            return ResponseEntity.noContent().build();
-//        }
+        // 출석 정보가 비어있는지 확인합니다. (현재 이 부분은 주석 처리되어 있습니다.)
+        // if (attendanceInfo.isEmpty()) {
+        //     log.info("사원 ID에 대한 출석 기록이 없습니다: " + employeeId);
+        //     return ResponseEntity.noContent().build();
+        // }
 
         return ResponseEntity.ok(attendanceInfo);
     }
 
 
-    //타사원 조정요청조회
     @GetMapping("/appeal/requests/{employeeId}")
-    public ResponseEntity<AttendanceAppealMediateResponseDto> getAppealHistoryOfEmployee(@PathVariable String employeeId) {
+    public ResponseEntity<Page<List<AttendanceAppealMediateResponseDto>>> getAppealHistoryOfEmployee(
+            @PathVariable("employeeId") String employeeId,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "sort", defaultValue = "attendance_appeal_request_time") String sort,
+            @RequestParam(name = "desc", defaultValue = "DESC") String desc) {
 
+        // 세션 또는 보안 컨텍스트에서 'employeeId'가 검색되었다고 가정합니다.
 
-//        if (employeeId == null) {
-//            log.info("세션에서 사원 ID를 찾을 수 없습니다.");
-//            return ResponseEntity.noContent().build();
-//        }
-
-
-        if (employeeValidation(employeeId)) {
-            log.info("유효하지 않은 사원 ID: {}", employeeId);
-            return ResponseEntity.badRequest().build();
+        // 'page' 파라미터 유효성 검증
+        if (page < 1) {
+            log.error("잘못된 페이지 번호: {}", page);
+            // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
         }
 
-
-        AttendanceAppealMediateResponseDto responseDto = employeeService1.findAttendanceInfoByMine(employeeId);
-
-
-        if (responseDto == null) {
-            log.info("해당 사원의 근태 이의 신청 이력이 없습니다: {}", employeeId);
-            return ResponseEntity.noContent().build();
+        // 'sort' 파라미터 유효성 검증
+        if (!(sort.equals("attendance_approval_date") || sort.equals("anotherField"))) {
+            log.error("잘못된 정렬 필드: {}", sort);
+            // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
         }
 
+        // 'desc' 파라미터 유효성 검증
+        if (!(desc.equalsIgnoreCase("ASC") || desc.equalsIgnoreCase("DESC"))) {
+            log.error("잘못된 정렬 방향: {}", desc);
+            // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
+        }
 
-        return ResponseEntity.ok(responseDto);
+        // 예외를 던지지 않고 연산을 계속 진행합니다.
+        Page<List<AttendanceAppealMediateResponseDto>> appealPage =
+                managerService1.managerfindAttendanceInfoByMine(employeeId, page, sort, desc);
+
+        // 결과를 반환합니다.
+        return ResponseEntity.ok(appealPage);
     }
 
-    //TODO: 모든 내역조회에 페이징네이션 적용
-
     /*
-    //TODO LIST 담자....
+
     - 쿼리파라미터로 ID를 추출한다.
     - 사원 ID가 넘어오지 않을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
     - 사원 ID에 대한 유효성 검사를 수행한다.

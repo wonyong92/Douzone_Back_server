@@ -1,8 +1,9 @@
 package com.example.bootproject.service.service1;
 
-import com.example.bootproject.vo.vo1.request.AttendanceApprovalUpdateRequestDto;
+import com.example.bootproject.vo.vo1.page.Page;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
+import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 
 import java.util.List;
@@ -17,10 +18,13 @@ public interface ManagerService1 {
     RegularTimeAdjustmentHistoryResponseDto insertRegularTimeAdjustmentHistory
             (RegularTimeAdjustmentHistoryRequestDto dto, String employeeId);
 
-    //근태이상승인요청 내역
-    List<AttendanceApprovalUpdateRequestDto> getAttendanceApprovalInfoDto(String employeeId);
+    //타사원근태이상승인내역
+    Page<List<AttendanceApprovalUpdateResponseDto>>managerGetApprovalInfoByEmployeeId(String employeeId, int page, String sort, String desc);
+
 
     //타사원의 조정요청내역
-    AttendanceAppealMediateResponseDto findAttendanceInfoByMine(String employeeId);
+    Page<List<AttendanceAppealMediateResponseDto>>managerfindAttendanceInfoByMine(String employeeId,int page , String sort ,String desc);
 
+
+    boolean employeeExists(String employeeId);
 }

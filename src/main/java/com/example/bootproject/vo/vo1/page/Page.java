@@ -1,12 +1,14 @@
 package com.example.bootproject.vo.vo1.page;
 
+import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Page <T>{
 
     public static int PAGE_SIZE = 10;
@@ -24,5 +26,19 @@ public class Page <T>{
     //현재 페이지 번호
     private int page;
     //전체 요소 개수
+
+
+
     private int totalElement;
+    public Page(T data, boolean isLastPage, String sort, String sortOrder, int currentPage, int totalElements) {
+        this.data = data;
+        this.hasNext = !isLastPage;
+        this.sort = sort;
+        this.desc = sortOrder;
+        this.page = currentPage;
+        this.totalElement = totalElements;
+    }
+
+
+
 }
