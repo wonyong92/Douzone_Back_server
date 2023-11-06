@@ -68,7 +68,7 @@ public class ManagerController1 {
 
     //타사원에 대한 근태 이상 승인 내역
     @GetMapping("/approve/{employeeId}")
-    public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfMine(
+    public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfEmployee(
             @PathVariable("employeeId") String employeeId,
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "sort", defaultValue = "attendance_approval_date") String sort,
@@ -108,8 +108,6 @@ public class ManagerController1 {
         return ResponseEntity.ok(approvalPage);
     }
 
-    //TODO 사원id가 존재하는지에대해서 본다 나중에생각
-
 
     /*
     Manager권환처리
@@ -127,7 +125,7 @@ public class ManagerController1 {
 
     //타사원근태정보조회년월일
     @GetMapping("/attendance_info/{employeeId}")
-    public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfMineByDay(
+    public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfEmployeeByDay(
             @PathVariable("employeeId")String employeeId,
             @RequestParam("year") int year,
             @RequestParam("month") int month,

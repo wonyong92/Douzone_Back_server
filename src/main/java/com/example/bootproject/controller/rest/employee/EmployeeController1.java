@@ -5,7 +5,6 @@ import com.example.bootproject.vo.vo1.page.Page;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
 import com.example.bootproject.vo.vo1.response.*;
-import com.fasterxml.jackson.datatype.jdk8.OptionalDoubleSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

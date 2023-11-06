@@ -36,7 +36,7 @@ public class AdminController1{
 
     }
 
-    //사원id가 중복됐을때 사원id에 unique걸었을때의 오류메시지를 400에러로 띄우면괜찮나?
+
 
 
     @PostMapping("/update/{employeeId}")

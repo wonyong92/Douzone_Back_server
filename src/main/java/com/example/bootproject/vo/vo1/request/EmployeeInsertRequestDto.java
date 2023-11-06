@@ -18,5 +18,6 @@ public class EmployeeInsertRequestDto {
 
     private Boolean attendanceManager;
 
+    @DateTimeFormat(pattern = "yyyy")
     private LocalDate hireYear;
 }
