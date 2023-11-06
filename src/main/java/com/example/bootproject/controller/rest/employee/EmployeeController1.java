@@ -94,10 +94,16 @@ public class EmployeeController1 {
 
         AttendanceInfoResponseDto responseDto = employeeService1.makeEndResponse(requestDto, employeeId);
 
+        if (responseDto.getMessage() != null) {
+            // 오류 메시지가 있는 경우, 클라이언트에게 메시지를 포함하여 응답
+            return ResponseEntity.badRequest().body(responseDto);
+        }
+
         if (responseDto == null) {
             log.info("사원 ID에 대한 출근 기록 실패: " + employeeId);
             return ResponseEntity.badRequest().build();
         }
+
 
 
         return ResponseEntity.ok(responseDto);
@@ -108,6 +114,7 @@ public class EmployeeController1 {
   - 날짜 데이터 형식이 올바르지 않으면 오류 코드를 반환한다.
   - 올바른 데이터가 들어오면 로그를 남긴다.
   - LocalDate를 사용하여 입력된 날짜의 유효성을 검증한다.
+
   - 사원 ID의 유효성을 검증한다.
   - 모든 조건이 성공하면 200 응답 코드와 함께 근태 정보를 반환한다.
   - 일자가 주어지면 해당 날짜에 대한 근태 정보를 조회한다.
@@ -309,6 +316,11 @@ public class EmployeeController1 {
     public ResponseEntity<List<EmployeeSearchResponseDto>> searchEmployeeByIdOrNumber(@RequestParam String searchParameter) {
 
         List<EmployeeSearchResponseDto> searchResults = employeeService1.searchByEmployeeIdOrName(searchParameter);
+
+        if(searchParameter.isEmpty()){
+            log.info("검색요청데이터가 안들어왔습니다");
+            return ResponseEntity.badRequest().build();
+        }
 
         if (searchResults.isEmpty()) {
             log.info("검색결과가 존재하지않습니다");

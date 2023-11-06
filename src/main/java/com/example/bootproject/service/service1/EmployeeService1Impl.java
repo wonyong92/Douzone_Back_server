@@ -75,7 +75,6 @@ public class EmployeeService1Impl implements EmployeeService1 {
 */
 
     //퇴근요청
-    @Override
     public AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto, String employeeId) {
 
         if (!employeeExists(employeeId)) {
@@ -85,14 +84,17 @@ public class EmployeeService1Impl implements EmployeeService1 {
         LocalDate attendanceDate = LocalDate.now();
         LocalDateTime findStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId, attendanceDate);
         LocalDateTime findEndTime = employeeMapper1.getEndTimeByEmployeeIdAndDate(employeeId, attendanceDate);
+
+        AttendanceInfoResponseDto responseDto = new AttendanceInfoResponseDto(); // Response 객체 초기화
+
         if (findStartTime == null) {
-            log.info("출근기록이없습니다");
-            return null;
+            responseDto.setMessage("출근기록이없습니다");
+            log.info("출근기록이없습니다: {}", employeeId);
+            return responseDto;
         } else if (findEndTime != null) {
-
-
-            log.info("퇴근기록이있습니다");
-            return null;
+            responseDto.setMessage("퇴근기록이있습니다");
+            log.info("퇴근기록이있습니다: {}", employeeId);
+            return responseDto;
         } else {
             LocalDateTime endTime = LocalDateTime.now();
             dto.setEmployeeId(employeeId);
@@ -101,21 +103,20 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
             int endKey = employeeMapper1.endTimeRequest(dto);
             if (endKey > 0) {
-                AttendanceInfoResponseDto responseDto = employeeMapper1.findattendanceInfo(employeeId, attendanceDate);
+                responseDto = employeeMapper1.findattendanceInfo(employeeId, attendanceDate);
                 if (responseDto != null) {
                     return responseDto;
                 } else {
-                    log.info("출근정보를 조회하는데 실패하였습니다");
-                    return null;
+                    responseDto.setMessage("출근정보를 조회하는데 실패하였습니다");
+                    log.info("출근정보를 조회하는데 실패하였습니다: {}", employeeId);
+                    return responseDto;
                 }
             } else {
-                log.info("기록에 실패하셨습니다");
-                return null;
+                responseDto.setMessage("기록에 실패하셨습니다");
+                log.info("기록에 실패하셨습니다: {}", employeeId);
+                return responseDto;
             }
-
-
         }
-
     }
 
   /*

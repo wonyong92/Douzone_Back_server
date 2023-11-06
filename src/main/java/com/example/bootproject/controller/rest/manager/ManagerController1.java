@@ -212,20 +212,22 @@ public class ManagerController1 {
         // 'page' 파라미터 유효성 검증
         if (page < 1) {
             log.error("잘못된 페이지 번호: {}", page);
+            return ResponseEntity.badRequest().build();
             // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
         }
 
         // 'sort' 파라미터 유효성 검증
         if (!(sort.equals("attendance_approval_date") || sort.equals("anotherField"))) {
             log.error("잘못된 정렬 필드: {}", sort);
-            // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
-        }
+            return ResponseEntity.badRequest().build();
+        // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
+    }
 
-        // 'desc' 파라미터 유효성 검증
+    // 'desc' 파라미터 유효성 검증
         if (!(desc.equalsIgnoreCase("ASC") || desc.equalsIgnoreCase("DESC"))) {
-            log.error("잘못된 정렬 방향: {}", desc);
-            // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
-        }
+            return ResponseEntity.badRequest().build();
+        // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
+    }
 
         // 예외를 던지지 않고 연산을 계속 진행합니다.
         Page<List<AttendanceAppealMediateResponseDto>> appealPage = managerService1.managerfindAttendanceInfoByMine(employeeId, page, sort, desc);
