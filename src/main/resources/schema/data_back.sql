@@ -23,7 +23,8 @@ values ('permitted'),
        ('requested');
 insert into attendance_status_category
 values ('abnormal'),
-       ('pending');
+       ('pending'),
+       ('normal');
 insert into douzone_test.attendance_info (attendance_info_id, attendance_status_category, employee_id, start_time,
                                           end_time, attendance_date)
 values (1, 'abnormal', '200001012', '2023-10-31 09:24:57', '2023-10-31 16:24:59', '2023-10-31');
