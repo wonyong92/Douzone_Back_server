@@ -1,5 +1,6 @@
 package com.example.bootproject.service.service2;
 
+import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo2.response.*;
 
 import java.util.List;

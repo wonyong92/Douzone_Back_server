@@ -11,17 +11,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DefaultVacationResponseDto {
     private int settingKey;
-    private int freshman;
-    private int senior;
+    private int freshman; //1년차 미만 일 때의 연차 설정 개수
+    private int senior; // 1년차 이상 일 때의 연차 설정 개수
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime settingTime;
+    private LocalDateTime settingTime; // 설정한 시간
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate targetDate;
-    private String employeeId;
-
-    public DefaultVacationResponseDto(int freshman) {
-        this.freshman = freshman;
-    }
+    private LocalDate targetDate; // 적용할 날짜
+    private String employeeId; //사원번호
 }

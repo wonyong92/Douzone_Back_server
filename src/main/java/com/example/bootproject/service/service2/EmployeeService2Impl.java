@@ -1,10 +1,10 @@
 package com.example.bootproject.service.service2;
 
 import com.example.bootproject.repository.mapper.mapper2.EmployeeMapper2;
+import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo2.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class EmployeeService2Impl implements  EmployeeService2{
 
     @Override
     public Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto) {
-        int size = PAGE_SIZE; // Page 객체로부터 size를 가져옴
+        int size = PAGE_SIZE; // 한 페이지에 출력할 게시물 개수
         int startRow = (pagingRequestWithIdStatusDto.getCurrentPage()-1)*size; // 가져오기 시작할 row의 번호
         String orderByCondition = pagingRequestWithIdStatusDto.getSort(); // 정렬할 컬럼 이름
 
@@ -29,6 +29,7 @@ public class EmployeeService2Impl implements  EmployeeService2{
         List<VacationRequestDto> getData =  empMapper2.getHistoryOfVacationOfMine(size,orderByCondition,startRow,pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getId(),pagingRequestWithIdStatusDto.getStatus());
         log.info("empMapper2.getHistoryOfRejectedVacationOfMine()의 getData : {}",getData);
 
+        /* 가져온 데이터가 비어있다면 Page 객체를 새로 생성하고, Page 객체 중 가져온 데이터를 담는 속성에 빈 ArrayList를 생성하여 리턴한다 */
         if(getData.isEmpty()){
             Page<List<VacationRequestDto>> pageObj = new Page();
             pageObj.setData(new ArrayList<>());
@@ -37,8 +38,9 @@ public class EmployeeService2Impl implements  EmployeeService2{
 
         int totalRowCount = empMapper2.getHistoryOfVacationOfMineTotalRow(pagingRequestWithIdStatusDto.getId(),pagingRequestWithIdStatusDto.getStatus()); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
-        boolean isLastPage = (pagingRequestWithIdStatusDto.getCurrentPage()<lastPageNumber?true:false);
+        boolean isLastPage = (pagingRequestWithIdStatusDto.getCurrentPage()<lastPageNumber?true:false); // 마지막 페이지 여부
 
+        /* 생성자 이용해 Page 객체 생성, 리턴*/
         Page<List<VacationRequestDto>> result = new Page<>(getData,isLastPage,pagingRequestWithIdStatusDto.getSort(),pagingRequestWithIdStatusDto.getSortOrder(),pagingRequestWithIdStatusDto.getCurrentPage(),totalRowCount);
         return result;
     }

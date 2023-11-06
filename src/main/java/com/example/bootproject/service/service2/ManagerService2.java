@@ -1,10 +1,11 @@
 package com.example.bootproject.service.service2;
 
 import com.example.bootproject.vo.vo2.request.DefaultVacationRequestDto;
+import com.example.bootproject.vo.vo2.request.PagingRequestDto;
+import com.example.bootproject.vo.vo2.request.PagingRequestWithDateDto;
+import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo2.response.*;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public interface ManagerService2 {
