@@ -35,8 +35,8 @@ public class JobContainer {
         AtomicInteger[] affected = new AtomicInteger[1];
         affected[0] = new AtomicInteger(0);
         //Todo : 정규 출근 시간, 정규 퇴근 시간 불러오기
-        LocalDateTime regularEndTime = LocalDateTime.now().minusHours(1l);
-        LocalDateTime regularStartTime = LocalDateTime.now().minusHours(9l);
+        LocalDateTime regularEndTime = LocalDateTime.now().minusHours(1L);
+        LocalDateTime regularStartTime = LocalDateTime.now().minusHours(9L);
         infos.stream().forEach(
                 info -> {
                     Long attendanceInfoId = info.getAttendanceInfoId();

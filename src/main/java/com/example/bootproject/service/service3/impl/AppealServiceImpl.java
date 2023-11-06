@@ -5,9 +5,7 @@ import com.example.bootproject.repository.mapper3.attendanceinfo.AttendanceInfoM
 import com.example.bootproject.service.service3.api.AppealService;
 import com.example.bootproject.vo.vo3.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.appeal.AppealRequestDto;
-import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
-import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

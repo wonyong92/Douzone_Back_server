@@ -1,11 +1,10 @@
 package com.example.bootproject.vo.vo3.response.login;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 public class LoginResponseDto {
@@ -20,4 +19,3 @@ public class LoginResponseDto {
         this.ip = ip;
     }
 }
-;

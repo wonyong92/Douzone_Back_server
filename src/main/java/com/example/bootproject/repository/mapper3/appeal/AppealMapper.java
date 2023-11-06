@@ -2,7 +2,6 @@ package com.example.bootproject.repository.mapper3.appeal;
 
 import com.example.bootproject.vo.vo3.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo3.request.appeal.AppealRequestDto;
-import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 

@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -65,11 +64,14 @@ public class MultipartServiceImpl implements MultipartService {
         AtomicReference<Resource> result = new AtomicReference<>();
         Long findFileNum = multipartMapper.findByEmployeeId(employeeId);
         MultipartUploadResponseDto fileData = multipartMapper.findByFileId(findFileNum);
+        String fileName = null;
         if (fileData == null) {
-            fileData.setFileName("default.png");
+            fileName = "default.png";
+        } else {
+            fileName = fileData.getFileName();
         }
         try {
-            Path filePathPath = Paths.get(filePath + fileData.getFileName()).normalize();
+            Path filePathPath = Paths.get(filePath + fileName).normalize();
             log.info("find Path {}", filePathPath);
             Resource resource = new UrlResource(filePathPath.toUri());
             if (resource.exists()) {

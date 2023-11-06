@@ -11,9 +11,11 @@ import org.apache.ibatis.annotations.Select;
 public interface AdminLoginMapper {
 
     @Select("select admin_id as login_id,login_time,logout_time,ip from admin left join auth on auth.login_id = admin.admin_id where admin_id = #{dto.loginId} and password = #{dto.password}")
-    LoginResponseDto adminLogin(@Param("dto")LoginRequestDto dto);
+    LoginResponseDto adminLogin(@Param("dto") LoginRequestDto dto);
+
     @Insert("insert into auth values(#{dto.loginId},#{dto.ip},now(),null) ON DUPLICATE KEY UPDATE login_time=now(),logout_time=null")
-    void updateAuthInforamtion(@Param("dto")LoginResponseDto loginResult);
+    void updateAuthInforamtion(@Param("dto") LoginResponseDto loginResult);
+
     @Insert("insert into auth values(#{dto.loginId},#{dto.ip},now(),null) ON DUPLICATE KEY UPDATE login_time=now(),logout_time=null")
     void insertAuthInforamtion(@Param("dto") LoginResponseDto loginResult);
 }

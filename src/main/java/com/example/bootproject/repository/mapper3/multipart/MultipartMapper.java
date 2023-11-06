@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface MultipartMapper {
     @Insert("insert into image(employee_id,file_name,upload_date,uuid) values(#{dto.employeeId},#{filename},now(),'uuid')")
-    @Options(useGeneratedKeys = true, keyProperty = "fileId")
+    @Options(useGeneratedKeys = true, keyProperty = "dto.fileId")
     Integer upload(@Param("dto") MultipartUploadRequestDto dto, @Param("filename") String filename);
 
     void download();

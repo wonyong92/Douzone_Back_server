@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static com.example.bootproject.system.StaticString.*;
+import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_PERMITTED;
+import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REQUESTED;
 
 @Service
 @Transactional

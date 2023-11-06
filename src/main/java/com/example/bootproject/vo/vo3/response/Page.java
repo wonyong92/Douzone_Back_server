@@ -1,6 +1,5 @@
 package com.example.bootproject.vo.vo3.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -81,7 +81,7 @@ public class LoginServiceImpl implements LoginService {
          * */
         boolean loginType = checkAdmin(dto);
 
-        log.info("login 유형 : {}", loginType == true ? "employee" : "admin");
+        log.info("login 유형 : {}", loginType ? "employee" : "admin");
 
         LoginResponseDto loginResult = null;
 
@@ -106,7 +106,7 @@ public class LoginServiceImpl implements LoginService {
          * */
         HttpSession session = req.getSession(false);
         LoginResponseDto loginResult = employeeLoginMapper.employeeLogin(dto);
-        log.info("ip, password 검색 결과 = {}", (Object) (employeeLoginMapper.employeeLogin(dto)));
+        log.info("ip, password 검색 결과 = {}", employeeLoginMapper.employeeLogin(dto));
         /*employee 테이블에서 입력된 아이디와 패스워드로 인증 정보 검색*/
         if (loginResult == null) {
 
@@ -188,7 +188,7 @@ public class LoginServiceImpl implements LoginService {
          * */
         HttpSession session = req.getSession(false);
         LoginResponseDto loginResult = adminLoginMapper.adminLogin(dto);
-        log.info("loginResult = {}", (Object) (adminLoginMapper.adminLogin(dto)));
+        log.info("loginResult = {}", adminLoginMapper.adminLogin(dto));
         /*admin 테이블에서 입력된 아이디와 패스워드로 인증 정보 검색*/
         if (loginResult == null) {
 
@@ -261,10 +261,7 @@ public class LoginServiceImpl implements LoginService {
 
     boolean checkAdmin(LoginRequestDto dto) {
         String loginId = dto.getLoginId();
-        if (loginId.matches("^[0-9]*$")) {
-            //사원 번호 로그인 경우 true 반환
-            return true;
-        }
-        return false;
+        //사원 번호 로그인 경우 true 반환
+        return loginId.matches("^[0-9]*$");
     }
 }

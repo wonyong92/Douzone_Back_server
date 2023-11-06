@@ -1,14 +1,9 @@
 package com.example.bootproject.system.util;
 
-import com.example.bootproject.entity.Employee;
-import com.example.bootproject.repository.mapper3.login.AuthMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 @Component
 @RequiredArgsConstructor
 public class AuthCheck {

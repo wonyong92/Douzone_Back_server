@@ -23,9 +23,7 @@ public class AdminServiceImpl implements AdminService {
             employeeMapper.toggleManager(dto, employeeId);
             Employee updated = employeeMapper.findMemberByMemberId(employeeId);
             log.info("old {} updated {}", old, updated);
-            if (!updated.isManager() == old.isManager()) {
-                return true;
-            }
+            return !updated.isManager() == old.isManager();
         }
         return false;
     }

@@ -17,8 +17,10 @@ public interface AuthMapper {
 
     @Select("SELECT * FROM auth WHERE login_id = #{loginId} and ip = #{ip}")
     LoginResponseDto checkAuthInformation(@Param("loginId") String loginId, @Param("ip") String ip);
+
     @Update("update auth set logout_time=now() where login_id=#{sessionLoginId}")
     void logout(String sessionLoginId);
+
     @Select("select * from auth where login_id = #{sessionLoginId}")
     LogoutResponseDto logoutResult(String sessionLoginId);
 }

@@ -16,7 +16,6 @@ drop table if exists admin;
 drop table if exists employee;
 drop table if exists vacation_request_state_category;
 
-
 create table admin
 (
     admin_id varchar(10) not null
@@ -42,12 +41,12 @@ create table employee
 
 CREATE TABLE attendance_info
 (
-    attendance_info_id         BIGINT                      NOT NULL AUTO_INCREMENT,
-    attendance_status_category VARCHAR(10)                 NOT NULL,
-    employee_id                VARCHAR(10)                 NOT NULL,
+    attendance_info_id         BIGINT      NOT NULL AUTO_INCREMENT,
+    attendance_status_category VARCHAR(10) NOT NULL default 'pending',
+    employee_id                VARCHAR(10) NOT NULL,
     start_time                 timestamp,
     end_time                   timestamp,
-    attendance_date            DATE DEFAULT (CURRENT_DATE) NOT NULL,
+    attendance_date            DATE                 DEFAULT (CURRENT_DATE) NOT NULL,
     PRIMARY KEY (employee_id, attendance_date),
     UNIQUE (attendance_info_id),
     CONSTRAINT attendance_info_ibfk_1 FOREIGN KEY (employee_id) REFERENCES employee (employee_id),
@@ -81,11 +80,13 @@ create table attendance_appeal_request
 
 create table attendance_approval
 (
-    attendance_approval_id   bigint      not null
-        primary key auto_increment,
+    attendance_approval_id   bigint auto_increment
+        primary key,
     attendance_info_id       bigint      not null,
     attendance_approval_date timestamp   not null,
     employee_id              varchar(10) not null,
+    constraint attendance_approval_unique
+        unique (attendance_info_id, employee_id),
     constraint attendance_approval_ibfk_1
         foreign key (attendance_info_id) references attendance_info (attendance_info_id),
     constraint attendance_approval_ibfk_2
@@ -106,13 +107,13 @@ create table image
 
 create table vacation_adjusted_history
 (
-    vacation_adjusted_history_id bigint      not null
+    vacation_adjusted_history_id bigint                  not null
         primary key auto_increment,
-    employee_id                  varchar(10) null,
-    adjust_type                  varchar(10) not null,
-    adjust_time                  timestamp   not null,
-    adjust_quantity              int         not null,
-    reason                       text        not null,
+    employee_id                  varchar(10)             null,
+    adjust_type                  varchar(10)             not null,
+    adjust_time                  timestamp default now() not null,
+    adjust_quantity              int                     not null,
+    reason                       text                    not null,
     constraint vacation_adjusted_history_ibfk_1
         foreign key (employee_id) references employee (employee_id)
 );
@@ -126,11 +127,15 @@ create table vacation_category
 
 create table vacation_quantity_setting
 (
-    setting_key  int                     not null
+    setting_key  int                                                            not null
         primary key auto_increment,
-    freshman     int                     not null,
-    senior       int                     not null,
-    setting_time timestamp default Now() not null
+    freshman     int                                                            not null,
+    senior       int                                                            not null,
+    setting_time timestamp default Now()                                        not null,
+    target_date  TIMESTAMP DEFAULT (CONCAT(YEAR(NOW()) + 1, '-01-01 00:00:00')) NOT NULL,
+    employee_id  varchar(10)                                                    not null,
+    constraint vacation_quantity_setting_ibfk_1
+        foreign key (employee_id) references employee (employee_id)
 );
 
 create table vacation_request_state_category
@@ -162,12 +167,15 @@ create table vacation_request
 
 CREATE TABLE `regular_time_adjustment_history`
 (
-    `regular_time_adjustment_history_id` BIGINT    NOT NULL PRIMARY KEY auto_increment,
-    `target_date`                        DATE      NOT NULL DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY)),
-    `adjusted_start_time`                TIME      NOT NULL,
-    `adjusted_end_time`                  TIME      NOT NULL,
-    `reason`                             TEXT      NOT NULL,
-    `regular_time_adjustment_time`       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `regular_time_adjustment_history_id` BIGINT      NOT NULL PRIMARY KEY auto_increment,
+    `target_date`                        DATE        NOT NULL DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 DAY)),
+    `adjusted_start_time`                TIME        NOT NULL,
+    `adjusted_end_time`                  TIME        NOT NULL,
+    `reason`                             TEXT        NOT NULL,
+    `regular_time_adjustment_time`       timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `employee_id`                        varchar(10) not null,
+    constraint regular_time_adjustment_history_ibfk_1
+        foreign key (employee_id) references employee (employee_id)
 );
 
 create table `auth`

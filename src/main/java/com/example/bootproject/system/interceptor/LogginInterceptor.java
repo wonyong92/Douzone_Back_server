@@ -7,14 +7,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 @Slf4j
 public class LogginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ip = IpAnalyzer.getClientIp(request);
         log.info("[[[ request client IP : {} ]]]", ip);
-        log.info("[[[ request URI : {} ]]]",request.getRequestURL());
-        log.info("[[[ request handler : {} ]]]",handler);
+        log.info("[[[ request URI : {} ]]]", request.getRequestURL());
+        log.info("[[[ request handler : {} ]]]", handler);
         return true;
     }
 
