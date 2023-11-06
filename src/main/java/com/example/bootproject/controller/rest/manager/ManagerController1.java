@@ -126,50 +126,53 @@ public class ManagerController1 {
 
 
     //타사원근태정보조회년월일
-    @GetMapping("/attendance_info/{employeeId}/")
-    public ResponseEntity<List<AttendanceInfoResponseDto>> getAttendanceInfoOfEmployeeByDay(
-            @PathVariable("employee_id") String employeeId,
+    @GetMapping("/attendance_info/{employeeId}")
+    public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfMineByDay(
+            @PathVariable("employeeId")String employeeId,
             @RequestParam("year") int year,
             @RequestParam("month") int month,
-            @RequestParam(value = "day", required = false) Integer day) {
+            @RequestParam(value = "day", required = false) Integer day,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name="sort" ,defaultValue = "attendance_date")String sort,
+            @RequestParam(name = "desc",defaultValue = "DESC")String desc) {
 
-        if (ManagerCheckApi()) {
-            // 권한이 없으면 403 금지 응답을 반환합니다.
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-//         사원 ID가 유효한지 검증합니다. (현재 이 부분은 주석 처리되어 있습니다.)
-         if (!employeeValidation(employeeId)) {
-             log.info("유효하지 않은 사원 ID: " + employeeId);
-             return ResponseEntity.badRequest().build();
-         }
+        // 세션에서 사원 ID 가져오기. 현재는 하드코딩된 ID 'emp01' 사용 중
+        // HttpSession session = request.getSession();
+        // String employeeId = (String) session.getAttribute("employeeId");
 
-        // 날짜가 유효한지 검증합니다.
+        // 입력된 날짜가 유효한지 검증
         if (day != null && !isValidDate(year, month, day)) {
-            log.info("유효하지 않은 날짜: 년도={}, 월={}, 일={}", year, month, day);
+            log.info("유효하지 않은 날짜: year={}, month={}, day={}", year, month, day);
             return ResponseEntity.badRequest().build();
         }
 
-        List<AttendanceInfoResponseDto> attendanceInfo;
+        // 사원 ID 유효성 검사
+//        if (!employeeValidation(employeeId)) {
+//            return ResponseEntity.badRequest().build();
+//        }
 
+        // 근태 정보 조회
+        Page<List<AttendanceInfoResponseDto>> attendanceInfo;
         if (day != null) {
-            // 일자 데이터가 있으면 해당 날짜로 검색합니다.
+            // 날짜를 기준으로 근태 정보 조회
             LocalDate attendanceDate = LocalDate.of(year, month, day);
-            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId);
+            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId,sort,desc,page);
         } else {
-            // 일자 데이터가 없으면 해당 월로 검색합니다.
-            YearMonth yearMonth = YearMonth.of(year, month);
-            LocalDate firstDayOfMonth = yearMonth.atDay(1);
-            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year, month, employeeId);
+            // 월을 기준으로 근태 정보 조회
+            LocalDate attendanceDate = LocalDate.of(year, month ,1);
+            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year,month,employeeId,page,sort,desc);
         }
 
-        // 출석 정보가 비어있는지 확인합니다. (현재 이 부분은 주석 처리되어 있습니다.)
-        // if (attendanceInfo.isEmpty()) {
-        //     log.info("사원 ID에 대한 출석 기록이 없습니다: " + employeeId);
-        //     return ResponseEntity.noContent().build();
-        // }
+        // 조회된 근태 정보가 없을 경우
+        if (attendanceInfo == null) {
+            log.info("해당 사원의 근태 기록이 없습니다: {}", employeeId);
+            return ResponseEntity.noContent().build();
+        }
 
+        // 근태 정보 반환
         return ResponseEntity.ok(attendanceInfo);
     }
+
 
 
     @GetMapping("/appeal/requests/{employeeId}")

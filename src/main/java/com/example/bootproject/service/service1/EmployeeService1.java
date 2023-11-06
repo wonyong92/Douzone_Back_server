@@ -25,10 +25,12 @@ public interface EmployeeService1 {
 
 
     //사원년월일검색
-    List<AttendanceInfoResponseDto> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId);
+    Page<List<AttendanceInfoResponseDto>> getAttendanceByDateAndEmployee(LocalDate attendanceDate , String employeeId,String sort, String desc,
+                                                                         int page);
 
     //사원년월검색
-    List<AttendanceInfoResponseDto> getAttendanceByMonthAndEmployee(int year , int month, String employeeId);
+    Page<List<AttendanceInfoResponseDto>> getAttendanceByMonthAndEmployee(int year , int month, String employeeId,int page ,
+                                                                          String sort , String desc);
 
 
 

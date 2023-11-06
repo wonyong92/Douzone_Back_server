@@ -49,34 +49,53 @@ public interface EmployeeMapper1 {
 
     //사원년월일 사원근태정보검색
     @Select("SELECT " +
-            "attendance_info_id,"+
-            "employee_id, " +
-            "attendance_date, " +
+            "attendance_info_id, " +
             "attendance_status_category, " +
+            "employee_id, " +
             "start_time, " +
-            "end_time " +
+            "end_time, " +
+            "attendance_date " +
             "FROM attendance_info " +
             "WHERE attendance_date = #{attendanceDate} AND employee_id = #{employeeId} " +
-            "ORDER BY employee_id")
-    List<AttendanceInfoResponseDto> selectAttendanceByDate(LocalDate attendanceDate , String employeeId);
+            "ORDER BY ${sort} ${desc} " + // sort 파라미터가 'attendance_date'가 되도록 확실히 하세요.
+            "LIMIT #{size} OFFSET #{startRow}")
+    List<AttendanceInfoResponseDto> selectAttendanceByDate(@Param("attendanceDate") LocalDate attendanceDate,
+                                                           @Param("employeeId") String employeeId,
+                                                           @Param("sort") String sort,
+                                                           @Param("desc") String desc,
+                                                           @Param("size") int size,
+                                                           @Param("startRow") int startRow);
 
 
 
     //사원년월 사원근태정보검색
     @Select("SELECT " +
             "attendance_info_id, " +
-            "employee_id, " +
-            "attendance_date, " +
             "attendance_status_category, " +
+            "employee_id, " +
             "start_time, " +
-            "end_time " +
+            "end_time, " +
+            "attendance_date " +
             "FROM attendance_info " +
             "WHERE employee_id = #{employeeId} " +
             "AND YEAR(attendance_date) = #{year} " +
             "AND MONTH(attendance_date) = #{month} " +
-            "ORDER BY attendance_date")
-    List<AttendanceInfoResponseDto> selectAttendanceByMonthAndEmployee(int year, int month, String employeeId);
+            "ORDER BY ${sort} ${desc} " + // 여기에 공백 추가
+            "LIMIT #{size} OFFSET #{startRow}"
+    )
+    List<AttendanceInfoResponseDto> selectAttendanceByMonthAndEmployee(int year, int month, String employeeId, String sort, String desc,
+    int size, int startRow);
 
+    @Select({
+            "SELECT COUNT(*) FROM attendance_info WHERE employee_id = #{employeeId} AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month} "
+    })
+    int countAttendanceInfoByEmployeeId(@Param("employeeId") String employeeId,int year , int month);
+
+
+    @Select({
+            "SELECT COUNT(*) FROM attendance_info WHERE employee_id = #{employeeId} AND attendance_date = #{attendanceDate} "
+    })
+    int countAttendanceInfoByMonthEmployeeId(@Param("employeeId") String employeeId,LocalDate attendanceDate);
 
 //세션에서 attendance_info정보를 찾아오는걸로 변경
     //'지각' key값을 찾는 쿼리문이다

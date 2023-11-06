@@ -5,11 +5,17 @@ import com.example.bootproject.vo.vo1.page.Page;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
+import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -124,12 +130,19 @@ public class ManagerService1Impl implements ManagerService1 {
         int totalElements = managerMapper1.countAttendanceAppealByEmployeeId(employeeId);
         boolean hasNext = (page * size) < totalElements;
 
+        if (totalElements <= 0) {
+            // 근태 이의 신청이 없을 때 처리할 로직
+            log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+            return null; // 또는 적절한 예외 처리를 할 수 있습니다.
+        }
+
+
         // 로그 남김
         log.info("사원 ID {}의 조정 요청 이력 수: {}", employeeId, totalElements);
 
         Page<List<AttendanceAppealMediateResponseDto>> result = new Page<>(
                 data, // 바로 data를 넘김. List<T> 타입을 만족함.
-                !hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
+                hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
                 sort, desc, page, totalElements);
 
         return result;
@@ -142,9 +155,81 @@ public class ManagerService1Impl implements ManagerService1 {
 - 로그를 남겨 조회 정보를 기록한다.
 */
 
+    //        사원 년,월,일 사원근태정보검색
+    @Override
+    public Page<List<AttendanceInfoResponseDto>> getmanagerAttendanceByDateAndEmployee(LocalDate attendanceDate , String employeeId,String sort, String desc,
+                                                                                int page,int year, int month) {
+
+        int size =Page.PAGE_SIZE;
+        int startRow=(page -1) * size;
+
+        List<AttendanceInfoResponseDto> data =
+                managerMapper1.selectmanagerAttendanceByDate(attendanceDate,employeeId,sort,desc,size,startRow);
+        int totalElements = managerMapper1.managercountAttendanceInfoByEmployeeId(employeeId,year,month);
+        boolean hasNext = (page * size) < totalElements;
+
+        if (totalElements <= 0) {
+            // 근태 이의 신청이 없을 때 처리할 로직
+            log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+            return null; // 또는 적절한 예외 처리를 할 수 있습니다.
+        }
+
+        log.info("사원 ID {}의 조정 요청 이력 수: {}", employeeId, totalElements);
+
+        Page<List<AttendanceInfoResponseDto>> result = new Page<>(
+                data,
+                !hasNext,
+                sort, desc, page, totalElements);
+
+        return result;
+    }
+
+
+    //사원 년,월 사원근태정보검색
+    @Override
+    public Page<List<AttendanceInfoResponseDto>> getmanagerAttendanceByMonthAndEmployee(int year, int month, String employeeId, int page ,
+                                                                                 String sort , String desc) {
+        if (!employeeExists(employeeId)) {
+            log.info("이 아이디가 존재하지 않는다: {}", employeeId);
+            return null;
+        }
+
+        int size =Page.PAGE_SIZE;
+        int startRow=(page -1) * size;
+        List<AttendanceInfoResponseDto> data =
+                managerMapper1.selectmanagerAttendanceByMonthAndEmployee(year,month,employeeId,sort,desc,size,startRow);
+        int totalElements = managerMapper1.managercountAttendanceInfoByEmployeeId(employeeId,year,month);
+        boolean hasNext = (page * size) < totalElements;
+
+        if (totalElements <= 0) {
+            // 근태 이의 신청이 없을 때 처리할 로직
+            log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+            return null; // 또는 적절한 예외 처리를 할 수 있습니다.
+        }
+
+        Page<List<AttendanceInfoResponseDto>> result = new Page<>(
+                data, // 바로 data를 넘김. List<T> 타입을 만족함.
+                !hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
+                sort, desc, page, totalElements);
+
+        return result;
+    }
+
+
     @Override
     public boolean employeeExists(String employeeId) {
         return managerMapper1.existsById(employeeId);
+    }
+
+    //년월알 데이터 형식 맞는지에 validationcheck
+    public static boolean isValidDate(int year, int month, int day) {
+        try {
+            LocalDate.of(year, month, day);
+            return true;
+        } catch (DateTimeException e) {
+            return false;
+        }
+
     }
 
 }

@@ -2,7 +2,6 @@ package com.example.bootproject.vo.vo1.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,12 +20,12 @@ public class AttendanceInfoResponseDto {
 
     private LocalDateTime endTime;
 
-    private LocalDate AttendanceDate;
+    private LocalDate attendanceDate;
+
+    private String message;
 
 
-
-
-
-
-
+    public AttendanceInfoResponseDto() {
+        this.setMessage(message);
+    }
 }

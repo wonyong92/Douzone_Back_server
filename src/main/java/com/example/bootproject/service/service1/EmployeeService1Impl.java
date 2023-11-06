@@ -27,44 +27,41 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
 
 
-        //TODO 예외처리 컨트롤러로 보내기
         //출근요청
-        @Override
         public AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto, String employeeId) {
-                // Check if the employee exists
-                if (!employeeExists(employeeId)) {
-                        log.info("이 아이디가 존재하지 않는다: {}", employeeId);
-                        return null;
+                // 오늘 날짜 설정
+                LocalDate attendanceDate = LocalDate.now();
+
+                // 기존 출근 정보 조회
+                AttendanceInfoResponseDto responseDto = employeeMapper1.findattendanceInfo(employeeId, attendanceDate);
+
+                // 출근 정보가 이미 있으면 바로 반환
+                if (responseDto != null) {
+                        responseDto.setMessage("출근기록이있습니다");
+                        log.info("출근기록이있습니다: {}", employeeId);
+                        return responseDto;
                 }
 
-                LocalDate attendanceDate = LocalDate.now();
-                LocalDateTime findStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId, attendanceDate);
+                // 출근 기록이 없으면 새로운 기록 생성
+                LocalDateTime startTime = LocalDateTime.now();
+                dto.setEmployeeId(employeeId);
+                dto.setAttendanceDate(attendanceDate);
+                dto.setStartTime(startTime);
 
-                // Check if the start time already exists
-                if (findStartTime != null) {
-                        // 출근 시간이 이미 기록되어 있는 경우
-                        log.info("출근기록이있습니다: {}", employeeId);
-                        return null;
+                // DB에 출근 시간 기록
+                employeeMapper1.startTimeRequest(dto);
+
+                // DB 기록 후 다시 출근 정보 조회
+                responseDto = employeeMapper1.findattendanceInfo(employeeId, attendanceDate);
+
+                // 조회 성공 여부 확인 후 반환
+                if (responseDto != null) {
+                        // 조회 성공, 출근 정보 반환
+                        return responseDto;
                 } else {
-                        // 출근 시간이 아직 기록되지 않은 경우, 출근 시간 기록 로직
-                        LocalDateTime startTime = LocalDateTime.now();
-                        dto.setEmployeeId(employeeId);
-                        dto.setAttendanceDate(attendanceDate);
-                        dto.setStartTime(startTime);
-
-                        // DB에 출근 시간 기록
-                        employeeMapper1.startTimeRequest(dto);
-
-                        // 기록된 출근 정보를 바탕으로 AttendanceInfoResponseDto 가져오기
-                        AttendanceInfoResponseDto responseDto = employeeMapper1.findattendanceInfo(employeeId, attendanceDate);
-                        if (responseDto != null) {
-                                // 조회 성공, 출근 정보 반환
-                                return responseDto;
-                        } else {
-                                // 조회 실패, 로그 기록 후 null 반환
-                                log.info("출근 정보를 조회하는데 실패하였습니다: {}", employeeId);
-                                return null;
-                        }
+                        // 조회 실패, 로그 기록 후 null 반환
+                        log.info("출근 정보를 조회하는데 실패하였습니다: {}", employeeId);
+                        return null;
                 }
         }
 
@@ -92,11 +89,11 @@ public class EmployeeService1Impl implements EmployeeService1 {
                 LocalDate attendanceDate=LocalDate.now();
                 LocalDateTime findStartTime = employeeMapper1.getStartTimeByEmployeeIdAndDate(employeeId,attendanceDate);
                 LocalDateTime findEndTime = employeeMapper1.getEndTimeByEmployeeIdAndDate(employeeId,attendanceDate);
-
                 if(findStartTime == null){
-                        log.info("출근기록이있습니다");
+                        log.info("출근기록이없습니다");
                         return null;
                 } else if(findEndTime!= null){
+
 
                         log.info("퇴근기록이있습니다");
                         return null;
@@ -141,12 +138,31 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
 //        사원 년,월,일 사원근태정보검색
         @Override
-        public List<AttendanceInfoResponseDto> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId) {
-                if (!employeeExists(employeeId)) {
-                        log.info("이 아이디가 존재하지 않는다: {}", employeeId);
-                        return null;
+        public Page<List<AttendanceInfoResponseDto>> getAttendanceByDateAndEmployee(LocalDate attendanceDate , String employeeId,String sort, String desc,
+                                                                                    int page) {
+
+                int size =Page.PAGE_SIZE;
+                int startRow=(page -1) * size;
+
+                List<AttendanceInfoResponseDto> data =
+                        employeeMapper1.selectAttendanceByDate(attendanceDate,employeeId,sort,desc,size,startRow);
+                int totalElements = employeeMapper1.countAttendanceInfoByMonthEmployeeId(employeeId,attendanceDate);
+                boolean hasNext = (page * size) < totalElements;
+
+                if (totalElements <= 0) {
+                        // 근태 이의 신청이 없을 때 처리할 로직
+                        log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+                        return null; // 또는 적절한 예외 처리를 할 수 있습니다.
                 }
-                return employeeMapper1.selectAttendanceByDate(attendanceDate,employeeId);
+
+                log.info("사원 ID {}의 조정 요청 이력 수: {}", employeeId, totalElements);
+
+                Page<List<AttendanceInfoResponseDto>> result = new Page<>(
+                        data,
+                        !hasNext,
+                        sort, desc, page, totalElements);
+
+                return result;
         }
 
         /*
@@ -160,12 +176,32 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
         //사원 년,월 사원근태정보검색
         @Override
-        public List<AttendanceInfoResponseDto> getAttendanceByMonthAndEmployee(int year, int month, String employeeId) {
+        public Page<List<AttendanceInfoResponseDto>> getAttendanceByMonthAndEmployee(int year, int month, String employeeId, int page ,
+                String sort , String desc) {
                 if (!employeeExists(employeeId)) {
                         log.info("이 아이디가 존재하지 않는다: {}", employeeId);
                         return null;
                 }
-                return employeeMapper1.selectAttendanceByMonthAndEmployee(year , month ,employeeId);
+
+                int size =Page.PAGE_SIZE;
+                int startRow=(page -1) * size;
+                List<AttendanceInfoResponseDto> data =
+                        employeeMapper1.selectAttendanceByMonthAndEmployee(year,month,employeeId,sort,desc,size,startRow);
+                int totalElements = employeeMapper1.countAttendanceInfoByEmployeeId(employeeId,year,month);
+                boolean hasNext = (page * size) < totalElements;
+
+                if (totalElements <= 0) {
+                        // 근태 이의 신청이 없을 때 처리할 로직
+                        log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+                        return null; // 또는 적절한 예외 처리를 할 수 있습니다.
+                }
+
+                Page<List<AttendanceInfoResponseDto>> result = new Page<>(
+                        data, // 바로 data를 넘김. List<T> 타입을 만족함.
+                        !hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
+                        sort, desc, page, totalElements);
+
+                return result;
         }
 
  /*
@@ -218,7 +254,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 - 근태 승인 정보를 조회하여 반환한다.
 */
 
-        //todo  2번조건이 성립되면 3번으로 넘어가게
+
 
         //자신의 근태 승인내역
         @Override
@@ -236,13 +272,21 @@ public class EmployeeService1Impl implements EmployeeService1 {
                         employeeId, sort, desc, size, startRow);
                 int totalElement = employeeMapper1.countApprovalInfoByEmployeeId(employeeId);
 
-                // 다음 페이지 존재 여부 계산
+                if (data.isEmpty()) {
+                        log.info("반환 데이터가 비어있습니다: {}", employeeId);
+
+                        return null;
+                } else {
+                        log.info("사원id에대한 반환데이터가 제대로 들어왔습니다: {}", employeeId);
+                }
+
+
                 boolean hasNext = (page * size) < totalElement;
 
-                // Page 객체 생성. 여기서 data는 List<AttendanceApprovalUpdateResponseDto> 입니다.
+
                 Page<List<AttendanceApprovalUpdateResponseDto>> result = new Page<>(
                         data,
-                        !hasNext,
+                        hasNext,
                         sort,
                         desc,
                         page,
@@ -272,7 +316,26 @@ public class EmployeeService1Impl implements EmployeeService1 {
                 int size = Page.PAGE_SIZE;
                 int startRow = (page - 1) * size;
                 List<AttendanceAppealMediateResponseDto> data = employeeMapper1.findAttendanceAppealByEmployeeId(employeeId, sort, desc, size, startRow);
+                //빈 데이터 확인
+
+                if (data.isEmpty()) {
+                        log.info("반환 데이터가 비어있습니다: {}", employeeId);
+
+                        return null;
+                } else {
+                        log.info("사원id에대한 반환데이터가 제대로 들어왔습니다: {}", employeeId);
+                }
+
+
+
                 int totalElements = employeeMapper1.countAttendanceAppealByEmployeeId(employeeId);
+
+                if (totalElements <= 0) {
+                        // 근태 이의 신청이 없을 때 처리할 로직
+                        log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+                        return null;
+                }
+
                 boolean hasNext = (page * size) < totalElements;
 
                 // 로그를 남깁니다.
@@ -300,13 +363,20 @@ public class EmployeeService1Impl implements EmployeeService1 {
         @Override
         public List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter) {
                 // 숫자만 있는지 검사합니다.
-                if (searchParameter.matches("\\d+")) {
-                        // 숫자일 경우, employeeId로 검색
-                        return employeeMapper1.searchEmployeeEmployeeId(searchParameter);
+                if (searchParameter.matches("^[a-zA-Z0-9]+$")) {
+                        // 숫자나 문자만 포함되어 있을 경우, 더 세부적인 검색을 진행
+                        if (searchParameter.matches("\\d+")) {
+                                // 숫자일 경우, employeeId로 검색
+                                return employeeMapper1.searchEmployeeEmployeeId(searchParameter);
+                        } else {
+                                // 문자열일 경우, name으로 검색
+                                return employeeMapper1.searchEmployeeName(searchParameter);
+                        }
                 } else {
-                        // 문자열일 경우, name으로 검색
-                        return employeeMapper1.searchEmployeeName(searchParameter);
+                        log.info("특수문자가 포함되어있습니다");
+                        return null;
                 }
+
         }
 
           /*
