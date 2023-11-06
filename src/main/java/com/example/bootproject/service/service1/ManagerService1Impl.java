@@ -142,7 +142,7 @@ public class ManagerService1Impl implements ManagerService1 {
 
         Page<List<AttendanceAppealMediateResponseDto>> result = new Page<>(
                 data, // 바로 data를 넘김. List<T> 타입을 만족함.
-                hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
+                !hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
                 sort, desc, page, totalElements);
 
         return result;
