@@ -1,10 +1,15 @@
 package com.example.bootproject.service.service1;
 
 
+import com.example.bootproject.entity.Employee;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
 import com.example.bootproject.vo.vo1.response.*;
+import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
+import com.example.bootproject.vo.vo2.response.VacationRequestDto;
+import com.example.bootproject.vo.vo3.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo3.response.Page;
+import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +18,7 @@ public interface EmployeeService1 {
 
 
     //출근요청
-    AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto, String employeeId);
+    AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto);
 
 
     //퇴근요청
@@ -46,5 +51,12 @@ public interface EmployeeService1 {
 
     boolean employeeExists(String employeeId);
 
+    Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto);
+
+    int getRemainOfVacationOfMine(String id);
+
+    Employee findEmployeeInfoById(String loginId);
+
+    EmployeeResponseDto updateInformation(String loginId, EmployeeInformationUpdateDto dto);
 
 }

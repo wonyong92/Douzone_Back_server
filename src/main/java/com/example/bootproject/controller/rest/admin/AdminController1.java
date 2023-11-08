@@ -1,11 +1,12 @@
 package com.example.bootproject.controller.rest.admin;
 
 import com.example.bootproject.service.service1.AdminService1;
-import com.example.bootproject.service.service2.AdminService2;
-import com.example.bootproject.service.service3.api.AdminService;
 import com.example.bootproject.service.service3.api.MultipartService;
+import com.example.bootproject.system.validator.PageRequestValidator;
+import com.example.bootproject.system.validator.PagedLocalDateDtoValidator;
 import com.example.bootproject.vo.vo1.request.EmployeeInsertRequestDto;
 import com.example.bootproject.vo.vo1.request.EmployeeUpdateRequestDto;
+import com.example.bootproject.vo.vo1.request.PageRequest;
 import com.example.bootproject.vo.vo1.response.EmployeeResponseDto;
 import com.example.bootproject.vo.vo2.request.PagingRequestDto;
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
@@ -19,15 +20,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static com.example.bootproject.system.util.ValidationChecker.*;
+import static com.example.bootproject.system.util.ValidationChecker.getLoginIdOrNull;
+import static com.example.bootproject.system.util.ValidationChecker.isAdmin;
 
 @RestController
 
@@ -37,20 +40,26 @@ public class AdminController1 {
 
     private final AdminService1 adminService1;
 
-    private final AdminService2 adminService2;
+//    private final AdminService2 adminService1;
 
     private final MultipartService multipartService;
 
-    private final AdminService adminService3;
+    private final PageRequestValidator pageRequestValidator;
+    private final PagedLocalDateDtoValidator pagedLocalDateDtoValidator;
 
-//    public boolean authCheckApi() { //권한 확인 API,
-//        // 로그인 확인
-//        return true;
-//    }
+    @InitBinder("pageRequest")
+    protected void pageRequestMessageBinder(WebDataBinder binder) {
+        binder.addValidators(pageRequestValidator);
+    }
+
+    @InitBinder("pagedLocalDateDto")
+    protected void pagedLocalDateDtoMessageBinder(WebDataBinder binder) {
+        binder.addValidators(pagedLocalDateDtoValidator);
+    }
 
     //TODO : Employee 인터페이스에 getEmployeeCheck 통합하고 static으로 뽑아내기
     public boolean validationId(String employeeId) { // Id Validation 체크
-        int idCheck = adminService2.getEmployeeCheck(employeeId); //id값이 실제로 테이블에 존재하면 1 반환
+        int idCheck = adminService1.getEmployeeCheck(employeeId); //id값이 실제로 테이블에 존재하면 1 반환
         /* employeeId가 숫자로 구성 되어 있고,  실제로 테이블에 존재하는지 확인 */
         return employeeId.matches("^[0-9]+$") && idCheck == 1;
     }
@@ -108,15 +117,15 @@ public class AdminController1 {
 
     // 전체 사원 정보 조회 메서드
     @GetMapping("/admin/employee/information")
-    public ResponseEntity<Page<List<EmployeeDto>>> getEmployeesInformation(@RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder, HttpServletRequest req) {
+    public ResponseEntity<Page<List<EmployeeDto>>> getEmployeesInformation(@Valid PageRequest pageRequest, HttpServletRequest req) {
         if (isAdmin(req)) { //권한 확인
 
-            int currentPage = validationPageNum(getPageNum); // 쿼리 파라미터로 받아온 페이지 번호에 대한 validation 체크
-            String sort = validationSort(getSort); // 쿼리 파라미터로 받아온 정렬 기준 컬럼에 대한 validation 체크
-            String sortOrder = validationDesc(getSortOrder); // 쿼리 파라미터로 받아온 정렬 방식에 대한 validation 체크
+            int currentPage = pageRequest.getPage(); // 쿼리 파라미터로 받아온 페이지 번호에 대한 validation 체크
+            String sort = pageRequest.getSort(); // 쿼리 파라미터로 받아온 정렬 기준 컬럼에 대한 validation 체크
+            String sortOrder = pageRequest.getDesc(); // 쿼리 파라미터로 받아온 정렬 방식에 대한 validation 체크
 
             PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage, sort, sortOrder);
-            Page<List<EmployeeDto>> result = adminService2.getEmpInfo(pagingRequestDto); // 전체 사원 정보 반환
+            Page<List<EmployeeDto>> result = adminService1.getEmpInfo(pagingRequestDto); // 전체 사원 정보 반환
             log.info("getEmpInfo result : {}", result);
             if (result.getData().isEmpty()) {
                 return ResponseEntity.noContent().build(); // 204 No Content
@@ -145,7 +154,7 @@ public class AdminController1 {
         if (isAdmin(req)) { //권한 확인 api
             if (!validationId(employeeId))  //validation 체크
                 return ResponseEntity.badRequest().build(); // 400 Bad Request 반환
-            EmployeeDto result = adminService2.getOneEmpInfo(employeeId); // 특정 사원의 정보 반환 받음
+            EmployeeDto result = adminService1.getOneEmpInfo(employeeId); // 특정 사원의 정보 반환 받음
             log.info("getOneEmpInfo result : {}", result);
             if (result == null) {
                 return ResponseEntity.noContent().build(); //204 No Content 반환
@@ -170,7 +179,7 @@ public class AdminController1 {
     @PutMapping("/admin/manager/{employee_id}")
     public ResponseEntity<Void> toggleManager(@PathVariable(name = "employee_id") String employeeId, HttpServletRequest req) {
         if (isAdmin(req)) {
-            boolean result = adminService3.toggleManager(employeeId);
+            boolean result = adminService1.toggleManager(employeeId);
             if (result) {
                 return ResponseEntity.ok().build();
             }
@@ -189,10 +198,7 @@ public class AdminController1 {
         }
         Resource file = multipartService.download(employeeId);
         if (file != null) {
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_PNG)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(file.getFilename().split("_|\\.")[0] + '.' + file.getFilename().split("_|\\.")[1], StandardCharsets.UTF_8) + "\"")
-                    .body(file);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(file.getFilename().split("_|\\.")[0] + '.' + file.getFilename().split("_|\\.")[1], StandardCharsets.UTF_8) + "\"").body(file);
         }
         return ResponseEntity.notFound().build();
     }

@@ -7,7 +7,6 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 public class AttendanceAppealMediateResponseDto {
 
     private Long attendanceAppealRequestId;
@@ -27,6 +26,8 @@ public class AttendanceAppealMediateResponseDto {
     private LocalDateTime attendanceAppealRequestTime;
 
     private String reasonForRejection;
+
+    private String message;
 
 
 }

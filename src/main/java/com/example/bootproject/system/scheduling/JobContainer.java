@@ -42,7 +42,6 @@ public class JobContainer {
                     Long attendanceInfoId = info.getAttendanceInfoId();
                     LocalDateTime startTime = info.getStartTime();
                     LocalDateTime endTime = info.getEndTime();
-                    String attendanceInfoCategory = info.getAttendanceStatusCategory();
                     if (startTime == null && endTime == null) {
                         //결근
                         attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_ABSENT, info.getAttendanceInfoId());

@@ -2,11 +2,17 @@ package com.example.bootproject.controller.rest.employee;
 
 import com.example.bootproject.entity.Employee;
 import com.example.bootproject.service.service1.EmployeeService1;
-import com.example.bootproject.service.service2.EmployeeService2;
-import com.example.bootproject.service.service3.api.*;
+import com.example.bootproject.service.service3.api.AppealService;
+import com.example.bootproject.service.service3.api.LoginService;
+import com.example.bootproject.service.service3.api.LogoutService;
+import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.system.util.IpAnalyzer;
+import com.example.bootproject.system.validator.PageRequestValidator;
+import com.example.bootproject.system.validator.PagedLocalDateDtoValidator;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
+import com.example.bootproject.vo.vo1.request.PageRequest;
+import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
 import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo2.response.VacationRequestDto;
@@ -23,9 +29,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,38 +46,53 @@ import static com.example.bootproject.system.util.ValidationChecker.*;
 @RequiredArgsConstructor
 public class EmployeeController1 {
 
-    private final EmployeeService1 employeeService1;
-
+    private final EmployeeService1 employeeService;
     private final LoginService loginService;
     private final LogoutService logoutService;
     private final VacationService vacationService;
     private final AppealService appealService;
-    private final EmployeeService employeeService;
-    private final EmployeeService2 empService2;
 
-/*
-  - 사원 ID의 유효성을 검증한다 처리중 null이 반환되면 BadRequest 응답을 반환한다
-  - 요청된 DTO가 null이거나 처리 중 null이 반환되면 BadRequest 응답을 반환한다.
-  - 사원 ID가 데이터베이스에 없다면 BadRequest 응답을 반환한다.
-  - 사원 ID 유효성 검사를 통과하고 출근 정보가 성공적으로 생성되면, OK 응답과 함께 출근 정보 DTO를 반환한다.
-*/
+
+    /*
+      - 사원 ID의 유효성을 검증한다 처리중 null이 반환되면 BadRequest 응답을 반환한다
+      - 요청된 DTO가 null이거나 처리 중 null이 반환되면 BadRequest 응답을 반환한다.
+      - 사원 ID가 데이터베이스에 없다면 BadRequest 응답을 반환한다.
+      - 사원 ID 유효성 검사를 통과하고 출근 정보가 성공적으로 생성되면, OK 응답과 함께 출근 정보 DTO를 반환한다.
+    */
+    private final PageRequestValidator pageRequestValidator;
+    private final PagedLocalDateDtoValidator pagedLocalDateDtoValidator;
+
+    @InitBinder("pageRequest")
+    protected void pageRequestMessageBinder(WebDataBinder binder) {
+        binder.addValidators(pageRequestValidator);
+//        binder.addValidators(pagedLocalDateDtoValidator);
+    }
+
+    @InitBinder("pagedLocalDateDto")
+    protected void pagedLocalDateDtoMessageBinder(WebDataBinder binder) {
+//        binder.addValidators(pageRequestValidator);
+        binder.addValidators(pagedLocalDateDtoValidator);
+    }
+
 
     @PostMapping("/employee/attendance")
-    public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(AttendanceInfoStartRequestDto requestDto, HttpServletRequest req) {
-
+    public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(@Valid AttendanceInfoStartRequestDto requestDto, BindingResult br, HttpServletRequest req) {
+        /*TODO : 인터셉터로 뽑아내기 -> 뽑아내면 employeeId를 다음 로직으로 어떻게 전달해 줄껀데?*/
         String employeeId = getLoginIdOrNull(req);
-        if (employeeId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        AttendanceInfoResponseDto responseDto = employeeService1.makeStartResponse(requestDto, employeeId);
-        if (responseDto.getMessage() != null) {
-            // 오류 메시지가 있는 경우, 클라이언트에게 메시지를 포함하여 응답
-            return ResponseEntity.badRequest().body(responseDto);
+        if (br.hasErrors()) {
+            AttendanceInfoResponseDto body = new AttendanceInfoResponseDto();
+            body.setMessage("Validation rule violated" + br.getAllErrors());
+            return ResponseEntity.badRequest().body(body);
         }
 
-        if (responseDto == null) {
-            log.info("반환값이 null이다: " + employeeId);
-            return ResponseEntity.badRequest().build();
+        requestDto.setEmployeeId(employeeId);
+        AttendanceInfoResponseDto responseDto = employeeService.makeStartResponse(requestDto);
+        if (responseDto.getMessage() != null) {
+            // 오류 메시지가 있는 경우, 클라이언트에게 메시지를 포함하여 응답
+            log.info("error msg : {}", responseDto.getMessage());
+            return ResponseEntity.badRequest().body(responseDto);
         }
 
 
@@ -89,21 +113,15 @@ public class EmployeeController1 {
 
 
         String employeeId = getLoginIdOrNull(req);
-        if (employeeId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        AttendanceInfoResponseDto responseDto = employeeService1.makeEndResponse(requestDto, employeeId);
+        AttendanceInfoResponseDto responseDto = employeeService.makeEndResponse(requestDto, employeeId);
 
         if (responseDto.getMessage() != null) {
             // 오류 메시지가 있는 경우, 클라이언트에게 메시지를 포함하여 응답
+            log.info("error msg : {}", responseDto.getMessage());
             return ResponseEntity.badRequest().body(responseDto);
         }
-
-        if (responseDto == null) {
-            log.info("사원 ID에 대한 출근 기록 실패: " + employeeId);
-            return ResponseEntity.badRequest().build();
-        }
-
 
 
         return ResponseEntity.ok(responseDto);
@@ -123,29 +141,47 @@ public class EmployeeController1 {
 */
 
     //년월일 자신의 근태정보조회 년월만 입력하면 년월만 입력데이터 적용되게 구현
-    @GetMapping("/employee/attendance_info/")
-    public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfEmployeeByDay(@RequestParam("year") int year, @RequestParam("month") int month, @RequestParam(value = "day", required = false) Integer day, @RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "sort", defaultValue = "attendance_date") String sort, @RequestParam(name = "desc", defaultValue = "DESC") String desc, HttpServletRequest req) {
+    @GetMapping("/employee/attendance_info")
+    public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfEmployeeByDay(@Valid PagedLocalDateDto pagedLocalDateDto, BindingResult br, HttpServletRequest req) {
 
         String employeeId = getLoginIdOrNull(req); // 실제 어플리케이션에서는 세션에서 가져오거나 인증 메커니즘을 사용해야 함
+        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        if (employeeId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        // 입력된 날짜가 유효한지 검증
-        if (day != null && !validateDateIsRealDate(year, month, day)) {
-            log.info("유효하지 않은 날짜: year={}, month={}, day={}", year, month, day);
-            return ResponseEntity.badRequest().build();
+        if (br.hasErrors()) {
+            AttendanceInfoResponseDto body = new AttendanceInfoResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setPage(1);
+            } else if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setSort("''");
+            } else if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setDesc("desc");
+            }
+
         }
 
 
+        // 입력된 날짜가 유효한지 검증
+
+        if (!validateDateIsRealDate(pagedLocalDateDto)) {
+            log.info("유효하지 않은 날짜: {}}", pagedLocalDateDto.toString());
+            return ResponseEntity.badRequest().build();
+        }
+
         // 근태 정보 조회
         Page<List<AttendanceInfoResponseDto>> attendanceInfo;
-        if (day != null) {
+        if (pagedLocalDateDto.getDay() != null) {
             // 날짜를 기준으로 근태 정보 조회
-            LocalDate attendanceDate = LocalDate.of(year, month, day);
-            attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId, sort, desc, page);
+            LocalDate attendanceDate = pagedLocalDateDto.makeLocalDate();
+            /*TODO : pageRequest로 리팩토링*/
+            attendanceInfo = employeeService.getAttendanceByDateAndEmployee(attendanceDate, employeeId, pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), pagedLocalDateDto.getPage());
         } else {
             // 월을 기준으로 근태 정보 조회
-            attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year, month, employeeId, page, sort, desc);
+            attendanceInfo = employeeService.getAttendanceByMonthAndEmployee(pagedLocalDateDto.getYear(), pagedLocalDateDto.getMonth(), employeeId, pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc());
         }
 
         // 조회된 근태 정보가 없을 경우
@@ -170,18 +206,14 @@ public class EmployeeController1 {
     @PostMapping("/employee/approve/{attendanceInfoId}")
     public ResponseEntity<AttendanceApprovalResponseDto> makeApproveRequest(@PathVariable("attendanceInfoId") Long attendanceInfoId, HttpServletRequest req) {
         String employeeId = getLoginIdOrNull(req);
-
-        if (employeeId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
+        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         if (attendanceInfoId == null || employeeId == null) {
             log.info("근태 정보 ID 또는 사원 ID가 누락되었습니다.");
             return ResponseEntity.badRequest().build();
         }
 
-
-        AttendanceApprovalResponseDto approvalResponseDto = employeeService1.approveAttendance(employeeId, attendanceInfoId);
+        AttendanceApprovalResponseDto approvalResponseDto = employeeService.approveAttendance(employeeId, attendanceInfoId);
         log.info("승인 요청 결과: {}", approvalResponseDto);
         return ResponseEntity.ok(approvalResponseDto);
     }
@@ -197,34 +229,30 @@ public class EmployeeController1 {
 
     //자신의 근태승인내역
     @GetMapping("/employee/approve")
-    public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfMine(@RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "sort", defaultValue = "attendance_approval_date") String sort, @RequestParam(name = "desc", defaultValue = "DESC") String desc, HttpServletRequest req) {
+    public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfMine(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
+        String employeeId = getLoginIdOrNull(req);
+        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        String employeeId = getLoginIdOrNull(req); // 이 부분은 실제로는 보안 컨텍스트에서 동적으로 가져와야 합니다.
-        if (employeeId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (br.hasErrors()) {
+            AttendanceApprovalUpdateResponseDto body = new AttendanceApprovalUpdateResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setPage(1);
+            } else if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setSort("''");
+            } else if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setDesc("desc");
+            }
 
-
-        // 페이지 번호 검증
-        if (page < 1) {
-            log.error("잘못된 페이지 번호: {}", page);
-            return ResponseEntity.badRequest().build();
-        }
-
-        // 정렬 필드 검증
-        if (!(sort.equals("attendance_approval_date") || sort.equals("anotherField"))) {
-            log.error("잘못된 정렬 필드: {}", sort);
-            return ResponseEntity.badRequest().build();
-        }
-
-        // 정렬 방향 검증
-        if (!(desc.equalsIgnoreCase("ASC") || desc.equalsIgnoreCase("DESC"))) {
-            log.error("잘못된 정렬 방향: {}", desc);
-            return ResponseEntity.badRequest().build();
         }
 
         try {
             // 승인 내역 검색 시도
-            Page<List<AttendanceApprovalUpdateResponseDto>> approvalPage = employeeService1.getApprovalInfoByEmployeeId(employeeId, page, sort, desc);
+            Page<List<AttendanceApprovalUpdateResponseDto>> approvalPage = employeeService.getApprovalInfoByEmployeeId(employeeId, pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
 
             // 데이터가 없을 경우
             if (approvalPage == null || approvalPage.getData().isEmpty()) {
@@ -242,7 +270,6 @@ public class EmployeeController1 {
         }
     }
 
-
      /*
     - 세션에서 사원 ID를 추출한다. (현재 코드는 임시로 고정값 'emp01'을 사용하고 있다)
     - 사원 ID가 넘어오지 않을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
@@ -255,33 +282,30 @@ public class EmployeeController1 {
 
     //자신의근태조정내역
     @GetMapping("/employee/appeal/requests")
-    public ResponseEntity<Page<List<AttendanceAppealMediateResponseDto>>> getAppealHistoryOfEmployee(@RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "sort", defaultValue = "attendance_appeal_request_time") String sort, @RequestParam(name = "desc", defaultValue = "DESC") String desc, HttpServletRequest req) {
+    public ResponseEntity<Page<List<AttendanceAppealMediateResponseDto>>> getAppealHistoryOfEmployee(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
+        if (br.hasErrors()) {
+            AttendanceAppealMediateResponseDto body = new AttendanceAppealMediateResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setPage(1);
+            } else if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setSort("''");
+            } else if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setDesc("desc");
+            }
+
+        }
 
         String employeeId = getLoginIdOrNull(req); // Assume this is retrieved from session or security context
-        if (employeeId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
-        // 'page' 파라미터 유효성 검증
-        if (page < 1) {
-            log.error("잘못된 페이지 번호: {}", page);
-            return ResponseEntity.badRequest().build();
-        }
-
-        // 'sort' 파라미터 유효성 검증
-        if ((sort.equals("attendance_approval_date") || sort.equals("anotherField"))) {
-            log.error("잘못된 정렬 필드: {}", sort);
-            return ResponseEntity.badRequest().build();
-        }
-
-        // 'desc' 파라미터 유효성 검증
-        if (!(desc.equalsIgnoreCase("ASC") || desc.equalsIgnoreCase("DESC"))) {
-            log.error("잘못된 정렬 방향: {}", desc);
-            return ResponseEntity.badRequest().build();
-        }
+        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         try {
             // 승인 내역 검색 시도
-            Page<List<AttendanceAppealMediateResponseDto>> appealPage = employeeService1.findAttendanceInfoByMine(employeeId, page, sort, desc);
+            Page<List<AttendanceAppealMediateResponseDto>> appealPage = employeeService.findAttendanceInfoByMine(employeeId, pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
 
             // 데이터가 없을 경우
             if (appealPage == null) {
@@ -315,9 +339,9 @@ public class EmployeeController1 {
     @GetMapping("/employee/search")
     public ResponseEntity<List<EmployeeSearchResponseDto>> searchEmployeeByIdOrNumber(@RequestParam String searchParameter) {
 
-        List<EmployeeSearchResponseDto> searchResults = employeeService1.searchByEmployeeIdOrName(searchParameter);
+        List<EmployeeSearchResponseDto> searchResults = employeeService.searchByEmployeeIdOrName(searchParameter);
 
-        if(searchParameter.isEmpty()){
+        if (searchParameter.isEmpty()) {
             log.info("검색요청데이터가 안들어왔습니다");
             return ResponseEntity.badRequest().build();
         }
@@ -341,8 +365,7 @@ public class EmployeeController1 {
         //status validation check 추가 필요
         //TODO : 로그인 정보를 가져오기
         String employeeId = getLoginIdOrNull(req);
-        if (employeeId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         if (employeeId != null) {
             int currentPage = validationPageNum(getPageNum); //페이지 번호에 대한 validation 체크
@@ -351,7 +374,7 @@ public class EmployeeController1 {
             String status = validateVacationRequestResultStatus(getStatus); // 신청 결과에 대한 validation 체크
 
             PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(currentPage, sort, sortOrder, employeeId, status);
-            Page<List<VacationRequestDto>> result = empService2.getHistoryOfVacationOfMine(pagingRequestWithIdStatusDto); // 본인의 연차 이력 데이터 반환 받음
+            Page<List<VacationRequestDto>> result = employeeService.getHistoryOfVacationOfMine(pagingRequestWithIdStatusDto); // 본인의 연차 이력 데이터 반환 받음
             log.info("getHistoryOfRejectedVacationOfMine result : {}", result);
             if (result.getData().isEmpty()) {
                 return ResponseEntity.noContent().build(); //204 No Content
@@ -379,17 +402,13 @@ public class EmployeeController1 {
     @GetMapping("/employee/vacation/remain")
     public ResponseEntity<Integer> getRemainOfVacationOfMine(HttpServletRequest req) {
         String id = getLoginIdOrNull(req);
-
-        if (id != null) {
-//            String id = "200001012"; //임의 지정 데이터
-            int setting = empService2.getRemainOfVacationOfMine(id); //본인의 잔여 연차 개수 반환 받음
-            log.info("남은 연차 수 : {}", setting);
-
-            return ResponseEntity.ok(setting); // 200 OK
-
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
         }
-        log.info("권한 에러 발생 (403)");
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
+        int setting = employeeService.getRemainOfVacationOfMine(id); //본인의 잔여 연차 개수 반환 받음
+        log.info("남은 연차 수 : {}", setting);
+
+        return ResponseEntity.ok(setting); // 200 OK
         /*
          * 사원 권한 확인 (+로그인 확인)
          * 1. 사원 권한, 로그인 확인 성공 시
@@ -398,8 +417,6 @@ public class EmployeeController1 {
          * 2. 사원 권한, 로그인 인증 실패시
          * 403 ERROR 반환
          */
-
-
     }
     //employee 2 end
 
@@ -409,8 +426,8 @@ public class EmployeeController1 {
     @GetMapping("/employee/information")
     public ResponseEntity<Employee> getInformationOfMine(HttpServletRequest req) {
         String loginId = getLoginIdOrNull(req);
-        if (loginId == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
         Employee result = employeeService.findEmployeeInfoById(loginId);
         if (result != null) {
             return ResponseEntity.ok(result);
@@ -423,6 +440,8 @@ public class EmployeeController1 {
     @PostMapping("/employee/information")
     public ResponseEntity<com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto> modifyEmployeeInformationOfMine(HttpServletRequest req, @ModelAttribute EmployeeInformationUpdateDto dto) {
         String loginId = getLoginIdOrNull(req);
+        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
         EmployeeResponseDto result = employeeService.updateInformation(loginId, dto);
         if (result != null) {
             return ResponseEntity.ok(result);
@@ -433,7 +452,20 @@ public class EmployeeController1 {
     }
 
     @PostMapping("/login")
-    /*TODO : loginRequestDto validation 체크 필요*/ public ResponseEntity<LoginResponseDto> login(LoginRequestDto dto, HttpServletRequest req) {
+    public ResponseEntity<LoginResponseDto> login(@Valid LoginRequestDto dto, BindingResult br, HttpServletRequest req) {
+        if (br.hasErrors()) {
+            LoginResponseDto body = new LoginResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            return ResponseEntity.badRequest().body(body);
+        }
+
+
+        if (br.hasErrors()) {
+            log.info("LoginRequestDto validation error");
+            return ResponseEntity.badRequest().build();
+        }
+        /*TODO : loginRequestDto validation 체크 필요*/
 
         dto.setIp(dto.getIp() == null ? IpAnalyzer.getClientIp(req) : dto.getIp());
         log.info("LoginRequestDto dto : {}", dto);
@@ -470,22 +502,17 @@ public class EmployeeController1 {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/employee/vacation/requests")
-    public String getRequestVacationInformationOfAll(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day) {
-        return "getRequestVacationInformationOfAll";
-    }
-
     @PostMapping("/employee/appeal")
-    public ResponseEntity<AppealRequestResponseDto> makeAppealRequest(@ModelAttribute AppealRequestDto dto) {
+    public ResponseEntity<AppealRequestResponseDto> makeAppealRequest(@ModelAttribute AppealRequestDto dto, HttpServletRequest req) {
+        String loginId = getLoginIdOrNull(req);
+        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        dto.setEmployeeId(loginId);
 
         log.info("정상 작업 진행");
         AppealRequestResponseDto result = null;
-        try {
-            result = appealService.makeAppealRequest(dto);
-        } catch (Exception e) {
-            log.info("연차 요청 수행 도중 에러 발생");
-            e.printStackTrace();
-        }
+
+        result = appealService.makeAppealRequest(dto);
+
         if (result != null) {
             return ResponseEntity.ok(result);
         }
@@ -493,7 +520,12 @@ public class EmployeeController1 {
     }
 
     @PostMapping("/employee/vacation")
-    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId") String employeeId) {
+    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId") String employeeId, HttpServletRequest req) {
+
+        String loginId = getLoginIdOrNull(req);
+        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        dto.setEmployeeId(loginId);
+
         log.info("정상 작업 진행");
         VacationRequestResponseDto result = null;
         if (dto.getEmployeeId() == null) {

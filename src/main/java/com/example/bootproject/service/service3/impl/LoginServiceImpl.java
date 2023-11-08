@@ -53,10 +53,12 @@ public class LoginServiceImpl implements LoginService {
             String ip = dto.getIp();
             if (sessionLoginId == null || sessionLoginIp == null) {
                 /*세션에 인증 정보가 없는 경우 null 반환*/
+                log.info("세션에서 인증 정보 찾지 못함");
                 return null;
             }
             if (!sessionLoginIp.equals(ip)) {
                 /*ip 변경 감지 : 세션에 저장된 ip와 현재 접속 ip가 다른 경우*/
+                log.info("ip 변경 발생");
                 //TODO: ip 변경 감지 - 별도 처리 응답 데이터 선정 필요
                 return new LoginResponseDto(sessionLoginId, sessionLoginIp);
             }

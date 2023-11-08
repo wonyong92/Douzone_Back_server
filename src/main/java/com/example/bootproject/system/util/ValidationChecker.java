@@ -1,5 +1,6 @@
 package com.example.bootproject.system.util;
 
+import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -64,7 +65,11 @@ public class ValidationChecker {
         return null;
     }
 
-    public static boolean validateDateIsRealDate(int year, int month, int day) { //날짜 Validation 확인
+    public static boolean validateDateIsRealDate(PagedLocalDateDto pageRequest) { //날짜 Validation 확인
+        int year = pageRequest.getYear();
+        int day = pageRequest.getDay() == null ? 1 : pageRequest.getDay();
+        int month = pageRequest.getMonth();
+
         LocalDate targetDate = LocalDate.of(year, month, day);
         if (targetDate.toString().matches("^(\\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])")) {
             if (year < 1 || month < 1 || month > 12) // year가 양수가 아니거나, month가 1보다 작거나 12보다 클때 false

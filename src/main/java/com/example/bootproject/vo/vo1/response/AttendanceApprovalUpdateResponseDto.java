@@ -16,6 +16,5 @@ public class AttendanceApprovalUpdateResponseDto {
     private LocalDate attendanceApprovalDate;
 
     private Long attendanceInfoId;
-
-
+    private String message;
 }

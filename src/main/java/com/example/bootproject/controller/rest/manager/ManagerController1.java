@@ -4,11 +4,12 @@ package com.example.bootproject.controller.rest.manager;
 import com.example.bootproject.entity.Employee;
 import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.service.service1.ManagerService1;
-import com.example.bootproject.service.service2.ManagerService2;
 import com.example.bootproject.service.service3.api.AppealService;
-import com.example.bootproject.service.service3.api.EmployeeService;
-import com.example.bootproject.service.service3.api.ManagerService;
 import com.example.bootproject.service.service3.api.VacationService;
+import com.example.bootproject.system.validator.PageRequestValidator;
+import com.example.bootproject.system.validator.PagedLocalDateDtoValidator;
+import com.example.bootproject.vo.vo1.request.PageRequest;
+import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
@@ -34,10 +35,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REJECTED;
@@ -54,21 +59,36 @@ public class ManagerController1 {
 
     private final EmployeeService1 employeeService1;
 
-    private final ManagerService2 manService2;
 
     private final VacationService vacationService;
 
     private final AppealService appealService;
 
-    private final EmployeeService employeeService;
+    private final EmployeeService1 employeeService;
 
-    private final ManagerService managerService;
+    private final ManagerService1 managerService;
+
+    private final PageRequestValidator pageRequestValidator;
+    private final PagedLocalDateDtoValidator pagedLocalDateDtoValidator;
+
+    @InitBinder("pageRequest")
+    protected void pageRequestMessageBinder(WebDataBinder binder) {
+        binder.addValidators(pageRequestValidator);
+//        binder.addValidators(pagedLocalDateDtoValidator);
+    }
+
+    @InitBinder("pagedLocalDateDto")
+    protected void pagedLocalDateDtoMessageBinder(WebDataBinder binder) {
+//        binder.addValidators(pageRequestValidator);
+        binder.addValidators(pagedLocalDateDtoValidator);
+    }
 
     public boolean validationId(String id) { // Id Validation 체크
-        int idCheck = manService2.getEmployeeCheck(id); //id값이 실제로 테이블에 존재하면 1 반환
+        int idCheck = managerService1.getEmployeeCheck(id); //id값이 실제로 테이블에 존재하면 1 반환
         /* employeeId가 숫자로 구성 되어 있고,  실제로 테이블에 존재하는지 확인 */
         return id.matches("^[0-9]+$") && idCheck == 1;
     }
+
 
     //정규출퇴근시간 설정
     @PostMapping("/manager/adjustment")
@@ -106,7 +126,7 @@ public class ManagerController1 {
 
     //타사원에 대한 근태 이상 승인 내역
     @GetMapping("/manager/approve/{employeeId}")
-    public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfEmployee(@PathVariable("employeeId") String employeeId, @RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "sort", defaultValue = "attendance_approval_date") String sort, @RequestParam(name = "desc", defaultValue = "DESC") String desc, HttpServletRequest req) {
+    public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfEmployee(@PathVariable("employeeId") String employeeId, @Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
 
         // 'employeeId'가 세션 또는 보안 컨텍스트에서 검색된 것으로 가정합니다.
 
@@ -115,27 +135,26 @@ public class ManagerController1 {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-
-        // 'page' 매개변수 유효성 검증
-        if (page < 1) {
-            log.error("유효하지 않은 페이지 번호: {}", page);
-            // 예외를 던지는 대신 에러를 로깅하고 계속 진행합니다.
-        }
-
-        // 'sort' 매개변수 유효성 검증
-        if (!(sort.equals("attendance_approval_date") || sort.equals("anotherField"))) {
-            log.error("유효하지 않은 정렬 필드: {}", sort);
-            // 예외를 던지는 대신 에러를 로깅하고 계속 진행합니다.
-        }
-
-        // 'desc' 매개변수 유효성 검증
-        if (!(desc.equalsIgnoreCase("ASC") || desc.equalsIgnoreCase("DESC"))) {
-            log.error("유효하지 않은 정렬 방향: {}", desc);
-            // 예외를 던지는 대신 에러를 로깅하고 계속 진행합니다.
+        if (br.hasErrors()) {
+            AttendanceApprovalUpdateResponseDto body = new AttendanceApprovalUpdateResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setPage(1);
+            }
+            if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setSort("''");
+            }
+            if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setDesc("desc");
+            }
         }
 
         // 예외를 던지지 않고 작업을 계속 진행합니다.
-        Page<List<AttendanceApprovalUpdateResponseDto>> approvalPage = managerService1.managerGetApprovalInfoByEmployeeId(employeeId, page, sort, desc);
+        Page<List<AttendanceApprovalUpdateResponseDto>> approvalPage = managerService1.managerGetApprovalInfoByEmployeeId(employeeId, pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
 
         // 결과를 반환합니다.
         return ResponseEntity.ok(approvalPage);
@@ -158,34 +177,21 @@ public class ManagerController1 {
 
     //타사원근태정보조회년월일
     @GetMapping("/manager/attendance_info/{employeeId}")
-    public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfEmployeeByDay(@PathVariable("employeeId") String employeeId, @RequestParam("year") int year, @RequestParam("month") int month, @RequestParam(value = "day", required = false) Integer day, @RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "sort", defaultValue = "attendance_date") String sort, @RequestParam(name = "desc", defaultValue = "DESC") String desc, HttpServletRequest req) {
+    public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfEmployeeByDay(@PathVariable("employeeId") String employeeId, PagedLocalDateDto pagedLocalDateDto, HttpServletRequest req) {
 
-        // 세션에서 사원 ID 가져오기. 현재는 하드코딩된 ID 'emp01' 사용 중
-        // HttpSession session = request.getSession();
-        // String employeeId = (String) session.getAttribute("employeeId");
         if (isManager(req)) {
-            // 입력된 날짜가 유효한지 검증
-            if (day != null && !validateDateIsRealDate(year, month, day)) {
-                log.info("유효하지 않은 날짜: year={}, month={}, day={}", year, month, day);
-                return ResponseEntity.badRequest().build();
-            }
-
-            // 사원 ID 유효성 검사
-//        if (!employeeValidation(employeeId)) {
-//            return ResponseEntity.badRequest().build();
-//        }
 
             // 근태 정보 조회
             Page<List<AttendanceInfoResponseDto>> attendanceInfo;
-            if (day != null) {
+            if (pagedLocalDateDto.getDay() != null) {
                 log.info("일단위 조회");
                 // 날짜를 기준으로 근태 정보 조회
-                LocalDate attendanceDate = LocalDate.of(year, month, day);
-                attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId, sort, desc, page);
+                LocalDate attendanceDate = pagedLocalDateDto.makeLocalDate();
+                attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId, pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), pagedLocalDateDto.getPage());
             } else {
                 // 월을 기준으로 근태 정보 조회
                 log.info("월단위 조회");
-                attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(year, month, employeeId, page, sort, desc);
+                attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(pagedLocalDateDto.getYear(), pagedLocalDateDto.getMonth(), employeeId, pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc());
             }
 
             // 조회된 근태 정보가 없을 경우
@@ -203,78 +209,36 @@ public class ManagerController1 {
 
 
     @GetMapping("/manager/appeal/requests/{employeeId}")
-    public ResponseEntity<Page<List<AttendanceAppealMediateResponseDto>>> getAppealHistoryOfEmployee(@PathVariable("employeeId") String employeeId, @RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "sort", defaultValue = "attendance_appeal_request_time") String sort, @RequestParam(name = "desc", defaultValue = "DESC") String desc, HttpServletRequest req) {
+    public ResponseEntity<Page<List<AttendanceAppealMediateResponseDto>>> getAppealHistoryOfEmployee(@PathVariable("employeeId") String employeeId, PageRequest pageRequest, HttpServletRequest req) {
         if (!isManager(req)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        // 세션 또는 보안 컨텍스트에서 'employeeId'가 검색되었다고 가정합니다.
-
-        // 'page' 파라미터 유효성 검증
-        if (page < 1) {
-            log.error("잘못된 페이지 번호: {}", page);
-            return ResponseEntity.badRequest().build();
-            // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
-        }
-
-        // 'sort' 파라미터 유효성 검증
-        if (!(sort.equals("attendance_approval_date") || sort.equals("anotherField"))) {
-            log.error("잘못된 정렬 필드: {}", sort);
-            return ResponseEntity.badRequest().build();
-        // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
-    }
-
-    // 'desc' 파라미터 유효성 검증
-        if (!(desc.equalsIgnoreCase("ASC") || desc.equalsIgnoreCase("DESC"))) {
-            return ResponseEntity.badRequest().build();
-        // 예외를 던지는 대신 오류를 로깅하고 계속 진행합니다.
-    }
 
         // 예외를 던지지 않고 연산을 계속 진행합니다.
-        Page<List<AttendanceAppealMediateResponseDto>> appealPage = managerService1.managerfindAttendanceInfoByMine(employeeId, page, sort, desc);
+        Page<List<AttendanceAppealMediateResponseDto>> appealPage = managerService1.managerfindAttendanceInfoByMine(employeeId, pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
 
         // 결과를 반환합니다.
         return ResponseEntity.ok(appealPage);
     }
-
-    /*
-
-    - 쿼리파라미터로 ID를 추출한다.
-    - 사원 ID가 넘어오지 않을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
-    - 사원 ID에 대한 유효성 검사를 수행한다.
-    - 유효성 검사에 실패할 경우, 로그를 남기고 400 Bad Request 응답을 반환한다.
-    - 사원 ID에 대한 근태 승인 이력을 조회한다.
-    - 조회된 승인 이력이 없을 경우, 로그를 남기고 204 No Content 응답을 반환한다.
-    - 조회에 성공한 경우, 승인 이력 목록을 담아 200 OK 응답과 함께 반환한다.
-    */
-
-    //manager 2
-
-
     //전체 연차 요청 정보 조회 메서드
     /*TODO : 추후 권한 확인 추가*/
 
     @GetMapping("/manager/vacation/requests")
-    public ResponseEntity<Page<List<VacationRequestDto>>> getRequestVacationInformationOfAll(@RequestParam(name = "year") int year, @RequestParam(name = "month") int month, @RequestParam(name = "day") int day, @RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder, HttpServletRequest req) {
+    public ResponseEntity<Page<List<VacationRequestDto>>> getRequestVacationInformationOfAll(@Valid PagedLocalDateDto pagedLocalDateDto, BindingResult br, HttpServletRequest req) {
+        if (br.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
         if (isManager(req)) { //권한 확인
-            if (validateDateIsRealDate(year, month, day)) { //쿼리 파라미터로 받아온 날짜에 대한 validation 체크
-                int currentPage = validationPageNum(getPageNum); //페이지 번호에 대한 validation 체크
-                String sort = validationSort(getSort); // 페이지 정렬 기준 컬럼에 대한 validation 체크
-                String sortOrder = validationDesc(getSortOrder); // 정렬 방식에 대한 validation 체크
-                log.info("getRequestVacationInformationOfAll의 sort, sortOrder : {} {}", sort, sortOrder);
-                String date = String.format("%04d-%02d-%02d", year, month, day); // year-month-day 형태의 문자열로 변환
+            String date = pagedLocalDateDto.makeLocalDate().format(DateTimeFormatter.ofPattern("yyyy-mm-dd")); // year-month-day 형태의 문자열로 변환
 
-                PagingRequestWithDateDto pagingRequestWithDateDto = new PagingRequestWithDateDto(currentPage, sort, sortOrder, date);
+            PagingRequestWithDateDto pagingRequestWithDateDto = new PagingRequestWithDateDto(pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), date);
 
-                Page<List<VacationRequestDto>> result = manService2.getAllVacationHistory(pagingRequestWithDateDto); // 전체 사원 정보 반환
-                log.info("getAllVacationHistory result : {}", result);
-                if (result.getData().isEmpty()) { // 반환된 데이터가 비어있을 때
-                    return ResponseEntity.noContent().build(); // 204 No Content
-                }
-                return ResponseEntity.ok(result); // 200 OK
+            Page<List<VacationRequestDto>> result = managerService1.getAllVacationHistory(pagingRequestWithDateDto); // 전체 사원 정보 반환
+            log.info("getAllVacationHistory result : {}", result);
+            if (result.getData().isEmpty()) { // 반환된 데이터가 비어있을 때
+                return ResponseEntity.noContent().build(); // 204 No Content
             }
-            //로그
-            log.info("Validation failed for year, month, day: {},{},{}", year, month, day);
-            return ResponseEntity.badRequest().build(); //400 Bad Request
+            return ResponseEntity.ok(result); // 200 OK
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 ERROR
 
@@ -311,7 +275,7 @@ public class ManagerController1 {
                 PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(currentPage, sort, sortOrder, id, status);
 
                 // 타 사원의 연차 이력 데이터를 반환 받음
-                Page<List<VacationRequestDto>> result = manService2.getHistoryVacationOfEmployee(pagingRequestWithIdStatusDto);
+                Page<List<VacationRequestDto>> result = managerService1.getHistoryVacationOfEmployee(pagingRequestWithIdStatusDto);
                 log.info("getHistoryOfUsedVacationOfEmployee result : {}", result);
                 if (result.getData().isEmpty()) { //받아온 데이터가 비어있으면
                     return ResponseEntity.noContent().build(); //204 No Content
@@ -345,16 +309,16 @@ public class ManagerController1 {
     // 정규 출/퇴근 시간 설정 내역 확인 메서드
     /*TODO : 추후 권한 확인 추가*/
     @GetMapping("/manager/setting_history/work_time")
-    public ResponseEntity<Page<List<SettingWorkTimeDto>>> settingWorkTime(@RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder, HttpServletRequest req) {
+    public ResponseEntity<Page<List<SettingWorkTimeDto>>> settingWorkTime(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
+        if (br.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
         if (isManager(req)) { // 권한 확인
-            int currentPage = validationPageNum(getPageNum);  //페이지 번호에 대한 validation 체크
-            String sort = validationSort(getSort); // 페이지 정렬 기준 컬럼에 대한 validation 체크
-            String sortOrder = validationDesc(getSortOrder); // 정렬 방식에 대한 validation 체크
 
-            PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage, sort, sortOrder);
+            PagingRequestDto pagingRequestDto = new PagingRequestDto(pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
 
             /* 정규 출,퇴근 시간 설정 내역 데이터를 반환 받아온다 */
-            Page<List<SettingWorkTimeDto>> result = manService2.getSettingWorkTime(pagingRequestDto);
+            Page<List<SettingWorkTimeDto>> result = managerService1.getSettingWorkTime(pagingRequestDto);
             log.info("getSettingWorkTime result : {}", result);
             if (result.getData().isEmpty()) { // 반환 받은 데이터가 비어있으면
                 return ResponseEntity.noContent().build(); //204 No Content
@@ -382,16 +346,17 @@ public class ManagerController1 {
     //근속 연수에 따른 기본 부여 연차 개수 설정 내역 확인 메서드
     /*TODO : 추후 권한 확인 추가*/
     @GetMapping("/manager/vacation/setting_history/vacation_default")
-    public ResponseEntity<Page<List<VacationQuantitySettingDto>>> getHistoryOfvacationDefaultSetting(@RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder, HttpServletRequest req) {
-        if (isManager(req)) { // 권한 확인
-            int currentPage = validationPageNum(getPageNum); //페이지 번호에 대한 validation 체크
-            String sort = validationSort(getSort); // 페이지 정렬 기준 컬럼에 대한 validation 체크
-            String sortOrder = validationDesc(getSortOrder); // 정렬 방식에 대한 validation 체크
+    public ResponseEntity<Page<List<VacationQuantitySettingDto>>> getHistoryOfvacationDefaultSetting(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
+        if (br.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
 
-            PagingRequestDto pagingRequestDto = new PagingRequestDto(currentPage, sort, sortOrder);
+        if (isManager(req)) { // 권한 확인
+
+            PagingRequestDto pagingRequestDto = new PagingRequestDto(pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
 
             /* 근속 연수에 따른 기본 부여 연차 개수 설정 내역 데이터 반환 받음 */
-            Page<List<VacationQuantitySettingDto>> result = manService2.getVacationSettingHistory(pagingRequestDto);
+            Page<List<VacationQuantitySettingDto>> result = managerService1.getVacationSettingHistory(pagingRequestDto);
             log.info("getVacationSettingHistory result : {}", result);
             if (result.getData().isEmpty()) { // 반환 데이터가 비어있으면
                 return ResponseEntity.noContent().build(); //204 No Content
@@ -424,14 +389,16 @@ public class ManagerController1 {
 
         if (isManager(req)) { //권한 확인
             /* requestDto의 항목에 대한 validation check - 값 오류 혹은 비워있는지 확인*/
-            if (isEmployeeFreshman(requestDto.getFreshman()) && isEmployeeSenior(requestDto.getSenior()) && validateDateIsRealDate(requestDto.getTargetDate().getYear(), requestDto.getTargetDate().getMonthValue(), requestDto.getTargetDate().getDayOfMonth()) && validateDateIsRightDateFormat(requestDto.getTargetDate())) {
+            PagedLocalDateDto dto = new PagedLocalDateDto();
+            dto.fromLocalDate(requestDto.getTargetDate());
+            if (isEmployeeFreshman(requestDto.getFreshman()) && isEmployeeSenior(requestDto.getSenior()) && validateDateIsRealDate(dto) && validateDateIsRightDateFormat(requestDto.getTargetDate())) {
 
                 String id = getLoginIdOrNull(req); //세션에서 가져온 ID
                 requestDto.setEmployeeId(id);
 
                 // 연차 개수 설정 후, 설정 된 데이터를 받아온다
-                DefaultVacationResponseDto defaultVacationResponseDto = manService2.makeDefaultVacationResponse(requestDto);
-                log.info("manService2.makeDefaultVacationResponse(requestDto,id)의 결과 : {}", defaultVacationResponseDto);
+                DefaultVacationResponseDto defaultVacationResponseDto = managerService1.makeDefaultVacationResponse(requestDto);
+                log.info("managerService1.makeDefaultVacationResponse(requestDto,id)의 결과 : {}", defaultVacationResponseDto);
 
                 log.info("OK");
                 return ResponseEntity.ok(defaultVacationResponseDto); //200 OK
@@ -463,7 +430,7 @@ public class ManagerController1 {
     public ResponseEntity<Integer> getRemainOfVacationOfEmployee(@PathVariable(name = "employee_id") String employeeId, HttpServletRequest req) {
         if (isManager(req)) {
             if (validationId(employeeId)) {
-                int setting = manService2.getDefaultSettingValue(employeeId);
+                int setting = managerService1.getDefaultSettingValue(employeeId);
                 log.info("남은 연차 수 : {}", setting);
 
                 return ResponseEntity.ok(setting); // 200 OK
@@ -495,11 +462,14 @@ public class ManagerController1 {
     //manager 3
 
     @GetMapping("/manager/employees")
-    public ResponseEntity<Page<List<EmployeeResponseDto>>> getEmployeeList(HttpServletRequest req, @RequestParam(name = "page", defaultValue = "1") String page, @RequestParam(name = "sort", defaultValue = "''") String sort, @RequestParam(name = "desc", defaultValue = "") String desc) {
+    public ResponseEntity<Page<List<EmployeeResponseDto>>> getEmployeeList(HttpServletRequest req, @Valid PageRequest pageRequest, BindingResult br) {
+        if (br.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
         if (isManager(req)) {
-            int currentPage = validationPageNum(page);
-            String sortColumn = validationSort(sort);
-            String descCheck = validationDesc(desc);
+            int currentPage = pageRequest.getPage();
+            String sortColumn = pageRequest.getSort();
+            String descCheck = pageRequest.getDesc();
             log.info("get Employee list - validation result : {} {} {}", currentPage, sortColumn, descCheck);
 
             Page<List<EmployeeResponseDto>> result = managerService.getEmployeeList(currentPage, sortColumn, descCheck);
@@ -580,8 +550,6 @@ public class ManagerController1 {
 
     @PostMapping("/manager/appeal/process") //39
     public ResponseEntity<AppealRequestResponseDto> processAppealRequest(@ModelAttribute AppealProcessRequestDto dto, HttpServletRequest req) {
-
-
         if (isManager(req)) {
             String status = dto.getStatus();
             if (status.equals(VACATION_REQUEST_STATE_REJECTED)) {
@@ -621,7 +589,4 @@ public class ManagerController1 {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
     }
-    //manager 3 end
-
-
 }

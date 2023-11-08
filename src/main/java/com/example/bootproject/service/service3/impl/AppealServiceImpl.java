@@ -40,19 +40,21 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public AppealRequestResponseDto makeAppealRequest(AppealRequestDto dto) {
-        Integer attendanceInfoIdExist = attendanceInfoMapper.countById(dto.getAttendanceInfoId());
-        if (attendanceInfoIdExist < 1) {
+        Integer attendanceInfoIdExist = attendanceInfoMapper.countByIdEmployeeId(dto.getAttendanceInfoId(), dto.getEmployeeId());
+        if (attendanceInfoIdExist == null) {
             //TODO : 근태기록 자체를 찾지 못한 경우 응답 설정
+            log.info("attendanceInfoId를 찾지 못함");
             return null;
         }
-        if (appealMapper.checkAppealRequestExist(dto.getAttendanceInfoId()) >= 1) {
+        if (appealMapper.checkAppealRequestExist(dto.getAttendanceInfoId()) != null) {
             //TODO : 해당 근태기록에 대해 이미 조정 요청이 있는 경우 처리
-            return null;
+            appealMapper.makeRequest(dto);
+            AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
+            return result;
         }
-        String employeeId = (String) session.getAttribute("loginId");
-        appealMapper.makeRequest(dto, employeeId);
-        AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
-        return result;
+
+        log.info("attendanceInfoId가 2개 이상 발생 - DB 이상 확인 필요");
+        return null;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class LoginResponseDto {
     private LocalDateTime logoutTime;
     private String ip;
     private boolean manager;
-
+    private String message;
     public LoginResponseDto(String loginId, String ip) {
         this.loginId = loginId;
         this.ip = ip;

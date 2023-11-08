@@ -2,6 +2,7 @@ package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 import com.example.bootproject.repository.mapper3.vacation.VacationMapper;
+import com.example.bootproject.service.service1.ManagerService1;
 import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.vo.vo3.request.vacation.VacationAdjustRequestDto;
 import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
@@ -27,11 +28,12 @@ public class VacationServiceImpl implements VacationService {
 
     private final VacationMapper vacationMapper;
     private final EmployeeMapper employeeMapper;
+    private final ManagerService1 managerService2;
 
     @Override
     public VacationRequestResponseDto makeVacationRequest(VacationRequestDto dto) {
         // 시작 날짜부터 종료 날짜까지 하루 단위로 튜블 삽입하도록하여 쿼리를 작성하기 편하게
-        Integer remain = getVacationRemain();
+        Integer remain = getVacationRemain(dto.getEmployeeId());
         Integer requestQuantity = dto.getVacationQuantity();
         if (remain < requestQuantity) {
             // 잔여 개수를 초과한 요청 : dto에 잘못된 요청임을 담아서 전달
@@ -107,8 +109,10 @@ public class VacationServiceImpl implements VacationService {
         return result;
     }
 
-    private Integer getVacationRemain() {
-        return 3;
+    private Integer getVacationRemain(String employeeId) {
+        int setting = managerService2.getDefaultSettingValue(employeeId);
+        log.info("getVacationRemain {} {} ", employeeId, setting);
+        return setting;
     }
 
     private boolean checkRequestExist(LocalDate start, LocalDate end, String employeeId) {

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
 
 @RestControllerAdvice
@@ -26,6 +27,18 @@ public class RestControllerImpl {
         ErrorResponseDto<SQLTransientConnectionException> responseDto = new ErrorResponseDto<>();
         responseDto.setException(ex);
         responseDto.setErrorMessage("데이터베이스가 꺼져있거나 연결이 불가능한 상태이므로 연결 설정을 확인 하세요");
+        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(SQLSyntaxErrorException.class)
+    public ResponseEntity<ErrorResponseDto<SQLSyntaxErrorException>> SQLSyntaxErrorExceptionHandler(SQLSyntaxErrorException ex, HttpServletRequest req) {
+        log.info("exception occur {} ", ex.getClass().getName());
+        log.info("stackTrace");
+        ex.printStackTrace();
+        log.info(ex.getClass().getName() + " Exception occur {} ", "쿼리 수행 도중 문법 에러 발생, 입력값을 확인하세요");
+        ErrorResponseDto<SQLSyntaxErrorException> responseDto = new ErrorResponseDto<>();
+        responseDto.setException(ex);
+        responseDto.setErrorMessage("쿼리 수행 도중 문법 에러 발생, 입력값을 확인하세요");
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
