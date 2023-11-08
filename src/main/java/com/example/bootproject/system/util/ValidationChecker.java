@@ -50,8 +50,8 @@ public class ValidationChecker {
             String sessionIp = session.getAttribute("ip") != null ? (String) session.getAttribute("ip") : null;
             if (loginId != null && sessionIp != null) {
                 if (sessionIp.equals(IpAnalyzer.getClientIp(req))) {
-                    if (session.getAttribute("admin") != null) {
-                        log.info("admin에서는 지원하지 않는 기능 : 사원 정보 조회");
+                    if (session.getAttribute("admin") != null && !req.getRequestURL().toString().contains("download")) {
+                        log.info("admin에서는 지원하지 않는 기능 : 사원 정보 조회(이미지 조회의 경우 admin 지원)");
                         return null;
                     }
                     log.info("로그인 정보 확인 완료 loginId {}", loginId);
@@ -106,6 +106,7 @@ public class ValidationChecker {
     }
 
     public static boolean isManager(HttpServletRequest req) {
+        log.info("manager 여부 확인 수행");
         HttpSession session = req.getSession();
         String loginId = (String) session.getAttribute("loginId");
         String ip = (String) session.getAttribute("ip");

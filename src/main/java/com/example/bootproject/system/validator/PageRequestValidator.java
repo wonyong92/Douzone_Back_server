@@ -27,7 +27,7 @@ public class PageRequestValidator implements Validator {
         }
 
 
-        if (!myRequestDTO.getDesc().equalsIgnoreCase("ASC") || !myRequestDTO.getDesc().equalsIgnoreCase("DESC")) {
+        if (!myRequestDTO.getDesc().equalsIgnoreCase("ASC") && !myRequestDTO.getDesc().equalsIgnoreCase("DESC")) {
             errors.rejectValue("desc", "desc.wrong", "desc should be asc(ASC) or desc(DESC)");
         }
     }

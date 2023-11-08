@@ -1,7 +1,7 @@
 package com.example.bootproject.system.scheduling;
 
+import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper3.attendanceinfo.AttendanceInfoMapper;
-import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 import com.example.bootproject.vo.vo3.response.attendance.AttendanceCheckResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import static com.example.bootproject.system.StaticString.*;
 public class JobContainer {
 
     private final AttendanceInfoMapper attendanceInfoMapper;
-    private final EmployeeMapper employeeMapper;
+    private final EmployeeMapper1 employeeMapper;
 
     @Scheduled(cron = "0 30 5 * * *")
     public void autoInsertAttedanceInfo() {

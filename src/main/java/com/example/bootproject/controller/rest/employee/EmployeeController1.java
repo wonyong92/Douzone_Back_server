@@ -38,6 +38,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.example.bootproject.system.StaticString.SESSION_ID_NOT_MATCHED_LOGIN_REQUEST;
 import static com.example.bootproject.system.util.ValidationChecker.*;
 
 
@@ -471,6 +472,9 @@ public class EmployeeController1 {
         log.info("LoginRequestDto dto : {}", dto);
         LoginResponseDto loginResult = null;
         loginResult = loginService.sessionLogin(dto, req);
+        if (loginResult != null && loginResult.getMessage().equals(SESSION_ID_NOT_MATCHED_LOGIN_REQUEST)) {
+            return ResponseEntity.badRequest().body(loginResult);
+        }
         log.info("session login 결과 : {}", loginResult);
         if (loginResult != null) {
             log.info("session login sessionId : {}", req.getSession(false).getId());

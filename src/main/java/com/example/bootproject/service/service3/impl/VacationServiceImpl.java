@@ -1,6 +1,7 @@
 package com.example.bootproject.service.service3.impl;
 
-import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
+import com.example.bootproject.repository.mapper1.EmployeeMapper1;
+
 import com.example.bootproject.repository.mapper3.vacation.VacationMapper;
 import com.example.bootproject.service.service1.ManagerService1;
 import com.example.bootproject.service.service3.api.VacationService;
@@ -27,7 +28,7 @@ import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE
 public class VacationServiceImpl implements VacationService {
 
     private final VacationMapper vacationMapper;
-    private final EmployeeMapper employeeMapper;
+    private final EmployeeMapper1 employeeMapper;
     private final ManagerService1 managerService2;
 
     @Override

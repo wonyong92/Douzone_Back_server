@@ -34,7 +34,7 @@ values ('abnormal'),
        ('normal');
 insert into douzone_test.attendance_info (attendance_info_id, attendance_status_category, employee_id, start_time,
                                           end_time, attendance_date)
-values (1, 'abnormal', '200001012', '2023-10-31 09:24:57', '2023-10-31 16:24:59', '2023-10-31');
+values (1, 'abnormal', '200001011', '2023-10-31 09:24:57', '2023-10-31 16:24:59', '2023-10-31');
 insert into douzone_test.attendance_appeal_request (status, reason, attendance_info_id, appealed_start_time,
                                                     appealed_end_time, employee_id, attendance_appeal_request_time,
                                                     reason_for_rejection, attendance_appeal_request_id)
@@ -45,7 +45,7 @@ insert into vacation_category
 values ('a', 2);
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001011', 'permitted', 1, '2023-01-01', '2023-01-10', '2023-01-01 15:00:00', 'a');
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-01 15:00:00', 'a');
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('a', '200001012', 'permitted', 1, '2023-01-01', '2023-01-10', '2023-01-01 16:00:00', 'a');
@@ -153,7 +153,7 @@ select *
 from attendance_status_category;
 
 INSERT INTO attendance_info (attendance_status_category, employee_id, start_time, end_time, attendance_date)
-VALUES ('abnormal', '200001011', '2023-01-01 09:00:00', '2023-01-01 18:00:00', '2023-01-01'),
+VALUES
        ('abnormal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-01'),
        ('abnormal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-03'),
        ('abnormal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-04'),

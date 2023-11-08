@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
+import static com.example.bootproject.system.StaticString.SESSION_ID_NOT_MATCHED_LOGIN_REQUEST;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -40,14 +42,22 @@ public class LoginServiceImpl implements LoginService {
          * null이 아닌 닫른 데이터를 반환해주어 감지가 필요하다
          * 재로그인후 세션 로그인을 이용할 수 있도록 한다
          * */
+        log.info("session login 수행");
         LoginResponseDto loginResult = null;
         HttpSession session = req.getSession(false);
         log.info("session login 검삭 결과 {}", !(session == null || session.getAttribute("loginId") == null));
         if (session == null || session.getAttribute("loginId") == null) {
             /*세션이 존재하지 않는 경우 null 반환*/
-            return null;
+
         } else {
+
             String sessionLoginId = (String) session.getAttribute("loginId");
+            if (!dto.getLoginId().equals(sessionLoginId)) {
+                log.info("login 요청자와 세션의 아이디가 다릅니다 - 로그아웃이 필요합니다");
+                LoginResponseDto result = new LoginResponseDto();
+                result.setMessage(SESSION_ID_NOT_MATCHED_LOGIN_REQUEST);
+                return result;
+            }
             String sessionLoginIp = (String) session.getAttribute("ip");
             /*세션에서 인증 정보 찾기*/
             String ip = dto.getIp();

@@ -7,6 +7,7 @@ import com.example.bootproject.system.validator.PagedLocalDateDtoValidator;
 import com.example.bootproject.vo.vo1.request.EmployeeInsertRequestDto;
 import com.example.bootproject.vo.vo1.request.EmployeeUpdateRequestDto;
 import com.example.bootproject.vo.vo1.request.PageRequest;
+import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
 import com.example.bootproject.vo.vo1.response.EmployeeResponseDto;
 import com.example.bootproject.vo.vo2.request.PagingRequestDto;
 import com.example.bootproject.vo.vo2.response.EmployeeDto;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -117,7 +119,24 @@ public class AdminController1 {
 
     // 전체 사원 정보 조회 메서드
     @GetMapping("/admin/employee/information")
-    public ResponseEntity<Page<List<EmployeeDto>>> getEmployeesInformation(@Valid PageRequest pageRequest, HttpServletRequest req) {
+    public ResponseEntity<Page<List<EmployeeDto>>> getEmployeesInformation(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
+        if (br.hasErrors()) {
+            AttendanceApprovalUpdateResponseDto body = new AttendanceApprovalUpdateResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setPage(1);
+            }
+            if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setSort("''");
+            }
+            if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setDesc("desc");
+            }
+        }
         if (isAdmin(req)) { //권한 확인
 
             int currentPage = pageRequest.getPage(); // 쿼리 파라미터로 받아온 페이지 번호에 대한 validation 체크
@@ -198,6 +217,7 @@ public class AdminController1 {
         }
         Resource file = multipartService.download(employeeId);
         if (file != null) {
+            log.info("지정된 파일이 없으므로 기본 프로필 이미지 전달");
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(file.getFilename().split("_|\\.")[0] + '.' + file.getFilename().split("_|\\.")[1], StandardCharsets.UTF_8) + "\"").body(file);
         }
         return ResponseEntity.notFound().build();

@@ -3,8 +3,6 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.entity.Employee;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
-import com.example.bootproject.repository.mapper2.EmployeeMapper2;
-import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
@@ -31,8 +29,6 @@ import static com.example.bootproject.vo.vo3.response.Page.PAGE_SIZE;
 public class EmployeeService1Impl implements EmployeeService1 {
 
     private final EmployeeMapper1 employeeMapper1;
-    private final EmployeeMapper2 empMapper2;
-
 
  /*
 - 사원 ID로 사원의 존재 여부를 확인한다.
@@ -45,7 +41,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 - 조회에 성공하면 출근 정보를 담아 200 OK 응답과 함께 반환한다.
 - 조회에 실패하면 로그를 남기고 null을 반환하여 400 Bad Request 응답을 나타낸다.
 */
-    private final EmployeeMapper employeeMapper;
+
 
   /*
 - 사원 ID로 사원의 존재 여부를 확인한다.
@@ -131,7 +127,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
         log.info("사원 ID {}의 조정 요청 이력 수: {}", employeeId, totalElements);
 
-        Page<List<AttendanceInfoResponseDto>> result = new Page<>(data, !hasNext, sort, desc, page, totalElements);
+        Page<List<AttendanceInfoResponseDto>> result = new Page<>(data, hasNext, sort, desc, page, totalElements);
 
         return result;
     }
@@ -167,7 +163,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
         }
 
         Page<List<AttendanceInfoResponseDto>> result = new Page<>(data, // 바로 data를 넘김. List<T> 타입을 만족함.
-                !hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
+                hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
                 sort, desc, page, totalElements);
 
         return result;
@@ -243,7 +239,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
         boolean hasNext = (page * size) < totalElement;
 
 
-        Page<List<AttendanceApprovalUpdateResponseDto>> result = new Page<>(data, !hasNext, sort, desc, page, totalElement);
+        Page<List<AttendanceApprovalUpdateResponseDto>> result = new Page<>(data, hasNext, sort, desc, page, totalElement);
 
         return result;
     }
@@ -292,7 +288,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
         log.info("사원 ID {}에 대한 조정요청 목록: {}", employeeId, totalElements);
 
         Page<List<AttendanceAppealMediateResponseDto>> result = new Page<>(data, // 바로 data를 넘깁니다. List<T> 타입을 만족합니다.
-                !hasNext, // 다음 페이지가 없으면 isLastPage는 true입니다.
+                hasNext, // 다음 페이지가 없으면 isLastPage는 true입니다.
                 sort, desc, page, totalElements);
 
         return result;
@@ -374,8 +370,8 @@ public class EmployeeService1Impl implements EmployeeService1 {
         String orderByCondition = pagingRequestWithIdStatusDto.getSort(); // 정렬할 컬럼 이름
 
         /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationRequestDto> getData = empMapper2.getHistoryOfVacationOfMine(size, orderByCondition, startRow, pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus());
-        log.info("empMapper2.getHistoryOfRejectedVacationOfMine()의 getData : {}", getData);
+        List<VacationRequestDto> getData = employeeMapper1.getHistoryOfVacationOfMine(size, orderByCondition, startRow, pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus());
+        log.info("employeeMapper1.getHistoryOfRejectedVacationOfMine()의 getData : {}", getData);
 
         /* 가져온 데이터가 비어있다면 Page 객체를 새로 생성하고, Page 객체 중 가져온 데이터를 담는 속성에 빈 ArrayList를 생성하여 리턴한다 */
         if (getData.isEmpty()) {
@@ -384,7 +380,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
             return pageObj;
         }
 
-        int totalRowCount = empMapper2.getHistoryOfVacationOfMineTotalRow(pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus()); // 전제 행
+        int totalRowCount = employeeMapper1.getHistoryOfVacationOfMineTotalRow(pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus()); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         boolean isLastPage = (pagingRequestWithIdStatusDto.getCurrentPage() < lastPageNumber); // 마지막 페이지 여부
 
@@ -395,21 +391,21 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
     @Override
     public int getRemainOfVacationOfMine(String id) {
-        int year = empMapper2.getHireYear(id); //입사 연도 들고옴
+        int year = employeeMapper1.getHireYear(id); //입사 연도 들고옴
         log.info("getHireYear(employeeId) : {}", year);
 
-        int setting = empMapper2.getDefaultSettingVacationValue(year); //입사 연도에 따른 기본 연차 설정값 들고옴
-        log.info("empMapper2.getDefaultSettingVacationValue(year) : {}", setting);
+        int setting = employeeMapper1.getDefaultSettingVacationValue(year); //입사 연도에 따른 기본 연차 설정값 들고옴
+        log.info("employeeMapper1.getDefaultSettingVacationValue(year) : {}", setting);
 
         /* 조정된 연차 개수를 들고 와서, 기본 연차 설정 값과 더한 결과*/
         // 만약 조정된 것이 없다면? 0이 리턴되도록
-        int thisYearSettingVacationValue = setting + empMapper2.getVacationAdjustedHistory(id);
-        log.info("조정된 연차 개수 데이터 : {}", empMapper2.getVacationAdjustedHistory(id));
+        int thisYearSettingVacationValue = setting + employeeMapper1.getVacationAdjustedHistory(id);
+        log.info("조정된 연차 개수 데이터 : {}", employeeMapper1.getVacationAdjustedHistory(id));
         log.info("기본 연차 설정 값 + 조정된 연차 개수 데이터 : {}", thisYearSettingVacationValue);
         //
 
         /* 연차 신청 결과 승인인 튜플 중 vacation_quantity의 총합 */
-        int approveVacationSum = empMapper2.getApproveVacationQuantity(id);
+        int approveVacationSum = employeeMapper1.getApproveVacationQuantity(id);
         log.info("올해 연차 승인 개수 합 : {}", approveVacationSum);
 
         return thisYearSettingVacationValue - approveVacationSum; //기본값 + 조정값 - 승인 튜플 수
@@ -417,13 +413,13 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
     @Override
     public Employee findEmployeeInfoById(String loginId) {
-        Employee find = employeeMapper.findEmployeeInfoById(loginId);
+        Employee find = employeeMapper1.findEmployeeInfoById(loginId);
         return find;
     }
 
     @Override
     public com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto updateInformation(String loginId, EmployeeInformationUpdateDto dto) {
-        Employee find = employeeMapper.findEmployeeInfoById(loginId);
+        Employee find = employeeMapper1.findEmployeeInfoById(loginId);
 
         if (find == null) {
             log.info("로그인된 유저의 정보를 찾지 못함");
@@ -432,12 +428,12 @@ public class EmployeeService1Impl implements EmployeeService1 {
         String oldPassword = dto.getOldPassword();
         String newPassword = dto.getNewPassword();
         if (find.getPassword().equals(oldPassword) && !oldPassword.equals(newPassword)) {
-            int affected = employeeMapper.updatePassword(loginId, newPassword);
+            int affected = employeeMapper1.updatePassword(loginId, newPassword);
             if (affected != 1) {
                 log.info("변경을 시도하였으나 수행 결과 변경된 컬럼이 없음");
                 return null;
             }
-            Employee updated = employeeMapper.findEmployeeInfoById(loginId);
+            Employee updated = employeeMapper1.findEmployeeInfoById(loginId);
             return new EmployeeResponseDto(updated.getEmployeeId(), updated.getName(), updated.isAttendanceManager(), updated.getHireYear());
         }
 

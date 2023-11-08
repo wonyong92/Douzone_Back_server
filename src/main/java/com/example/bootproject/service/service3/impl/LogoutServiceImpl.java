@@ -1,6 +1,7 @@
 package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.repository.mapper3.login.AuthMapper;
+import com.example.bootproject.repository.mapper3.login.SessionLoginMapper;
 import com.example.bootproject.service.service3.api.LogoutService;
 import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
@@ -25,6 +26,7 @@ public class LogoutServiceImpl implements LogoutService {
     private final AuthMapper authMapper;
     private final HttpServletResponse resp;
     private final HttpServletRequest req;
+    private final SessionLoginMapper sessionLoginMapper;
 
     @Override
     public LogoutResponseDto logout() {
@@ -36,9 +38,25 @@ public class LogoutServiceImpl implements LogoutService {
          *
          * */
         /*로그인 정보 재확인*/
-        String sessionLoginId = (String) session.getAttribute("loginId");
-        String sessionIp = (String) session.getAttribute("ip");
+        String sessionLoginId = session.getAttribute("loginId") != null ? (String) session.getAttribute("loginId") : null;
+        String sessionIp = session.getAttribute("ip") != null ? (String) session.getAttribute("ip") : null;
         LoginResponseDto dto = authMapper.checkAuthInformation(sessionLoginId, sessionIp);
+
+        if (dto == null) {
+            log.info("로그아웃 시도 중 auth 테이블에서 인증 정보 확인 실패 - 세션에서 검사 합니다");
+            if (sessionLoginId != null && sessionIp != null) {
+                log.info("auth 테이블에는 인증정보가 없지만 session이 살아있는 상태");
+                session.invalidate();
+                Cookie cookie = new Cookie("JSESSIONID", null);
+                cookie.setMaxAge(0);
+                resp.addCookie(cookie);
+                log.info("세션 정리 결과 - null 데이터가 출력되어야 합니다. sessionLoginId {} sessionLoginIp {}", session.getAttribute("loginId"), session.getAttribute("ip"));
+                sessionLoginMapper.withOutAuthDataLogout(sessionLoginId, sessionIp);
+                LogoutResponseDto response = authMapper.logoutResult(sessionLoginId);
+                log.info("로그아웃 완료");
+                return response;
+            }
+        }
         if (dto != null) {
             if (dto.getLogoutTime() == null) {
                 log.info("login 정보 확인 {} ", dto);

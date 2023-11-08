@@ -225,25 +225,37 @@ public class ManagerController1 {
 
     @GetMapping("/manager/vacation/requests")
     public ResponseEntity<Page<List<VacationRequestDto>>> getRequestVacationInformationOfAll(@Valid PagedLocalDateDto pagedLocalDateDto, BindingResult br, HttpServletRequest req) {
+
         if (br.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setPage(1);
+            }
+            if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setSort("''");
+            }
+            if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setDesc("desc");
+            }
         }
         if (isManager(req)) { //권한 확인
-            String date = pagedLocalDateDto.makeLocalDate().format(DateTimeFormatter.ofPattern("yyyy-mm-dd")); // year-month-day 형태의 문자열로 변환
+            String date = pagedLocalDateDto.makeLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")); // year-month-day 형태의 문자열로 변환
 
             PagingRequestWithDateDto pagingRequestWithDateDto = new PagingRequestWithDateDto(pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), date);
 
             Page<List<VacationRequestDto>> result = managerService1.getAllVacationHistory(pagingRequestWithDateDto); // 전체 사원 정보 반환
             log.info("getAllVacationHistory result : {}", result);
             if (result.getData().isEmpty()) { // 반환된 데이터가 비어있을 때
-                return ResponseEntity.noContent().build(); // 204 No Content
+                log.info("데이터가 하나도 없습니다");
+//                return ResponseEntity.noContent().build(); // 204 No Content
             }
             return ResponseEntity.ok(result); // 200 OK
         }
+
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 ERROR
-
-
-
         /*
          * 근태 담당자 권한 확인
          * 1. 권한 확인 성공시
@@ -311,7 +323,21 @@ public class ManagerController1 {
     @GetMapping("/manager/setting_history/work_time")
     public ResponseEntity<Page<List<SettingWorkTimeDto>>> settingWorkTime(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
         if (br.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            AttendanceApprovalUpdateResponseDto body = new AttendanceApprovalUpdateResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setPage(1);
+            }
+            if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setSort("''");
+            }
+            if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setDesc("desc");
+            }
         }
         if (isManager(req)) { // 권한 확인
 
@@ -348,7 +374,21 @@ public class ManagerController1 {
     @GetMapping("/manager/vacation/setting_history/vacation_default")
     public ResponseEntity<Page<List<VacationQuantitySettingDto>>> getHistoryOfvacationDefaultSetting(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
         if (br.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            AttendanceApprovalUpdateResponseDto body = new AttendanceApprovalUpdateResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setPage(1);
+            }
+            if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setSort("''");
+            }
+            if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setDesc("desc");
+            }
         }
 
         if (isManager(req)) { // 권한 확인
@@ -464,7 +504,18 @@ public class ManagerController1 {
     @GetMapping("/manager/employees")
     public ResponseEntity<Page<List<EmployeeResponseDto>>> getEmployeeList(HttpServletRequest req, @Valid PageRequest pageRequest, BindingResult br) {
         if (br.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setPage(1);
+            } else if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setSort("''");
+            } else if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pageRequest.setDesc("desc");
+            }
+
         }
         if (isManager(req)) {
             int currentPage = pageRequest.getPage();
@@ -480,6 +531,7 @@ public class ManagerController1 {
                 return ResponseEntity.ok(result); // 200 OK
             }
         }
+        log.info("manager 가 아닌 유저의 요청");
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 ERROR
     }
 
