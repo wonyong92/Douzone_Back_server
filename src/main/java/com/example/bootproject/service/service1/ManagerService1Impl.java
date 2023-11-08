@@ -3,7 +3,6 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
-import com.example.bootproject.repository.mapper2.ManagerMapper2;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
 import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
 import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
@@ -58,8 +57,6 @@ public class ManagerService1Impl implements ManagerService1 {
     - 조회 결과가 존재하면 해당 결과를 반환한다.
     - 결과가 없으면 로그를 남기고 null을 반환한다. 이 부분에서 예외 처리를 추가할 수 있다.
     */
-    private final ManagerMapper2 manMapper2;
-
 
     /*
     - 사원 ID, 페이지 번호, 정렬 기준, 정렬 방향을 인자로 받는다.
@@ -233,8 +230,8 @@ public class ManagerService1Impl implements ManagerService1 {
         String orderByCondition = pagingRequestWithDateDto.getSort(); // 정렬할 컬럼 이름
 //        orderByCondition = (orderByCondition.equals("name")?"E.":"V.")+orderByCondition;
         log.info("size, orderByCondition,startRow,sortOrder : {},{},{},{}", size, orderByCondition, startRow, pagingRequestWithDateDto.getSortOrder());
-        List<VacationRequestDto> getData = manMapper2.getAllVacationHistory(size, orderByCondition, startRow, pagingRequestWithDateDto.getSortOrder(), pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
-        log.info("manMapper2.getEmpInfo의 getData : {}", getData);
+        List<VacationRequestDto> getData = managerMapper1.getAllVacationHistory(size, orderByCondition, startRow, pagingRequestWithDateDto.getSortOrder(), pagingRequestWithDateDto.getDate()); // 현재 페이지에 대해서 size만큼 orderByCondition 정렬 조건에 맞추어 startRow부터 데이터를 가져온다
+        log.info("managerMapper1.getEmpInfo의 getData : {}", getData);
 
         /* 가져온 데이터가 비어있다면 Page 객체를 새로 생성하고, Page 객체 중 가져온 데이터를 담는 속성에 빈 ArrayList를 생성하여 리턴한다 */
         if (getData.isEmpty()) {
@@ -243,7 +240,7 @@ public class ManagerService1Impl implements ManagerService1 {
             return pageObj;
         }
 
-        int totalRowCount = manMapper2.getAllVacationRequestCountByDate(pagingRequestWithDateDto.getDate()); // 전제 행
+        int totalRowCount = managerMapper1.getAllVacationRequestCountByDate(pagingRequestWithDateDto.getDate()); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         boolean isLastPage = (pagingRequestWithDateDto.getCurrentPage() < lastPageNumber); // 마지막 페이지 여부
 
@@ -259,7 +256,7 @@ public class ManagerService1Impl implements ManagerService1 {
         String orderByCondition = pagingRequestWithIdStatusDto.getSort(); // 정렬할 컬럼 이름
 
         /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationRequestDto> getData = manMapper2.getHistoryOfVacationOfEmployee(size, orderByCondition, startRow, pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus());
+        List<VacationRequestDto> getData = managerMapper1.getHistoryOfVacationOfEmployee(size, orderByCondition, startRow, pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus());
         log.info("empMapper2.getHistoryOfRejectedVacationOfMine()의 getData : {}", getData);
 
         /* 가져온 데이터가 비어있다면 Page 객체를 새로 생성하고, Page 객체 중 가져온 데이터를 담는 속성에 빈 ArrayList를 생성하여 리턴한다 */
@@ -269,7 +266,7 @@ public class ManagerService1Impl implements ManagerService1 {
             return pageObj;
         }
 
-        int totalRowCount = manMapper2.getHistoryOfVacationOfEmployeeTotalRow(pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus()); // 전제 행
+        int totalRowCount = managerMapper1.getHistoryOfVacationOfEmployeeTotalRow(pagingRequestWithIdStatusDto.getId(), pagingRequestWithIdStatusDto.getStatus()); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         boolean isLastPage = (pagingRequestWithIdStatusDto.getCurrentPage() < lastPageNumber); // 마지막 페이지 여부
 
@@ -285,8 +282,8 @@ public class ManagerService1Impl implements ManagerService1 {
         String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
 
         /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<SettingWorkTimeDto> getData = manMapper2.getSettingWorkTime(size, orderByCondition, startRow, pagingRequestDto.getSortOrder());
-        log.info("manMapper2.getSettingWorkTime의 getData : {}", getData);
+        List<SettingWorkTimeDto> getData = managerMapper1.getSettingWorkTime(size, orderByCondition, startRow, pagingRequestDto.getSortOrder());
+        log.info("managerMapper1.getSettingWorkTime의 getData : {}", getData);
 
         /* 가져온 데이터가 비어있다면 Page 객체를 새로 생성하고, Page 객체 중 가져온 데이터를 담는 속성에 빈 ArrayList를 생성하여 리턴한다 */
         if (getData.isEmpty()) {
@@ -295,7 +292,7 @@ public class ManagerService1Impl implements ManagerService1 {
             return pageObj;
         }
 
-        int totalRowCount = manMapper2.getSettingWorkTimeCount(); // 전제 행
+        int totalRowCount = managerMapper1.getSettingWorkTimeCount(); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         boolean isLastPage = (pagingRequestDto.getCurrentPage() < lastPageNumber); // 마지막 페이지 여부
 
@@ -311,8 +308,8 @@ public class ManagerService1Impl implements ManagerService1 {
         String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
 
         /* result에 어떠한 데이터도 담기지 않으면 null이 아닌 빈 List 형임*/
-        List<VacationQuantitySettingDto> getData = manMapper2.getVacationSettingHistory(size, orderByCondition, startRow, pagingRequestDto.getSortOrder());
-        log.info("manMapper2.getVacationSettingHistory의 getData : {}", getData);
+        List<VacationQuantitySettingDto> getData = managerMapper1.getVacationSettingHistory(size, orderByCondition, startRow, pagingRequestDto.getSortOrder());
+        log.info("managerMapper1.getVacationSettingHistory의 getData : {}", getData);
 
         /* 가져온 데이터가 비어있다면 Page 객체를 새로 생성하고, Page 객체 중 가져온 데이터를 담는 속성에 빈 ArrayList를 생성하여 리턴한다 */
         if (getData.isEmpty()) {
@@ -321,7 +318,7 @@ public class ManagerService1Impl implements ManagerService1 {
             return pageObj;
         }
 
-        int totalRowCount = manMapper2.getVacationSettingHistoryCount(); // 전제 행
+        int totalRowCount = managerMapper1.getVacationSettingHistoryCount(); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
         boolean isLastPage = (pagingRequestDto.getCurrentPage() < lastPageNumber); // 마지막 페이지 여부
 
@@ -335,11 +332,11 @@ public class ManagerService1Impl implements ManagerService1 {
     @Override
     public DefaultVacationResponseDto makeDefaultVacationResponse(DefaultVacationRequestDto dto) { //dto에는 1년 미만 일 때 개수, 1년 이상일 때 개수, 대상 날짜의 데이터만 존재함
 
-        manMapper2.insertDefaultVacation(dto); //데이터 insert
+        managerMapper1.insertDefaultVacation(dto); //데이터 insert
 
         // generated key를 이용하여 insert한 데이터를 가져와 반환
-        DefaultVacationResponseDto result = manMapper2.getDefaultVacationResponseDto(dto.getSettingKey());
-        log.info("manMapper2.getDefaultVacationResponseDto(dto.getSettingKey())의 result : {}", result);
+        DefaultVacationResponseDto result = managerMapper1.getDefaultVacationResponseDto(dto.getSettingKey());
+        log.info("managerMapper1.getDefaultVacationResponseDto(dto.getSettingKey())의 result : {}", result);
 
         return result;
 
@@ -348,21 +345,21 @@ public class ManagerService1Impl implements ManagerService1 {
     @Override
     public int getDefaultSettingValue(String employeeId) {
 
-        int year = manMapper2.getHireYear(employeeId); //입사 연도 들고옴
+        int year = managerMapper1.getHireYear(employeeId); //입사 연도 들고옴
         log.info("getHireYear(employeeId) : {}", year);
 
-        int setting = manMapper2.getDefaultSettingVacationValue(year); //입사 연도에 따른 기본 연차 설정값 들고옴
-        log.info("manMapper2.getDefaultSettingVacationValue(year) : {}", setting);
+        int setting = managerMapper1.getDefaultSettingVacationValue(year); //입사 연도에 따른 기본 연차 설정값 들고옴
+        log.info("managerMapper1.getDefaultSettingVacationValue(year) : {}", setting);
 
         /* 조정된 연차 개수를 들고 와서, 기본 연차 설정 값과 더한 결과*/
         // 만약 조정된 것이 없다면? 0이 리턴되도록
-        int thisYearSettingVacationValue = setting + manMapper2.getVacationAdjustedHistory(employeeId);
-        log.info("조정된 연차 개수 데이터 : {}", manMapper2.getVacationAdjustedHistory(employeeId));
+        int thisYearSettingVacationValue = setting + managerMapper1.getVacationAdjustedHistory(employeeId);
+        log.info("조정된 연차 개수 데이터 : {}", managerMapper1.getVacationAdjustedHistory(employeeId));
         log.info("기본 연차 설정 값 + 조정된 연차 개수 데이터 : {}", thisYearSettingVacationValue);
         //
 
         /* 연차 신청 결과 승인인 튜플 중 vacation_quantity의 총합 */
-        int approveVacationSum = manMapper2.getApproveVacationQuantity(employeeId);
+        int approveVacationSum = managerMapper1.getApproveVacationQuantity(employeeId);
         log.info("올해 연차 승인 개수 합 : {}", approveVacationSum);
 
         return thisYearSettingVacationValue - approveVacationSum; //기본값 + 조정값 - 승인 튜플 수
@@ -370,7 +367,7 @@ public class ManagerService1Impl implements ManagerService1 {
 
     @Override
     public int getEmployeeCheck(String id) {
-        return manMapper2.getEmployeeCheck(id);
+        return managerMapper1.getEmployeeCheck(id);
     }
 
     public Page<List<EmployeeResponseDto>> getEmployeeList(int page, String sort, String desc) {
