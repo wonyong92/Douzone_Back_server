@@ -26,12 +26,12 @@ public interface AppealMapper {
             "    #{dto.attendanceInfoId},\n" +
             "    #{dto.appealedStartTime},\n" +
             "    #{dto.appealedEndTime},\n" +
-            "    #{employeeId},\n" +
+            "    #{dto.employeeId},\n" +
             "    now(),\n" +
             "    'empty'\n" +
             ");\n")
     @Options(useGeneratedKeys = true, keyProperty = "dto.attendanceInfoId")
-    Long makeRequest(@Param("dto") AppealRequestDto dto, @Param("employeeId") String employeeId);
+    Long makeRequest(@Param("dto") AppealRequestDto dto);
 
     @Select("select * from attendance_appeal_request where attendance_appeal_request_id = #{generatedKey} ")
     AppealRequestResponseDto findById(Long generatedKey);
