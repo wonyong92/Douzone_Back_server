@@ -5,11 +5,11 @@ import com.example.bootproject.entity.Employee;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
-import com.example.bootproject.vo.vo3.request.employee.EmployeeInformationUpdateDto;
-import com.example.bootproject.vo.vo3.response.Page;
-import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
+import com.example.bootproject.vo.vo1.response.VacationRequestDto;
+import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
+import com.example.bootproject.vo.vo1.response.Page;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.bootproject.vo.vo3.response.Page.PAGE_SIZE;
+import static com.example.bootproject.vo.vo1.response.Page.PAGE_SIZE;
 
 @Service
 @Slf4j
@@ -412,13 +412,36 @@ public class EmployeeService1Impl implements EmployeeService1 {
     }
 
     @Override
+    public int getRemainOfVacationOfMineForRequest(String id) {
+        int year = employeeMapper1.getHireYear(id); //입사 연도 들고옴
+        log.info("getHireYear(employeeId) : {}", year);
+
+        int setting = employeeMapper1.getDefaultSettingVacationValue(year); //입사 연도에 따른 기본 연차 설정값 들고옴
+        log.info("employeeMapper1.getDefaultSettingVacationValue(year) : {}", setting);
+
+        /* 조정된 연차 개수를 들고 와서, 기본 연차 설정 값과 더한 결과*/
+        // 만약 조정된 것이 없다면? 0이 리턴되도록
+        int thisYearSettingVacationValue = setting + employeeMapper1.getVacationAdjustedHistory(id);
+        log.info("조정된 연차 개수 데이터 : {}", employeeMapper1.getVacationAdjustedHistory(id));
+        log.info("기본 연차 설정 값 + 조정된 연차 개수 데이터 : {}", thisYearSettingVacationValue);
+        //
+
+        /* 연차 신청 결과 승인인 튜플 중 vacation_quantity의 총합 */
+        int approveVacationSum = employeeMapper1.getApproveVacationQuantity(id);
+        int requestedVacationSum = employeeMapper1.getRequestedVacationQuantity(id);
+        log.info("올해 연차 승인 + 요청 개수 합 : {}", approveVacationSum + requestedVacationSum);
+
+        return thisYearSettingVacationValue - approveVacationSum - requestedVacationSum; //기본값 + 조정값 - 승인 튜플 수 - 현재 요청 중인 튜플 수
+    }
+
+    @Override
     public Employee findEmployeeInfoById(String loginId) {
         Employee find = employeeMapper1.findEmployeeInfoById(loginId);
         return find;
     }
 
     @Override
-    public com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto updateInformation(String loginId, EmployeeInformationUpdateDto dto) {
+    public com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto updateInformation(String loginId, EmployeeInformationUpdateDto dto) {
         Employee find = employeeMapper1.findEmployeeInfoById(loginId);
 
         if (find == null) {

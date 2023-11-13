@@ -1,6 +1,6 @@
 package com.example.bootproject.repository.mapper3.login;
 
-import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
+import com.example.bootproject.vo.vo1.response.login.LoginResponseDto;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

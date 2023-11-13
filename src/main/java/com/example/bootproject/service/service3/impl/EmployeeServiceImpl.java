@@ -3,8 +3,8 @@
 //import com.example.bootproject.entity.Employee;
 //import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 //import com.example.bootproject.service.service3.api.EmployeeService;
-//import com.example.bootproject.vo.vo3.request.employee.EmployeeInformationUpdateDto;
-//import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
+//import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
+//import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.stereotype.Service;

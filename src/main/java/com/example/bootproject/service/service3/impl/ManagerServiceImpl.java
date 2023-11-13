@@ -2,8 +2,8 @@
 //
 //import com.example.bootproject.repository.mapper3.employee.EmployeeMapper;
 //import com.example.bootproject.service.service3.api.ManagerService;
-//import com.example.bootproject.vo.vo3.response.Page;
-//import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
+//import com.example.bootproject.vo.vo1.response.Page;
+//import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import static com.example.bootproject.vo.vo3.response.Page.PAGE_SIZE;
+//import static com.example.bootproject.vo.vo1.response.Page.PAGE_SIZE;
 //
 //@Service
 //@RequiredArgsConstructor

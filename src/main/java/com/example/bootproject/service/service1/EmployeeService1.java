@@ -5,11 +5,11 @@ import com.example.bootproject.entity.Employee;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo2.request.PagingRequestWithIdStatusDto;
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
-import com.example.bootproject.vo.vo3.request.employee.EmployeeInformationUpdateDto;
-import com.example.bootproject.vo.vo3.response.Page;
-import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
+import com.example.bootproject.vo.vo1.response.VacationRequestDto;
+import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
+import com.example.bootproject.vo.vo1.response.Page;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -54,6 +54,8 @@ public interface EmployeeService1 {
     Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto);
 
     int getRemainOfVacationOfMine(String id);
+
+    int getRemainOfVacationOfMineForRequest(String id);
 
     Employee findEmployeeInfoById(String loginId);
 

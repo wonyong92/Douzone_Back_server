@@ -1,8 +1,8 @@
 //package com.example.bootproject.service.service2;
 //
-//import com.example.bootproject.vo.vo2.request.PagingRequestDto;
-//import com.example.bootproject.vo.vo2.response.EmployeeDto;
-//import com.example.bootproject.vo.vo3.response.Page;
+//import com.example.bootproject.vo.vo1.request.PagingRequestDto;
+//import com.example.bootproject.vo.vo1.response.EmployeeDto;
+//import com.example.bootproject.vo.vo1.response.Page;
 //
 //import java.util.List;
 //

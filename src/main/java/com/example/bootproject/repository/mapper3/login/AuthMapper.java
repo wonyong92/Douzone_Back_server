@@ -1,8 +1,8 @@
 package com.example.bootproject.repository.mapper3.login;
 
 import com.example.bootproject.entity.Employee;
-import com.example.bootproject.vo.vo3.response.login.LoginResponseDto;
-import com.example.bootproject.vo.vo3.response.logout.LogoutResponseDto;
+import com.example.bootproject.vo.vo1.response.login.LoginResponseDto;
+import com.example.bootproject.vo.vo1.response.logout.LogoutResponseDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

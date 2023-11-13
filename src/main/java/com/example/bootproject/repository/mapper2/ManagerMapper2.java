@@ -1,10 +1,10 @@
 //package com.example.bootproject.repository.mapper2;
 //
-//import com.example.bootproject.vo.vo2.request.DefaultVacationRequestDto;
-//import com.example.bootproject.vo.vo2.response.DefaultVacationResponseDto;
-//import com.example.bootproject.vo.vo2.response.SettingWorkTimeDto;
-//import com.example.bootproject.vo.vo2.response.VacationQuantitySettingDto;
-//import com.example.bootproject.vo.vo2.response.VacationRequestDto;
+//import com.example.bootproject.vo.vo1.request.DefaultVacationRequestDto;
+//import com.example.bootproject.vo.vo1.response.DefaultVacationResponseDto;
+//import com.example.bootproject.vo.vo1.response.SettingWorkTimeDto;
+//import com.example.bootproject.vo.vo1.response.VacationQuantitySettingDto;
+//import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 //import org.apache.ibatis.annotations.Insert;
 //import org.apache.ibatis.annotations.Mapper;
 //import org.apache.ibatis.annotations.Options;

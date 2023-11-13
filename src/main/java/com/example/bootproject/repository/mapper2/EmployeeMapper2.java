@@ -1,6 +1,6 @@
 //package com.example.bootproject.repository.mapper2;
 //
-//import com.example.bootproject.vo.vo2.response.VacationRequestDto;
+//import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 //import org.apache.ibatis.annotations.Mapper;
 //import org.apache.ibatis.annotations.Param;
 //import org.apache.ibatis.annotations.Select;

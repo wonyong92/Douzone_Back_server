@@ -4,8 +4,8 @@ import com.example.bootproject.entity.Employee;
 import com.example.bootproject.service.service1.AdminService1Impl;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo2.response.VacationRequestDto;
-import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.VacationRequestDto;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATUS_CATEGORY_APPROVAL;
+import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATUS_CATEGORY_REQUESTED;
 
 @Mapper
 public interface EmployeeMapper1 {
@@ -250,4 +251,11 @@ public interface EmployeeMapper1 {
             " WHERE EMPLOYEE_ID=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY=" +
             "'" + VACATION_REQUEST_STATUS_CATEGORY_APPROVAL + "'")
     int getApproveVacationQuantity(String employeeId);
+
+
+    @Select("SELECT IFNULL(SUM(vacation_quantity),0)" +
+            "FROM vacation_request" +
+            " WHERE EMPLOYEE_ID=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY=" +
+            "'" + VACATION_REQUEST_STATUS_CATEGORY_REQUESTED + "'")
+    int getRequestedVacationQuantity(String id);
 }

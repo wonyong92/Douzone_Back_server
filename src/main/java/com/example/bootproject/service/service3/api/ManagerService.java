@@ -1,7 +1,7 @@
 //package com.example.bootproject.service.service3.api;
 //
-//import com.example.bootproject.vo.vo3.response.Page;
-//import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
+//import com.example.bootproject.vo.vo1.response.Page;
+//import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 //
 //import java.util.List;
 //

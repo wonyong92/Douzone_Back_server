@@ -2,14 +2,14 @@ package com.example.bootproject.service.service1;
 
 
 import com.example.bootproject.entity.Employee;
-import com.example.bootproject.repository.mapper1.AdminMapper1;
+import com.example.bootproject.repository.mapper1.AdminMapper;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.vo.vo1.request.EmployeeInsertRequestDto;
 import com.example.bootproject.vo.vo1.request.EmployeeUpdateRequestDto;
 import com.example.bootproject.vo.vo1.response.EmployeeResponseDto;
-import com.example.bootproject.vo.vo2.request.PagingRequestDto;
-import com.example.bootproject.vo.vo2.response.EmployeeDto;
-import com.example.bootproject.vo.vo3.response.Page;
+import com.example.bootproject.vo.vo1.request.PagingRequestDto;
+import com.example.bootproject.vo.vo1.response.EmployeeDto;
+import com.example.bootproject.vo.vo1.response.Page;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.bootproject.vo.vo3.response.Page.PAGE_SIZE;
+import static com.example.bootproject.vo.vo1.response.Page.PAGE_SIZE;
 
 @Service
 @Slf4j
@@ -27,7 +27,7 @@ import static com.example.bootproject.vo.vo3.response.Page.PAGE_SIZE;
 @Transactional
 public class AdminService1Impl implements AdminService1 {
 
-    private final AdminMapper1 adminMapper1;
+    private final AdminMapper adminMapper1;
     private final EmployeeMapper1 employeeMapper;
 
     @Override

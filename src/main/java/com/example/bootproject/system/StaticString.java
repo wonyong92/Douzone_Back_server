@@ -25,4 +25,6 @@ public class StaticString {
     public static final String VACATION_REQUEST_STATUS_CATEGORY_APPROVAL = "승인";
     public static final String SESSION_ID_NOT_MATCHED_LOGIN_REQUEST = "notMatchSessionId";
 
+    public static final String VACATION_REQUEST_STATUS_CATEGORY_REQUESTED = "requested";
+
 }

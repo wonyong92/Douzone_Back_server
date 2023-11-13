@@ -2,7 +2,7 @@
 //
 //import com.example.bootproject.entity.Employee;
 //import com.example.bootproject.service.service1.AdminService1Impl;
-//import com.example.bootproject.vo.vo3.response.employee.EmployeeResponseDto;
+//import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 //import org.apache.ibatis.annotations.*;
 //
 //import java.util.List;

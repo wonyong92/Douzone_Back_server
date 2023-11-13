@@ -2,7 +2,7 @@ package com.example.bootproject.system.scheduling;
 
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper3.attendanceinfo.AttendanceInfoMapper;
-import com.example.bootproject.vo.vo3.response.attendance.AttendanceCheckResponse;
+import com.example.bootproject.vo.vo1.response.attendance.AttendanceCheckResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

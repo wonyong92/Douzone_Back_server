@@ -1,8 +1,8 @@
 package com.example.bootproject.repository.mapper3.appeal;
 
-import com.example.bootproject.vo.vo3.request.appeal.AppealProcessRequestDto;
-import com.example.bootproject.vo.vo3.request.appeal.AppealRequestDto;
-import com.example.bootproject.vo.vo3.response.appeal.AppealRequestResponseDto;
+import com.example.bootproject.vo.vo1.request.appeal.AppealProcessRequestDto;
+import com.example.bootproject.vo.vo1.request.appeal.AppealRequestDto;
+import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

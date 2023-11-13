@@ -1,10 +1,10 @@
 package com.example.bootproject.repository.mapper3.vacation;
 
-import com.example.bootproject.vo.vo3.request.vacation.VacationAdjustRequestDto;
-import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
-import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
-import com.example.bootproject.vo.vo3.response.vacation.VacationAdjustResponseDto;
-import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
+import com.example.bootproject.vo.vo1.request.vacation.VacationAdjustRequestDto;
+import com.example.bootproject.vo.vo1.request.vacation.VacationProcessRequestDto;
+import com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationAdjustResponseDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;

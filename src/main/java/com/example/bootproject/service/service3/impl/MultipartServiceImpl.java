@@ -2,8 +2,8 @@ package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.repository.mapper3.multipart.MultipartMapper;
 import com.example.bootproject.service.service3.api.MultipartService;
-import com.example.bootproject.vo.vo3.request.image.MultipartUploadRequestDto;
-import com.example.bootproject.vo.vo3.response.image.MultipartUploadResponseDto;
+import com.example.bootproject.vo.vo1.request.image.MultipartUploadRequestDto;
+import com.example.bootproject.vo.vo1.response.image.MultipartUploadResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,9 +1,9 @@
 //package com.example.bootproject.controller.rest.admin;
 //
 //import com.example.bootproject.service.service2.AdminService2;
-//import com.example.bootproject.vo.vo2.request.PagingRequestDto;
-//import com.example.bootproject.vo.vo2.response.EmployeeDto;
-//import com.example.bootproject.vo.vo3.response.Page;
+//import com.example.bootproject.vo.vo1.request.PagingRequestDto;
+//import com.example.bootproject.vo.vo1.response.EmployeeDto;
+//import com.example.bootproject.vo.vo1.response.Page;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.http.HttpStatus;

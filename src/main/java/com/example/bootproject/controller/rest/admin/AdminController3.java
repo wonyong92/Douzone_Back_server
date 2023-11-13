@@ -2,8 +2,8 @@
 //
 //import com.example.bootproject.service.service3.api.AdminService;
 //import com.example.bootproject.service.service3.api.MultipartService;
-//import com.example.bootproject.vo.vo3.request.image.MultipartUploadRequestDto;
-//import com.example.bootproject.vo.vo3.response.image.MultipartUploadResponseDto;
+//import com.example.bootproject.vo.vo1.request.image.MultipartUploadRequestDto;
+//import com.example.bootproject.vo.vo1.response.image.MultipartUploadResponseDto;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.core.io.Resource;

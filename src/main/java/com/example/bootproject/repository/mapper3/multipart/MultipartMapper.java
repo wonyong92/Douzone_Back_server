@@ -1,7 +1,7 @@
 package com.example.bootproject.repository.mapper3.multipart;
 
-import com.example.bootproject.vo.vo3.request.image.MultipartUploadRequestDto;
-import com.example.bootproject.vo.vo3.response.image.MultipartUploadResponseDto;
+import com.example.bootproject.vo.vo1.request.image.MultipartUploadRequestDto;
+import com.example.bootproject.vo.vo1.response.image.MultipartUploadResponseDto;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

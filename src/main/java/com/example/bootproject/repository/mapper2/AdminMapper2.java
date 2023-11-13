@@ -1,6 +1,6 @@
 //package com.example.bootproject.repository.mapper2;
 //
-//import com.example.bootproject.vo.vo2.response.EmployeeDto;
+//import com.example.bootproject.vo.vo1.response.EmployeeDto;
 //import org.apache.ibatis.annotations.Mapper;
 //import org.apache.ibatis.annotations.Select;
 //import org.springframework.stereotype.Repository;

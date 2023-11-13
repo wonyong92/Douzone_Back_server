@@ -1,6 +1,6 @@
 package com.example.bootproject.repository.mapper3.attendanceinfo;
 
-import com.example.bootproject.vo.vo3.response.attendance.AttendanceCheckResponse;
+import com.example.bootproject.vo.vo1.response.attendance.AttendanceCheckResponse;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

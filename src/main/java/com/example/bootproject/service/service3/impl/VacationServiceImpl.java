@@ -3,14 +3,15 @@ package com.example.bootproject.service.service3.impl;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 
 import com.example.bootproject.repository.mapper3.vacation.VacationMapper;
+import com.example.bootproject.service.service1.EmployeeService1;
 import com.example.bootproject.service.service1.ManagerService1;
 import com.example.bootproject.service.service3.api.VacationService;
-import com.example.bootproject.vo.vo3.request.vacation.VacationAdjustRequestDto;
-import com.example.bootproject.vo.vo3.request.vacation.VacationProcessRequestDto;
-import com.example.bootproject.vo.vo3.request.vacation.VacationRequestDto;
-import com.example.bootproject.vo.vo3.response.vacation.VacationAdjustResponseDto;
-import com.example.bootproject.vo.vo3.response.vacation.VacationProcessResponseDto;
-import com.example.bootproject.vo.vo3.response.vacation.VacationRequestResponseDto;
+import com.example.bootproject.vo.vo1.request.vacation.VacationAdjustRequestDto;
+import com.example.bootproject.vo.vo1.request.vacation.VacationProcessRequestDto;
+import com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationAdjustResponseDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationProcessResponseDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class VacationServiceImpl implements VacationService {
     private final VacationMapper vacationMapper;
     private final EmployeeMapper1 employeeMapper;
     private final ManagerService1 managerService2;
-
+    private final EmployeeService1 employeeService;
     @Override
     public VacationRequestResponseDto makeVacationRequest(VacationRequestDto dto) {
         // 시작 날짜부터 종료 날짜까지 하루 단위로 튜블 삽입하도록하여 쿼리를 작성하기 편하게
@@ -111,9 +112,9 @@ public class VacationServiceImpl implements VacationService {
     }
 
     private Integer getVacationRemain(String employeeId) {
-        int setting = managerService2.getDefaultSettingValue(employeeId);
-        log.info("getVacationRemain {} {} ", employeeId, setting);
-        return setting;
+        int remain = employeeService.getRemainOfVacationOfMineForRequest(employeeId);
+        log.info("getVacationRemain {} {} ", employeeId, remain);
+        return remain;
     }
 
     private boolean checkRequestExist(LocalDate start, LocalDate end, String employeeId) {

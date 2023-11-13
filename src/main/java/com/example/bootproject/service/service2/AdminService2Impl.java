@@ -2,9 +2,9 @@
 //
 //
 //import com.example.bootproject.repository.mapper2.AdminMapper2;
-//import com.example.bootproject.vo.vo2.request.PagingRequestDto;
-//import com.example.bootproject.vo.vo2.response.EmployeeDto;
-//import com.example.bootproject.vo.vo3.response.Page;
+//import com.example.bootproject.vo.vo1.request.PagingRequestDto;
+//import com.example.bootproject.vo.vo1.response.EmployeeDto;
+//import com.example.bootproject.vo.vo1.response.Page;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import static com.example.bootproject.vo.vo3.response.Page.PAGE_SIZE;
+//import static com.example.bootproject.vo.vo1.response.Page.PAGE_SIZE;
 //
 //
 //@Service
