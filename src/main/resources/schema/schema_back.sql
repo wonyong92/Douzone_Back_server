@@ -36,7 +36,7 @@ create table employee
     password           varchar(10)                    not null,
     name               varchar(10)                    not null,
     attendance_manager boolean                        not null,
-    hire_year          date default (YEAR(curdate())) not null
+    hire_year          date                           not null
 );
 
 CREATE TABLE attendance_info

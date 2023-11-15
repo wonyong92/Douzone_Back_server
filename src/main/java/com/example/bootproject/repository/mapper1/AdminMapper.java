@@ -15,7 +15,7 @@ public interface AdminMapper {
     @Insert("INSERT INTO employee (employee_id,password, name, attendance_manager, hire_year) VALUES (#{dto.employeeId},#{dto.passWord}, #{dto.name}, #{dto.attendanceManager}, now() )")
     int insertEmployee(@Param("dto") EmployeeInsertRequestDto dto);
 
-
+//TODO:입사일로 넣는데이터로 수정하고 업데이트도 진행
     @Select("SELECT employee_id, password, name, attendance_manager, hire_year FROM employee WHERE employee_id = #{employeeId}")
     EmployeeResponseDto selectEmployee(String employeeId);
 
@@ -26,7 +26,7 @@ public interface AdminMapper {
             "SET password = #{dto.passWord}, " +
             "name = #{dto.name}, " +
             "attendance_manager = #{dto.attendanceManager}, " +
-            "hire_year = now() " +
+            "hire_year = #{dto.hireYear} " +
             "WHERE employee_id = #{dto.employeeId}")
     int updateEmployee(@Param("dto") EmployeeUpdateRequestDto dto);
 

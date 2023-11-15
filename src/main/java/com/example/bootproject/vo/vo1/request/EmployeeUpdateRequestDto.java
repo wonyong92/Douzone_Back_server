@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -18,7 +19,8 @@ public class EmployeeUpdateRequestDto {
 
     private Boolean attendanceManager;
 
-    @DateTimeFormat(pattern = "yyyy")
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate hireYear;
 
 

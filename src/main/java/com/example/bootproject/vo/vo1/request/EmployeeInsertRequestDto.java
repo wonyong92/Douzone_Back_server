@@ -23,6 +23,6 @@ public class EmployeeInsertRequestDto {
 
     private Boolean attendanceManager = false;
     @NotNull
-    @DateTimeFormat(pattern = "yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-DD")
     private LocalDate hireYear;
 }
