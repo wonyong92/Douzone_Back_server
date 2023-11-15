@@ -1,5 +1,6 @@
 package com.example.bootproject.vo.vo1.request;
 
+import com.example.bootproject.vo.vo1.response.Page;
 import lombok.Data;
 
 import javax.validation.constraints.Max;
@@ -24,6 +25,7 @@ public class PagedLocalDateDto {
     private String sort = "''";
     @NotNull
     private String desc = "desc";
+    private Integer size = Page.PAGE_SIZE;
 
     public LocalDate makeLocalDate() {
         return LocalDate.of(year, month, day);

@@ -26,7 +26,7 @@ import static com.example.bootproject.vo.vo1.response.Page.PAGE_SIZE;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
-public class EmployeeService1Impl implements EmployeeService1 {
+public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper1 employeeMapper1;
 
@@ -56,7 +56,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 */
 
     //퇴근요청
-    public AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto, String employeeId) {
+    public AttendanceInfoResponseDto makeEndRequest(AttendanceInfoEndRequestDto dto, String employeeId) {
 
         if (!employeeExists(employeeId)) {
             log.info("이 아이디가 존재하지 않는다: {}", employeeId);
@@ -132,6 +132,29 @@ public class EmployeeService1Impl implements EmployeeService1 {
         return result;
     }
 
+
+    public Page<List<AttendanceInfoResponseDto>> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId, String sort, String desc, int page, int pageSize) {
+
+        int size = pageSize;
+        int startRow = (page - 1) * size;
+
+        List<AttendanceInfoResponseDto> data = employeeMapper1.selectAttendanceByDate(attendanceDate, employeeId, sort, desc, size, startRow);
+        int totalElements = employeeMapper1.countAttendanceInfoByMonthEmployeeId(employeeId, attendanceDate);
+        boolean hasNext = (page * size) < totalElements;
+
+        if (totalElements <= 0) {
+            // 근태 이의 신청이 없을 때 처리할 로직
+            log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+            return null; // 또는 적절한 예외 처리를 할 수 있습니다.
+        }
+
+        log.info("사원 ID {}의 조정 요청 이력 수: {}", employeeId, totalElements);
+
+        Page<List<AttendanceInfoResponseDto>> result = new Page<>(data, hasNext, sort, desc, page, totalElements);
+
+        return result;
+    }
+
  /*
 - 사원 ID로 사원의 존재 여부를 확인한다.
 - 사원 ID가 없을 경우, 로그를 남기고 null을 반환하여 204 No Content 응답을 나타낸다.
@@ -144,13 +167,39 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
     //사원 년,월 사원근태정보검색
     @Override
+    public Page<List<AttendanceInfoResponseDto>> getAttendanceByMonthAndEmployee(int year, int month, String employeeId, int page, String sort, String desc, int pageSize) {
+        if (!employeeExists(employeeId)) {
+            log.info("이 아이디가 존재하지 않는다: {}", employeeId);
+            return null;
+        }
+
+        int size = pageSize;
+        int startRow = (page - 1) * size;
+        List<AttendanceInfoResponseDto> data = employeeMapper1.selectAttendanceByMonthAndEmployee(year, month, employeeId, sort, desc, size, startRow);
+        int totalElements = employeeMapper1.countAttendanceInfoByEmployeeId(employeeId, year, month);
+        boolean hasNext = (page * size) < totalElements;
+
+        if (totalElements <= 0) {
+            // 근태 이의 신청이 없을 때 처리할 로직
+            log.error("사원 ID {}에 대한 조정요청이 없습니다.", employeeId);
+            return null; // 또는 적절한 예외 처리를 할 수 있습니다.
+        }
+
+        Page<List<AttendanceInfoResponseDto>> result = new Page<>(data, // 바로 data를 넘김. List<T> 타입을 만족함.
+                hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
+                sort, desc, page, totalElements);
+
+        return result;
+    }
+
+    @Override
     public Page<List<AttendanceInfoResponseDto>> getAttendanceByMonthAndEmployee(int year, int month, String employeeId, int page, String sort, String desc) {
         if (!employeeExists(employeeId)) {
             log.info("이 아이디가 존재하지 않는다: {}", employeeId);
             return null;
         }
 
-        int size = Page.PAGE_SIZE;
+        int size = PAGE_SIZE;
         int startRow = (page - 1) * size;
         List<AttendanceInfoResponseDto> data = employeeMapper1.selectAttendanceByMonthAndEmployee(year, month, employeeId, sort, desc, size, startRow);
         int totalElements = employeeMapper1.countAttendanceInfoByEmployeeId(employeeId, year, month);
@@ -252,7 +301,7 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
     //본인의 조정요청이력조회
     @Override
-    public Page<List<AttendanceAppealMediateResponseDto>> findAttendanceInfoByMine(String employeeId, int page, String sort, String desc) {
+    public Page<List<AttendanceAppealMediateResponseDto>> findAppealRequestOfMine(String employeeId, int page, String sort, String desc) {
 
 
         if (!employeeExists(employeeId)) {
@@ -327,7 +376,8 @@ public class EmployeeService1Impl implements EmployeeService1 {
 
     @Override
     //출근요청
-    public AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto) {
+    //T
+    public AttendanceInfoResponseDto makeStartRequest(AttendanceInfoStartRequestDto dto) {
         // 오늘 날짜 설정
         LocalDate attendanceDate = LocalDate.now();
         String employeeId = dto.getEmployeeId();
@@ -364,7 +414,9 @@ public class EmployeeService1Impl implements EmployeeService1 {
     }
 
     @Override
-    public Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto) {
+    public Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagedLocalDateDto pagedLocalDateDto, String employeeId, String status) {
+        PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), employeeId, status);
+
         int size = PAGE_SIZE; // 한 페이지에 출력할 게시물 개수
         int startRow = (pagingRequestWithIdStatusDto.getCurrentPage() - 1) * size; // 가져오기 시작할 row의 번호
         String orderByCondition = pagingRequestWithIdStatusDto.getSort(); // 정렬할 컬럼 이름
@@ -461,6 +513,12 @@ public class EmployeeService1Impl implements EmployeeService1 {
         }
 
         return null;
+    }
+
+    @Override
+    public List<AttendanceInfoResponseDto> findAllAttendanceInfoOfMineByYearAndMonth(String loginId, Integer year, Integer month) {
+        List<AttendanceInfoResponseDto> result = employeeMapper1.getAllAttendanceInfoByIdByYearByMonth(loginId, year, month);
+        return result;
     }
 
 }

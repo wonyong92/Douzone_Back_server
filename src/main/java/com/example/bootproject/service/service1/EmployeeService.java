@@ -4,8 +4,8 @@ package com.example.bootproject.service.service1;
 import com.example.bootproject.entity.Employee;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
+import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo1.response.Page;
@@ -14,22 +14,29 @@ import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface EmployeeService1 {
+public interface EmployeeService {
 
 
     //출근요청
-    AttendanceInfoResponseDto makeStartResponse(AttendanceInfoStartRequestDto dto);
+    AttendanceInfoResponseDto makeStartRequest(AttendanceInfoStartRequestDto dto);
 
 
     //퇴근요청
-    AttendanceInfoResponseDto makeEndResponse(AttendanceInfoEndRequestDto dto, String employeeId);
+    AttendanceInfoResponseDto makeEndRequest(AttendanceInfoEndRequestDto dto, String employeeId);
 
 
-    //사원년월일검색
+    //타사원 근태 정보 년월일검색
     Page<List<AttendanceInfoResponseDto>> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId, String sort, String desc,
                                                                          int page);
 
+    //사원 근태 정보 년월일검색
+    Page<List<AttendanceInfoResponseDto>> getAttendanceByDateAndEmployee(LocalDate attendanceDate, String employeeId, String sort, String desc,
+                                                                         int page, int size);
+
     //사원년월검색
+    Page<List<AttendanceInfoResponseDto>> getAttendanceByMonthAndEmployee(int year, int month, String employeeId, int page,
+                                                                          String sort, String desc, int size);
+
     Page<List<AttendanceInfoResponseDto>> getAttendanceByMonthAndEmployee(int year, int month, String employeeId, int page,
                                                                           String sort, String desc);
 
@@ -43,7 +50,7 @@ public interface EmployeeService1 {
 
 
     //자신의조정요청이력조회
-    Page<List<AttendanceAppealMediateResponseDto>> findAttendanceInfoByMine(String employeeId, int page, String sort, String desc);
+    Page<List<AttendanceAppealMediateResponseDto>> findAppealRequestOfMine(String employeeId, int page, String sort, String desc);
 
 
     //사원이름이나사번검색
@@ -51,7 +58,7 @@ public interface EmployeeService1 {
 
     boolean employeeExists(String employeeId);
 
-    Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto);
+    Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagedLocalDateDto dto, String employeeId, String status);
 
     int getRemainOfVacationOfMine(String id);
 
@@ -61,4 +68,6 @@ public interface EmployeeService1 {
 
     EmployeeResponseDto updateInformation(String loginId, EmployeeInformationUpdateDto dto);
 
+
+    List<AttendanceInfoResponseDto> findAllAttendanceInfoOfMineByYearAndMonth(String loginId, Integer year, Integer month);
 }

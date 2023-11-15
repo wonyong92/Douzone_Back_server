@@ -1,7 +1,7 @@
 package com.example.bootproject.controller.rest.employee;
 
 import com.example.bootproject.entity.Employee;
-import com.example.bootproject.service.service1.EmployeeService1;
+import com.example.bootproject.service.service1.EmployeeService;
 import com.example.bootproject.service.service3.api.AppealService;
 import com.example.bootproject.service.service3.api.LoginService;
 import com.example.bootproject.service.service3.api.LogoutService;
@@ -9,17 +9,10 @@ import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.system.util.IpAnalyzer;
 import com.example.bootproject.system.validator.PageRequestValidator;
 import com.example.bootproject.system.validator.PagedLocalDateDtoValidator;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
-import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
-import com.example.bootproject.vo.vo1.request.PageRequest;
-import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
-import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
-import com.example.bootproject.vo.vo1.response.VacationRequestDto;
-import com.example.bootproject.vo.vo1.request.LoginRequestDto;
+import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.request.appeal.AppealRequestDto;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
-import com.example.bootproject.vo.vo1.response.Page;
+import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.login.LoginResponseDto;
@@ -47,7 +40,7 @@ import static com.example.bootproject.system.util.ValidationChecker.*;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-    private final EmployeeService1 employeeService;
+    private final EmployeeService employeeService;
     private final LoginService loginService;
     private final LogoutService logoutService;
     private final VacationService vacationService;
@@ -89,7 +82,7 @@ public class EmployeeController {
         }
 
         requestDto.setEmployeeId(employeeId);
-        AttendanceInfoResponseDto responseDto = employeeService.makeStartResponse(requestDto);
+        AttendanceInfoResponseDto responseDto = employeeService.makeStartRequest(requestDto);
         if (responseDto.getMessage() != null) {
             // 오류 메시지가 있는 경우, 클라이언트에게 메시지를 포함하여 응답
             log.info("error msg : {}", responseDto.getMessage());
@@ -116,7 +109,7 @@ public class EmployeeController {
         String employeeId = getLoginIdOrNull(req);
         if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        AttendanceInfoResponseDto responseDto = employeeService.makeEndResponse(requestDto, employeeId);
+        AttendanceInfoResponseDto responseDto = employeeService.makeEndRequest(requestDto, employeeId);
 
         if (responseDto.getMessage() != null) {
             // 오류 메시지가 있는 경우, 클라이언트에게 메시지를 포함하여 응답
@@ -179,10 +172,10 @@ public class EmployeeController {
             // 날짜를 기준으로 근태 정보 조회
             LocalDate attendanceDate = pagedLocalDateDto.makeLocalDate();
             /*TODO : pageRequest로 리팩토링*/
-            attendanceInfo = employeeService.getAttendanceByDateAndEmployee(attendanceDate, employeeId, pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), pagedLocalDateDto.getPage());
+            attendanceInfo = employeeService.getAttendanceByDateAndEmployee(attendanceDate, employeeId, pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), pagedLocalDateDto.getPage(), pagedLocalDateDto.getSize());
         } else {
             // 월을 기준으로 근태 정보 조회
-            attendanceInfo = employeeService.getAttendanceByMonthAndEmployee(pagedLocalDateDto.getYear(), pagedLocalDateDto.getMonth(), employeeId, pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc());
+            attendanceInfo = employeeService.getAttendanceByMonthAndEmployee(pagedLocalDateDto.getYear(), pagedLocalDateDto.getMonth(), employeeId, pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), pagedLocalDateDto.getSize());
         }
 
         // 조회된 근태 정보가 없을 경우
@@ -306,7 +299,7 @@ public class EmployeeController {
 
         try {
             // 승인 내역 검색 시도
-            Page<List<AttendanceAppealMediateResponseDto>> appealPage = employeeService.findAttendanceInfoByMine(employeeId, pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
+            Page<List<AttendanceAppealMediateResponseDto>> appealPage = employeeService.findAppealRequestOfMine(employeeId, pageRequest.getPage(), pageRequest.getSort(), pageRequest.getDesc());
 
             // 데이터가 없을 경우
             if (appealPage == null) {
@@ -362,20 +355,49 @@ public class EmployeeController {
     // 본인의 연차 이력 조회 메서드 (승인, 반려, 전체 필터링 가능)
     /* TODO : 추후 권한 확인 추가 */
     @GetMapping("/employee/vacation/history")
-    public ResponseEntity<Page<List<VacationRequestDto>>> getHistoryOfVacationOfMine(@RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder, @RequestParam(name = "status", defaultValue = "") String getStatus, HttpServletRequest req) {
+    public ResponseEntity<Page<List<VacationRequestDto>>> getHistoryOfVacationOfMine(/*@RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder*/
+            @RequestParam(name = "status", defaultValue = "") String getStatus,
+            @Valid PagedLocalDateDto pagedLocalDateDto, BindingResult br,
+            HttpServletRequest req) {
+
+        if (br.hasErrors()) {
+            AttendanceInfoResponseDto body = new AttendanceInfoResponseDto();
+            body.setMessage(br.getAllErrors().toString());
+            log.info("Validation rule violated" + br.getAllErrors());
+            if (br.hasFieldErrors("page")) {
+                log.info("잘못된 페이지 번호 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setPage(1);
+            } else if (br.hasFieldErrors("sort")) {
+                log.info("잘못된 정렬 대상 컬럼 이름 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setSort("''");
+            } else if (br.hasFieldErrors("desc")) {
+                log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
+                pagedLocalDateDto.setDesc("desc");
+            }
+
+        }
+
+        // 입력된 날짜가 유효한지 검증
+
+        if (!validateDateIsRealDate(pagedLocalDateDto)) {
+            log.info("유효하지 않은 날짜: {}}", pagedLocalDateDto.makeLocalDate().toString());
+            return ResponseEntity.badRequest().build();
+        }
+
         //status validation check 추가 필요
         //TODO : 로그인 정보를 가져오기
         String employeeId = getLoginIdOrNull(req);
         if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         if (employeeId != null) {
-            int currentPage = validationPageNum(getPageNum); //페이지 번호에 대한 validation 체크
-            String sort = validationSort(getSort); // 페이지 정렬 기준 컬럼에 대한 validation 체크
-            String sortOrder = validationDesc(getSortOrder); // 정렬 방식에 대한 validation 체크
+//            int currentPage = validationPageNum(String.valueOf(pagedLocalDateDto.getPage())); //페이지 번호에 대한 validation 체크
+//            String sort = validationSort(pagedLocalDateDto.getSort()); // 페이지 정렬 기준 컬럼에 대한 validation 체크
+//            String sortOrder = validationDesc(pagedLocalDateDto.getDesc()); // 정렬 방식에 대한 validation 체크
             String status = validateVacationRequestResultStatus(getStatus); // 신청 결과에 대한 validation 체크
 
-            PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(currentPage, sort, sortOrder, employeeId, status);
-            Page<List<VacationRequestDto>> result = employeeService.getHistoryOfVacationOfMine(pagingRequestWithIdStatusDto); // 본인의 연차 이력 데이터 반환 받음
+//            PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), employeeId, status);
+
+            Page<List<VacationRequestDto>> result = employeeService.getHistoryOfVacationOfMine(pagedLocalDateDto, employeeId, status); // 본인의 연차 이력 데이터 반환 받음
             log.info("getHistoryOfRejectedVacationOfMine result : {}", result);
             if (result.getData().isEmpty()) {
                 return ResponseEntity.noContent().build(); //204 No Content

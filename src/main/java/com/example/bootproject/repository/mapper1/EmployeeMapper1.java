@@ -258,4 +258,18 @@ public interface EmployeeMapper1 {
             " WHERE EMPLOYEE_ID=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY=" +
             "'" + VACATION_REQUEST_STATUS_CATEGORY_REQUESTED + "'")
     int getRequestedVacationQuantity(String id);
+
+    @Select("SELECT " +
+            "attendance_info_id, " +
+            "attendance_status_category, " +
+            "employee_id, " +
+            "start_time, " +
+            "end_time, " +
+            "attendance_date " +
+            "FROM attendance_info " +
+            "WHERE employee_id = #{employeeId} " +
+            "AND YEAR(attendance_date) = #{year} " +
+            "AND MONTH(attendance_date) = #{month} "
+    )
+    List<AttendanceInfoResponseDto> getAllAttendanceInfoByIdByYearByMonth(String employeeId, Integer year, Integer month);
 }

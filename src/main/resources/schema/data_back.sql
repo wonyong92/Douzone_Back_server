@@ -153,8 +153,7 @@ select *
 from attendance_status_category;
 
 INSERT INTO attendance_info (attendance_status_category, employee_id, start_time, end_time, attendance_date)
-VALUES
-       ('abnormal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-01'),
+VALUES ('normal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-01'),
        ('abnormal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-03'),
        ('abnormal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-04'),
        ('abnormal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '2023-02-05'),

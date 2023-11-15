@@ -2,7 +2,7 @@ package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper3.vacation.VacationMapper;
-import com.example.bootproject.service.service1.EmployeeService1;
+import com.example.bootproject.service.service1.EmployeeService;
 import com.example.bootproject.service.service1.ManagerService1;
 import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.vo.vo1.request.vacation.VacationAdjustRequestDto;
@@ -29,7 +29,7 @@ public class VacationServiceImpl implements VacationService {
     private final VacationMapper vacationMapper;
     private final EmployeeMapper1 employeeMapper;
     private final ManagerService1 managerService2;
-    private final EmployeeService1 employeeService;
+    private final EmployeeService employeeService;
 
     @Override
     public VacationRequestResponseDto makeVacationRequest(VacationRequestDto dto) {

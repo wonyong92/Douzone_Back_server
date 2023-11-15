@@ -2,7 +2,7 @@ package com.example.bootproject.controller.rest.manager;
 
 
 import com.example.bootproject.entity.Employee;
-import com.example.bootproject.service.service1.EmployeeService1;
+import com.example.bootproject.service.service1.EmployeeService;
 import com.example.bootproject.service.service1.ManagerService1;
 import com.example.bootproject.service.service3.api.AppealService;
 import com.example.bootproject.service.service3.api.VacationService;
@@ -57,14 +57,14 @@ public class ManagerController {
 
     private final ManagerService1 managerService1;
 
-    private final EmployeeService1 employeeService1;
+    private final EmployeeService employeeService;
 
 
     private final VacationService vacationService;
 
     private final AppealService appealService;
 
-    private final EmployeeService1 employeeService;
+//    private final EmployeeService employeeService;
 
     private final ManagerService1 managerService;
 
@@ -187,11 +187,11 @@ public class ManagerController {
                 log.info("일단위 조회");
                 // 날짜를 기준으로 근태 정보 조회
                 LocalDate attendanceDate = pagedLocalDateDto.makeLocalDate();
-                attendanceInfo = employeeService1.getAttendanceByDateAndEmployee(attendanceDate, employeeId, pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), pagedLocalDateDto.getPage());
+                attendanceInfo = employeeService.getAttendanceByDateAndEmployee(attendanceDate, employeeId, pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), pagedLocalDateDto.getPage());
             } else {
                 // 월을 기준으로 근태 정보 조회
                 log.info("월단위 조회");
-                attendanceInfo = employeeService1.getAttendanceByMonthAndEmployee(pagedLocalDateDto.getYear(), pagedLocalDateDto.getMonth(), employeeId, pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc());
+                attendanceInfo = employeeService.getAttendanceByMonthAndEmployee(pagedLocalDateDto.getYear(), pagedLocalDateDto.getMonth(), employeeId, pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc());
             }
 
             // 조회된 근태 정보가 없을 경우
