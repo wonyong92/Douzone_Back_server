@@ -276,4 +276,7 @@ public interface EmployeeMapper1 {
 
     @Select("select * from vacation_request where vacation_request_state_category_key=" + "'requested'")
     List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto dto);
+
+    @Select("select * from attendance_appeal_request where status =" + "'requested'")
+    List<AttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(PagedLocalDateDto pagedLocalDateDto);
 }

@@ -646,4 +646,9 @@ public class ManagerController {
     public ResponseEntity<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(@ModelAttribute PagedLocalDateDto pagedLocalDateDto) {
         return ResponseEntity.ok(employeeService.getAllRequestedInformationOfVacation(pagedLocalDateDto));
     }
+
+    @GetMapping("/manager/appeal/all/requested")
+    public ResponseEntity<List<AttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(@ModelAttribute PagedLocalDateDto pagedLocalDateDto) {
+        return ResponseEntity.ok(employeeService.getAllRequestedInformationOfAppeal(pagedLocalDateDto));
+    }
 }

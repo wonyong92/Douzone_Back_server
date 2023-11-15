@@ -527,5 +527,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper1.getAllRequestedInformationOfVacation(pagedLocalDateDto);
     }
 
+    @Override
+    public List<AttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(PagedLocalDateDto pagedLocalDateDto) {
+        return employeeMapper1.getAllRequestedInformationOfAppeal(pagedLocalDateDto);
+    }
+
 }
 

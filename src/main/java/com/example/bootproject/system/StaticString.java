@@ -10,7 +10,7 @@ public class StaticString {
     public static final String APPEAL_REQUEST_STATE_REQUESTED = "requested";
     public static final String APPEAL_REQUEST_STATE_REJECTED = "rejected";
     public static final String APPEAL_REQUEST_STATE_PERMITTED = "permitted";
-    public static final String ATTENDANCE_INFO_STATUS_PENDING = "pending";
+    public static final String ATTENDANCE_INFO_STATUS_PENDING = "requested";
 
     public static final String ATTENDANCE_INFO_STATUS_ABSENT = "abnormal";
     public static final String ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END = "abnormal";

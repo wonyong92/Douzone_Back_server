@@ -73,4 +73,6 @@ public interface EmployeeService {
     List<AttendanceInfoResponseDto> findAllAttendanceInfoOfMineByYearAndMonth(String loginId, Integer year, Integer month);
 
     List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto pagedLocalDateDto);
+
+    List<AttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(PagedLocalDateDto pagedLocalDateDto);
 }
