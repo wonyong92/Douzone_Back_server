@@ -10,6 +10,7 @@ import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo1.response.Page;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,4 +71,6 @@ public interface EmployeeService {
 
 
     List<AttendanceInfoResponseDto> findAllAttendanceInfoOfMineByYearAndMonth(String loginId, Integer year, Integer month);
+
+    List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto pagedLocalDateDto);
 }

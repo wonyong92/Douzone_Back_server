@@ -641,4 +641,9 @@ public class ManagerController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
     }
+
+    @GetMapping("/manager/vacation/all/requested")
+    public ResponseEntity<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(@ModelAttribute PagedLocalDateDto pagedLocalDateDto) {
+        return ResponseEntity.ok(employeeService.getAllRequestedInformationOfVacation(pagedLocalDateDto));
+    }
 }

@@ -6,6 +6,7 @@ import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -272,4 +273,7 @@ public interface EmployeeMapper1 {
             "AND MONTH(attendance_date) = #{month} "
     )
     List<AttendanceInfoResponseDto> getAllAttendanceInfoByIdByYearByMonth(String employeeId, Integer year, Integer month);
+
+    @Select("select * from vacation_request where vacation_request_state_category_key=" + "'requested'")
+    List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto dto);
 }

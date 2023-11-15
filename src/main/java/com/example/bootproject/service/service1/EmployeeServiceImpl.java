@@ -10,6 +10,7 @@ import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo1.response.Page;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -519,6 +520,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<AttendanceInfoResponseDto> findAllAttendanceInfoOfMineByYearAndMonth(String loginId, Integer year, Integer month) {
         List<AttendanceInfoResponseDto> result = employeeMapper1.getAllAttendanceInfoByIdByYearByMonth(loginId, year, month);
         return result;
+    }
+
+    @Override
+    public List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto pagedLocalDateDto) {
+        return employeeMapper1.getAllRequestedInformationOfVacation(pagedLocalDateDto);
     }
 
 }
