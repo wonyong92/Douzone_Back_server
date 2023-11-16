@@ -31,7 +31,7 @@ public interface VacationMapper {
     void process(@Param("dto") VacationProcessRequestDto dto);
 
     @Insert("insert into douzone_test.vacation_adjusted_history (employee_id, adjust_type, adjust_time, adjust_quantity, reason)\n" +
-            "values  (#{employeeId}, 'normal', now(), #{dto.adjustQuantity}, #{dto.reason});")
+            "values  (#{employeeId}, #{dto.adjustType}, now(), #{dto.adjustQuantity}, #{dto.reason});")
     @Options(useGeneratedKeys = true, keyProperty = "dto.generatedKey")
     void modifyVacationOfEmployee(@Param("dto") VacationAdjustRequestDto dto, @Param("employeeId") String employeeId);
 
