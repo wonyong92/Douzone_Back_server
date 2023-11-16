@@ -532,5 +532,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper1.getAllRequestedInformationOfAppeal(pagedLocalDateDto);
     }
 
+    @Override
+    public List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String loginId, Integer year, Integer month) {
+        return employeeMapper1.findAllVacationRequestByEmployeeIdByYearAndByMonth(loginId, year, month);
+    }
+
 }
 

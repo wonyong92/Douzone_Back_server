@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_PERMITTED;
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REQUESTED;
+import static com.example.bootproject.system.StaticString.*;
 
 @Service
 @Slf4j
@@ -50,6 +49,8 @@ public class AppealServiceImpl implements AppealService {
             //TODO : 해당 근태기록에 대해 이미 조정 요청이 있는 경우 처리
             appealMapper.makeRequest(dto);
             AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
+            log.info("해당 근태 정보(id {})의 현재 상태를 조정 요청 중({})으로 변경", dto.getAttendanceInfoId(), APPEAL_REQUEST_STATE_REQUESTED);
+            attendanceInfoMapper.updateAttendanceInfoStatus(APPEAL_REQUEST_STATE_REQUESTED, dto.getAttendanceInfoId());
             return result;
         }
 

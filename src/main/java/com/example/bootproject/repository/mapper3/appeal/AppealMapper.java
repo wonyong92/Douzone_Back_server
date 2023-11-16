@@ -30,7 +30,7 @@ public interface AppealMapper {
             "    now(),\n" +
             "    'empty'\n" +
             ");\n")
-    @Options(useGeneratedKeys = true, keyProperty = "dto.attendanceInfoId")
+    @Options(useGeneratedKeys = true, keyProperty = "dto.attendanceAppealRequestId")
     Long makeRequest(@Param("dto") AppealRequestDto dto);
 
     @Select("select * from attendance_appeal_request where attendance_appeal_request_id = #{generatedKey} ")
