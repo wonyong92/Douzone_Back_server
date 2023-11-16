@@ -4,9 +4,12 @@ import com.example.bootproject.service.service1.EmployeeService;
 import com.example.bootproject.service.service3.api.CalendarService;
 import com.example.bootproject.vo.vo1.request.calendar.attendanceinfo.CalendarSearchRequestDtoForAttendanceInfo;
 import com.example.bootproject.vo.vo1.request.calendar.holiday.CalendarSearchRequestDtoForHoliday;
+import com.example.bootproject.vo.vo1.request.calendar.vacation.CalendarSearchRequestDtoForVacation;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import com.example.bootproject.vo.vo1.response.calendar.attendanceinfo.ApiItemToEventDtoForAttendanceInfo;
 import com.example.bootproject.vo.vo1.response.calendar.holiday.ApiItemToEventDtoForHoliday;
+import com.example.bootproject.vo.vo1.response.calendar.vacation.ApiItemToEventDtoForVacation;
+import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +25,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,49 +52,57 @@ public class CalendarServiceImpl implements CalendarService {
      * */
     public List<ApiItemToEventDtoForHoliday> getHolidayEvents(CalendarSearchRequestDtoForHoliday dto) throws IOException, URISyntaxException, JSONException, ParseException {
         log.info("api key = {}", API_KEY);
+        log.info("dto = {}", dto.toString());
 //        Map<String,Object> param = Map.of("ServiceKey",API_KEY,"solYear", String.valueOf(dto.getYear()),"solMonth" ,dto.getMonth()!=null?String.valueOf(dto.getMonth()):"","numOfRows",100);
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=moUu8f7YSUIZr9pViDvm%2FCnqZsTX%2Btjw6y7%2BrVy1dnD239wRULAmzD675WYkDtXXL6ZIO592qNII9Tr6rqLWBg%3D%3D"); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("solYear", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(LocalDate.now().getYear()), "UTF-8")); /*연*/
-//        urlBuilder.append("&" + URLEncoder.encode("solMonth", "UTF-8") + "=" + URLEncoder.encode(dto.getMonth() != null ? String.valueOf(dto.getMonth()) : "", "UTF-8")); /*월*/
+        urlBuilder.append("&" + URLEncoder.encode("solYear", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(dto.getYear()), "UTF-8")); /*연*/
+        urlBuilder.append("&" + URLEncoder.encode("solMonth", "UTF-8") + "=" + URLEncoder.encode(String.format("%02d", dto.getMonth()), "UTF-8")); /*월*/
         urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); /*출력 개수*/
 
-
         URL url = new URL(urlBuilder.toString());
+        log.info("request URI {}", url.toURI());
         String result = restTemplate.getForObject(url.toURI(), String.class);
-
+        log.info("api 요청 결과 {}", result);
         JsonParser jsonParser = objectMapper.createParser(result);
         TreeNode itemArray = jsonParser.readValueAsTree().get("response").get("body").get("items").get("item");
-        List<LinkedHashMap> itemArrayDtos = objectMapper.convertValue(itemArray, List.class);
-        List<ApiItemToEventDtoForHoliday> mappedResult = itemArrayDtos.stream().map(dtos -> {
-            return new ApiItemToEventDtoForHoliday(dtos);
-        }).collect(Collectors.toList());
-        log.info("item ||  {} ", mappedResult);
+        if (itemArray == null) {
+            return List.of();
+        }
+        if (itemArray.isArray()) {
+            List<LinkedHashMap> itemArrayDtos = objectMapper.convertValue(itemArray, List.class);
+            if (itemArrayDtos != null) {
+                List<ApiItemToEventDtoForHoliday> mappedResult = itemArrayDtos.stream().map(dtos -> {
+                    return new ApiItemToEventDtoForHoliday(dtos);
+                }).collect(Collectors.toList());
+                log.info("item ||  {} ", mappedResult);
+                return mappedResult;
+            }
+        }
+        LinkedHashMap itemArrayDto = objectMapper.convertValue(itemArray, LinkedHashMap.class);
+        if (itemArrayDto != null) {
+            ApiItemToEventDtoForHoliday mappedResult = new ApiItemToEventDtoForHoliday(itemArrayDto);
+            log.info("item ||  {} ", mappedResult);
+            return List.of(mappedResult);
+        }
+        return List.of();
+    }
+
+    @Override
+    public List<ApiItemToEventDtoForAttendanceInfo> getAttendanceInfoEvents(CalendarSearchRequestDtoForAttendanceInfo dto, String loginId) {
+        log.info("getAttendanceInfoEvents - employeeId = {}", loginId);
+        List<AttendanceInfoResponseDto> attendanceInfoResponseDtos = employeeService.findAllAttendanceInfoOfMineByYearAndMonth(loginId, dto.getYear(), dto.getMonth());
+        List<ApiItemToEventDtoForAttendanceInfo> mappedResult = attendanceInfoResponseDtos.stream().map(entity ->
+                new ApiItemToEventDtoForAttendanceInfo(entity)).collect(Collectors.toList());
         return mappedResult;
     }
 
     @Override
-    public List<ApiItemToEventDtoForAttendanceInfo> getAttendanceInfoEvents(CalendarSearchRequestDtoForAttendanceInfo dto, String loginId) throws IOException, URISyntaxException, JSONException, ParseException {
+    public List<ApiItemToEventDtoForVacation> getVacationInfoEvents(CalendarSearchRequestDtoForVacation dto, String loginId) {
         log.info("getAttendanceInfoEvents - employeeId = {}", loginId);
-//        Map<String,Object> param = Map.of("ServiceKey",API_KEY,"solYear", String.valueOf(dto.getYear()),"solMonth" ,dto.getMonth()!=null?String.valueOf(dto.getMonth()):"","numOfRows",100);
-//        StringBuilder urlBuilder = new StringBuilder(getAttendanceInfoUrl); /*URL*/
-//        urlBuilder.append("?" + URLEncoder.encode("year", "UTF-8") + dto.getYear()); /*연*/
-//        urlBuilder.append("&" + URLEncoder.encode("month", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(dto.getMonth()), "UTF-8")); /*월*/
-//        urlBuilder.append("&" + URLEncoder.encode("size", "UTF-8") + "=" + URLEncoder.encode("31", "UTF-8")); /*출력 개수*/
-//
-//        URL url = new URL(urlBuilder.toString());
-//        String result = restTemplate.getForObject(url.toURI(), String.class);
-//
-//        JsonParser jsonParser = objectMapper.createParser(result);
-//        TreeNode itemArray = jsonParser.readValueAsTree().get("data");
-//        List<LinkedHashMap> itemArrayDtos = objectMapper.convertValue(itemArray, List.class);
-//        List<ApiItemToEventDtoForAttendanceInfo> mappedResult = itemArrayDtos.stream().map(dtos -> {
-//            return new ApiItemToEventDtoForAttendanceInfo(dtos);
-//        }).collect(Collectors.toList());
-//        log.info("item ||  {} ", mappedResult);
-        List<AttendanceInfoResponseDto> attendanceInfoResponseDtos = employeeService.findAllAttendanceInfoOfMineByYearAndMonth(loginId, dto.getYear(), dto.getMonth());
-        List<ApiItemToEventDtoForAttendanceInfo> mappedResult = attendanceInfoResponseDtos.stream().map(entity ->
-                new ApiItemToEventDtoForAttendanceInfo(entity)).collect(Collectors.toList());
+        List<VacationRequestResponseDto> attendanceInfoResponseDtos = employeeService.findAllVacationRequestByEmployeeIdByYearAndByMonth(loginId, dto.getYear(), dto.getMonth());
+        List<ApiItemToEventDtoForVacation> mappedResult = attendanceInfoResponseDtos.stream().map(entity ->
+                new ApiItemToEventDtoForVacation(entity)).collect(Collectors.toList());
         return mappedResult;
     }
 }

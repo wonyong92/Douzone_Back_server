@@ -9,4 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExtendPropsForVacation {
     String kind = "holiday";
+    Integer quantity = 1;
+    String status = "requested";
+    String requestId;
 }

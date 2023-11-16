@@ -17,7 +17,5 @@ public class CalendarSearchRequestDtoForVacation {
     @Min(1)
     @Max(12)
     Integer month = LocalDate.now().getMonthValue();
-    @Min(1)
-    @Max(31)
-    Integer day = LocalDate.now().getDayOfMonth();
+
 }
