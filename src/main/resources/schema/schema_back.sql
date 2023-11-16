@@ -110,7 +110,7 @@ create table vacation_adjusted_history
     vacation_adjusted_history_id bigint                  not null
         primary key auto_increment,
     employee_id                  varchar(10)             null,
-    adjust_type                  varchar(10)             not null,
+    adjust_type                  varchar(100)             not null,
     adjust_time                  timestamp default now() not null,
     adjust_quantity              int                     not null,
     reason                       text                    not null,
