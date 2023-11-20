@@ -21,6 +21,4 @@ public class VacationQuantitySettingDto {
     private LocalDate targetDate; // 적용 날짜
 
     private String employeeId; //사원-사원번호
-
-    private String name; //사원이름
 }
