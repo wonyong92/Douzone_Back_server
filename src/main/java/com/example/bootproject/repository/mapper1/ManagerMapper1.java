@@ -109,11 +109,13 @@ public interface ManagerMapper1 {
     int getSettingWorkTimeCount();
 
     // 연차별 사원 연차 개수 설정 테이블의 전체 정보를 select 함
-    @Select("SELECT setting_key as settingKey, freshman,senior,setting_time as settingTime,target_date as targetDate, employee_id as employeeId" +
-            " FROM vacation_quantity_setting " +
+    @Select("SELECT v.setting_key as settingKey, v.freshman, v.senior, v.setting_time as settingTime, v.target_date as targetDate, v.employee_id as employeeId, e.name " +
+            "FROM vacation_quantity_setting v " +
+            "JOIN employee e ON v.employee_id = e.employee_id " +
             "ORDER BY ${orderByCondition} ${sortOrder} " +
             "LIMIT ${size} OFFSET ${startRow};")
     List<VacationQuantitySettingDto> getVacationSettingHistory(int size, String orderByCondition, int startRow, String sortOrder);
+
 
     // vacation_quantity_setting 테이블의 튜플 개수 반환
     @Select("SELECT COUNT(*) FROM vacation_quantity_setting;")
