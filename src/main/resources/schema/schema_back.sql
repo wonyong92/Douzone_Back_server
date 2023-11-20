@@ -1,6 +1,5 @@
 use douzone_test;
 drop table if exists auth;
-
 drop table if exists attendance_appeal_request;
 drop table if exists attendance_appeal_request_status;
 drop table if exists attendance_approval;
@@ -27,7 +26,7 @@ create table attendance_status_category
 (
     `key` varchar(10) not null
         primary key
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table employee
 (
@@ -37,7 +36,7 @@ create table employee
     name               varchar(10)                    not null,
     attendance_manager boolean                        not null,
     hire_year          date                           not null
-);
+)default character set utf8 collate utf8_general_ci;
 
 CREATE TABLE attendance_info
 (
@@ -51,12 +50,12 @@ CREATE TABLE attendance_info
     UNIQUE (attendance_info_id),
     CONSTRAINT attendance_info_ibfk_1 FOREIGN KEY (employee_id) REFERENCES employee (employee_id),
     CONSTRAINT attendance_info_ibfk_2 FOREIGN KEY (attendance_status_category) REFERENCES attendance_status_category (`key`)
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table attendance_appeal_request_status
 (
     attendance_appeal_request_status_key varchar(10) not null primary key
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table attendance_appeal_request
 (
@@ -76,7 +75,7 @@ create table attendance_appeal_request
         foreign key (employee_id) references employee (employee_id),
     constraint attendance_appeal_request_ibfk_3
         foreign key (status) references attendance_appeal_request_status (attendance_appeal_request_status_key)
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table attendance_approval
 (
@@ -91,7 +90,7 @@ create table attendance_approval
         foreign key (attendance_info_id) references attendance_info (attendance_info_id),
     constraint attendance_approval_ibfk_2
         foreign key (employee_id) references employee (employee_id)
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table image
 (
@@ -103,27 +102,27 @@ create table image
     upload_date timestamp default (now()) not null,
     constraint image_ibfk_1
         foreign key (employee_id) references employee (employee_id)
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table vacation_adjusted_history
 (
     vacation_adjusted_history_id bigint                  not null
         primary key auto_increment,
     employee_id                  varchar(10)             null,
-    adjust_type                  varchar(100)             not null,
+    adjust_type                  varchar(100)            not null,
     adjust_time                  timestamp default now() not null,
     adjust_quantity              int                     not null,
     reason                       text                    not null,
     constraint vacation_adjusted_history_ibfk_1
         foreign key (employee_id) references employee (employee_id)
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table vacation_category
 (
     vacation_category_key varchar(10) not null
         primary key,
     admit_time            int         not null
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table vacation_quantity_setting
 (
@@ -136,12 +135,12 @@ create table vacation_quantity_setting
     employee_id  varchar(10)                                                    not null,
     constraint vacation_quantity_setting_ibfk_1
         foreign key (employee_id) references employee (employee_id)
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table vacation_request_state_category
 (
     vacation_request_state_category_key varchar(10) not null primary key
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table vacation_request
 (
@@ -162,7 +161,7 @@ create table vacation_request
         foreign key (employee_id) references employee (employee_id),
     constraint vacation_request_ibfk_3
         foreign key (vacation_request_state_category_key) references vacation_request_state_category (vacation_request_state_category_key)
-);
+)default character set utf8 collate utf8_general_ci;
 
 
 CREATE TABLE `regular_time_adjustment_history`
@@ -176,7 +175,7 @@ CREATE TABLE `regular_time_adjustment_history`
     `employee_id`                        varchar(10) not null,
     constraint regular_time_adjustment_history_ibfk_1
         foreign key (employee_id) references employee (employee_id)
-);
+)default character set utf8 collate utf8_general_ci;
 
 create table `auth`
 (
@@ -185,4 +184,4 @@ create table `auth`
     login_time  datetime    null,
     logout_time datetime    null,
     primary key (login_id, ip)
-);
+)default character set utf8 collate utf8_general_ci;
