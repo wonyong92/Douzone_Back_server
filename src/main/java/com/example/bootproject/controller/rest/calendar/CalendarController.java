@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.bootproject.system.util.ValidationChecker.getLoginIdOrNull;
 
@@ -93,5 +94,11 @@ public class CalendarController {
                 }
         );
         return ResponseEntity.ok(appendedResult);
+    }
+
+    @GetMapping("/system/isLogin")
+    public ResponseEntity isLogin() {
+        log.info("isLogin");
+        return ResponseEntity.ok(Map.of("userType", "employee", "success", "true"));
     }
 }
