@@ -9,6 +9,7 @@ import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo1.response.Page;
+import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -523,13 +524,32 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto pagedLocalDateDto) {
-        return employeeMapper1.getAllRequestedInformationOfVacation(pagedLocalDateDto);
+    public Page<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(PageRequest pageRequest) {
+        int page = pageRequest.getPage();
+        int size = Page.PAGE_SIZE;
+        String sort = pageRequest.getSort();
+        String desc = pageRequest.getDesc();
+        int startRow = (page - 1) * size;
+        int totalElements = employeeMapper1.countAllRequestedInformationOfVacation();
+        List<VacationRequestResponseDto> data = employeeMapper1.getAllRequestedInformationOfVacation(size,sort,startRow,desc);
+        boolean hasNext = (page * size) < totalElements;
+        Page<List<VacationRequestResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
+        return response;
     }
 
     @Override
-    public List<AttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(PagedLocalDateDto pagedLocalDateDto) {
-        return employeeMapper1.getAllRequestedInformationOfAppeal(pagedLocalDateDto);
+    public Page<List<AttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest) {
+
+        int page = pageRequest.getPage();
+        int size = Page.PAGE_SIZE;
+        String sort = pageRequest.getSort();
+        String desc = pageRequest.getDesc();
+        int startRow = (page - 1) * size;
+        int totalElements = employeeMapper1.countAllRequestedInformationOfAppeal();
+        List<AttendanceAppealMediateResponseDto> data = employeeMapper1.getAllRequestedInformationOfAppeal(size,sort,startRow,desc);
+        boolean hasNext = (page * size) < totalElements;
+        Page<List<AttendanceAppealMediateResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
+        return response;
     }
 
     @Override

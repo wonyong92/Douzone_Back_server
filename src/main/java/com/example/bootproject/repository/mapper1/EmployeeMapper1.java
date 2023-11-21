@@ -275,12 +275,19 @@ public interface EmployeeMapper1 {
     List<AttendanceInfoResponseDto> getAllAttendanceInfoByIdByYearByMonth(String employeeId, Integer year, Integer month);
 
     //TODO : 페이지네이션 적용
-    @Select("select * from vacation_request where vacation_request_state_category_key=" + "'requested'")
-    List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto dto);
+    @Select("SELECT * FROM  vacation_request WHERE vacation_request_state_category_key="+"'requested'"+" ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
+    List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(int size, String sort, int startRow, String desc);
+
+    @Select("SELECT count(*) FROM  vacation_request WHERE vacation_request_state_category_key="+"'requested'")
+    int countAllRequestedInformationOfVacation();
 
     //TODO : 페이지네이션 적용
-    @Select("select * from attendance_appeal_request where status =" + "'requested'")
-    List<AttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(PagedLocalDateDto pagedLocalDateDto);
+
+    @Select("SELECT * FROM  attendance_appeal_request WHERE status =" + "'requested'"+" ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
+    List<AttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(int size, String sort, int startRow, String desc);
+
+    @Select("SELECT count(*) FROM  attendance_appeal_request WHERE status =" + "'requested'")
+    int countAllRequestedInformationOfAppeal();
 
     @Select("select * from vacation_request where employee_id=#{employeeId} and year(vacation_start_date) =#{year} and month(vacation_start_date) = #{month}")
     List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String employeeId, Integer year, Integer month);

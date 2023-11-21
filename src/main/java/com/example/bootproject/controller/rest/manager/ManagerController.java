@@ -643,13 +643,13 @@ public class ManagerController {
     }
     //TODO : 권한확인, validation 체크, 페이지네이션 적용
     @GetMapping("/manager/vacation/all/requested")
-    public ResponseEntity<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(@ModelAttribute PagedLocalDateDto pagedLocalDateDto) {
-        return ResponseEntity.ok(employeeService.getAllRequestedInformationOfVacation(pagedLocalDateDto));
+    public ResponseEntity<Page<List<VacationRequestResponseDto>>> getAllRequestedInformationOfVacation(@ModelAttribute PageRequest pageRequest) {
+        return ResponseEntity.ok(employeeService.getAllRequestedInformationOfVacation(pageRequest));
     }
 
     //TODO : 권한확인, validation 체크, 페이지네이션 적용
     @GetMapping("/manager/appeal/all/requested")
-    public ResponseEntity<List<AttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(@ModelAttribute PagedLocalDateDto pagedLocalDateDto) {
-        return ResponseEntity.ok(employeeService.getAllRequestedInformationOfAppeal(pagedLocalDateDto));
+    public ResponseEntity<Page<List<AttendanceAppealMediateResponseDto>>> getAllRequestedInformationOfAppeal(@ModelAttribute PageRequest pageRequest) {
+        return ResponseEntity.ok(employeeService.getAllRequestedInformationOfAppeal(pageRequest));
     }
 }

@@ -4,6 +4,7 @@ package com.example.bootproject.service.service1;
 import com.example.bootproject.entity.Employee;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoEndRequestDto;
 import com.example.bootproject.vo.vo1.request.AttendanceInfoStartRequestDto;
+import com.example.bootproject.vo.vo1.request.PageRequest;
 import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
 import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.VacationRequestDto;
@@ -72,9 +73,9 @@ public interface EmployeeService {
 
     List<AttendanceInfoResponseDto> findAllAttendanceInfoOfMineByYearAndMonth(String loginId, Integer year, Integer month);
 
-    List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(PagedLocalDateDto pagedLocalDateDto);
+    Page<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(PageRequest pagedLocalDateDto);
 
-    List<AttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(PagedLocalDateDto pagedLocalDateDto);
+    Page<List<AttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest);
 
     List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String loginId, Integer year, Integer month);
 }
