@@ -193,7 +193,7 @@ public interface EmployeeMapper1 {
     @Options(useGeneratedKeys = true, keyProperty = "generatedKeyDto.generatedKey")
     void toggleManager(@Param("generatedKeyDto") AdminService1Impl.TempDto generatedKey, @Param("employeeId") String employeeId);
 
-    @Select("select employee_id,name,attendance_manager,hire_year from employee order by #{orderByCondition} ${desc} LIMIT #{size} OFFSET #{startRow}")
+    @Select("select employee_id,name,attendance_manager,hire_year from employee order by ${orderByCondition} ${desc} LIMIT #{size} OFFSET #{startRow}")
     List<EmployeeResponseDto> getAllEmployee(@Param("orderByCondition") String sort, @Param("desc") String desc, @Param("size") int size, @Param("startRow") int startRow);
 
     @Select("select count(*) from employee;")
