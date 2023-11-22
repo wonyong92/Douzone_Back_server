@@ -16,7 +16,8 @@ public class PagedLocalDateDto {
     @Min(value = 1)
     @Max(value = 12)
     private Integer month;
-    @Min(value = 1)
+    @Min(value = 0)
+    //null 대신에 0으로 처리
     @Max(value = 31)
     private Integer day;
     @Min(value = 1)
