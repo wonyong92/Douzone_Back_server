@@ -119,7 +119,7 @@ create table vacation_adjusted_history
 
 create table vacation_category
 (
-    vacation_category_key varchar(10) not null
+    vacation_category_key varchar(100) not null
         primary key,
     admit_time            int         not null
 )default character set utf8 collate utf8_general_ci;
@@ -146,7 +146,7 @@ create table vacation_request
 (
     vacation_request_key                bigint      not null
         primary key auto_increment,
-    vacation_category_key               varchar(10) not null,
+    vacation_category_key               varchar(100) not null,
     employee_id                         varchar(10) not null,
     vacation_request_state_category_key varchar(10),
     vacation_quantity                   int         not null,
