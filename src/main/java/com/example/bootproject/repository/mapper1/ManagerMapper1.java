@@ -98,10 +98,19 @@ public interface ManagerMapper1 {
     int getHistoryOfVacationOfEmployeeTotalRow(String id, String status);
 
     //정규 근무시간 조정내역 테이블의 전체 정보를 select 함
-    @Select("SELECT regular_time_adjustment_history_id as regularTimeAdjustmentHistoryId, target_date as targetDate, adjusted_start_time as adjustedStartTime, adjusted_end_time as adjustedEndTime, reason, regular_time_adjustment_time as regularTimeAdjustmentTime,employee_id as employeeId " +
-            "FROM regular_time_adjustment_history " +
+    @Select("SELECT r.regular_time_adjustment_history_id AS regularTimeAdjustmentHistoryId, " +
+            "r.target_date AS targetDate, " +
+            "r.adjusted_start_time AS adjustedStartTime, " +
+            "r.adjusted_end_time AS adjustedEndTime, " +
+            "r.reason, " +
+            "r.regular_time_adjustment_time AS regularTimeAdjustmentTime, " +
+            "r.employee_id AS employeeId, " +
+            "e.name AS name " +
+            "FROM regular_time_adjustment_history r " +
+            "INNER JOIN employee e ON r.employee_id = e.employee_id " +
             "ORDER BY ${orderByCondition} ${sortOrder} " +
             "LIMIT ${size} OFFSET ${startRow};")
+
     List<SettingWorkTimeDto> getSettingWorkTime(int size, String orderByCondition, int startRow, String sortOrder);
 
     // regular_time_adjustment_history 테이블의 튜플 개수 반환

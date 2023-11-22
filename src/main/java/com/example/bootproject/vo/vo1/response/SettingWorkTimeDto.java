@@ -28,5 +28,6 @@ public class SettingWorkTimeDto {
 
     private String employeeId; // 사원-사원번호
 
+    private String name; //사원 이름
 
 }
