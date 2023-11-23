@@ -11,22 +11,14 @@ import com.example.bootproject.system.validator.PagedLocalDateDtoValidator;
 import com.example.bootproject.vo.vo1.request.PageRequest;
 import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
-import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
-import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
+import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.request.DefaultVacationRequestDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithDateDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
-import com.example.bootproject.vo.vo1.response.DefaultVacationResponseDto;
-import com.example.bootproject.vo.vo1.response.SettingWorkTimeDto;
-import com.example.bootproject.vo.vo1.response.VacationQuantitySettingDto;
-import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationAdjustRequestDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationProcessRequestDto;
-import com.example.bootproject.vo.vo1.response.Page;
 import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationAdjustResponseDto;
@@ -652,4 +644,16 @@ public class ManagerController {
     public ResponseEntity<Page<List<AttendanceAppealMediateResponseDto>>> getAllRequestedInformationOfAppeal(@ModelAttribute PageRequest pageRequest) {
         return ResponseEntity.ok(employeeService.getAllRequestedInformationOfAppeal(pageRequest));
     }
+
+
+
+    //TODO :권환확인 ,validation체크
+    @GetMapping("/manager/vacation/history")
+    public ResponseEntity<Page<List<VacationResponseDto>>> getVacationHistory(
+            @Valid PagingRequsetWithDateSearchDto requestDto) {
+        Page<List<VacationResponseDto>> result = managerService1.getVacationHistory(requestDto);
+        return ResponseEntity.ok(result);
+    }
+
+
 }

@@ -4,19 +4,11 @@ package com.example.bootproject.service.service1;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
-import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
-import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
+import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.request.DefaultVacationRequestDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithDateDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
-import com.example.bootproject.vo.vo1.response.DefaultVacationResponseDto;
-import com.example.bootproject.vo.vo1.response.SettingWorkTimeDto;
-import com.example.bootproject.vo.vo1.response.VacationQuantitySettingDto;
-import com.example.bootproject.vo.vo1.response.VacationRequestDto;
-import com.example.bootproject.vo.vo1.response.Page;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -370,6 +363,8 @@ public class ManagerService1Impl implements ManagerService1 {
         return managerMapper1.getEmployeeCheck(id);
     }
 
+
+
     public Page<List<EmployeeResponseDto>> getEmployeeList(int page, String sort, String desc) {
         int size = PAGE_SIZE; // Page 객체로부터 size를 가져옴
         int startRow = (page - 1) * size; // 가져오기 시작할 row의 번호
@@ -390,4 +385,40 @@ public class ManagerService1Impl implements ManagerService1 {
         return result;
     }
 
+
+    @Override
+    public Page<List<VacationResponseDto>> getVacationHistory(PagingRequsetWithDateSearchDto requestDto) {
+        // Extracting parameters
+        int size = Page.PAGE_SIZE; // Assuming a fixed size as defined in your Page class
+        int currentPage = requestDto.getPage();
+        int startRow = (currentPage - 1) * size;
+        String searchParameter = requestDto.getSearchParameter();
+        String sort = requestDto.getSort();
+        String desc = requestDto.getDesc();
+
+        // Data retrieval
+        LocalDate searchDate = requestDto.makeLocalDate();
+        String date = searchDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        // 데이터 검색
+        List<VacationResponseDto> vacationHistory = managerMapper1.getVacationHistoryByEmployeeAndDate(
+                size, startRow, date, searchParameter);
+
+        // If the result is empty, return a Page object with an empty list
+        if (vacationHistory.isEmpty()) {
+            return new Page<>(new ArrayList<>(), false, sort, desc, currentPage, 0);
+        }
+
+        // Counting total records for pagination
+        int totalElement = managerMapper1.countVacationRequestByEmployeeAndDate(date, searchParameter);
+        int lastPageNumber = (int) Math.ceil((double) totalElement / size);
+        boolean isLastPage = (currentPage < lastPageNumber);
+
+        // Constructing and returning the response
+        return new Page<>(vacationHistory, isLastPage, sort, desc, currentPage, totalElement);
+    }
+
+
+
 }
+

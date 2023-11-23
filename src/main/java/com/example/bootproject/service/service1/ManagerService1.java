@@ -1,19 +1,11 @@
 package com.example.bootproject.service.service1;
 
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
-import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
-import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
+import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.request.DefaultVacationRequestDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithDateDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
-import com.example.bootproject.vo.vo1.response.DefaultVacationResponseDto;
-import com.example.bootproject.vo.vo1.response.SettingWorkTimeDto;
-import com.example.bootproject.vo.vo1.response.VacationQuantitySettingDto;
-import com.example.bootproject.vo.vo1.response.VacationRequestDto;
-import com.example.bootproject.vo.vo1.response.Page;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 
 import java.time.LocalDate;
@@ -59,5 +51,8 @@ public interface ManagerService1 {
 
     int getEmployeeCheck(String id);
 
-    Page<List<EmployeeResponseDto>> getEmployeeList(int page, String sort, String desc);
+    Page<List<VacationResponseDto>> getVacationHistory(PagingRequsetWithDateSearchDto requestDto);
+
+
+    Page<List<EmployeeResponseDto>> getEmployeeList(int currentPage, String sortColumn, String descCheck);
 }

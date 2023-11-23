@@ -1,15 +1,8 @@
 package com.example.bootproject.repository.mapper1;
 
 import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
-import com.example.bootproject.vo.vo1.response.AttendanceAppealMediateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseDto;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
-import com.example.bootproject.vo.vo1.response.RegularTimeAdjustmentHistoryResponseDto;
+import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.request.DefaultVacationRequestDto;
-import com.example.bootproject.vo.vo1.response.DefaultVacationResponseDto;
-import com.example.bootproject.vo.vo1.response.SettingWorkTimeDto;
-import com.example.bootproject.vo.vo1.response.VacationQuantitySettingDto;
-import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
@@ -170,6 +163,37 @@ public interface ManagerMapper1 {
     // 매개변수로 받아온 id가 employee 테이블에 존재시 1 반환
     @Select("select count(*) from employee where employee_id=#{id}")
     int getEmployeeCheck(String id);
+
+
+
+    //사원에대한 검색과년월일 검색
+    @Select("SELECT vr.employee_id as employeeId, " +
+            "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " +
+            "vr.vacation_start_date as vacationStartDate, " +
+            "vr.vacation_end_date as vacationEndDate, " +
+            "vr.reason, " +
+            "vr.vacation_request_time as vacationRequestTime, " +
+            "vr.reason_for_rejection as reasonForRejection, " +
+            "e.name " +
+            "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
+            "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
+            "AND DATE(vr.vacation_request_time) = #{date} " +
+            "LIMIT #{size} OFFSET #{startRow}")
+    List<VacationResponseDto> getVacationHistoryByEmployeeAndDate(int size, int startRow, String date, String searchParameter);
+
+
+    //사원검색에 대한 총갯수
+    @Select("SELECT COUNT(*) " +
+            "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
+            "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
+            "AND DATE(vr.vacation_request_time) = #{date}")
+    int countVacationRequestByEmployeeAndDate(String date, String searchParameter);
+
+
+
+
+
+
 
 
 }
