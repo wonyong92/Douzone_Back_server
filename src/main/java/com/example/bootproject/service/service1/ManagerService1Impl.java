@@ -392,39 +392,62 @@ public class ManagerService1Impl implements ManagerService1 {
     }
 
 
+
+
     @Override
     public Page<List<VacationResponseDto>> getVacationHistory(PagingRequsetWithDateSearchDto requestDto) {
-        // Extracting parameters
-        int size = Page.PAGE_SIZE; // Assuming a fixed size as defined in your Page class
+        // 파라미터 추출
+        int size = Page.PAGE_SIZE;
         int currentPage = requestDto.getPage();
         int startRow = (currentPage - 1) * size;
         String searchParameter = requestDto.getSearchParameter();
         String sort = requestDto.getSort();
         String desc = requestDto.getDesc();
 
-        // Data retrieval
-        LocalDate searchDate = requestDto.makeLocalDate();
-        String date = searchDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
         // 데이터 검색
-        List<VacationResponseDto> vacationHistory = managerMapper1.getVacationHistoryByEmployeeAndDate(
-                size, startRow, date, searchParameter);
+        LocalDate searchDate = requestDto.makeLocalDate();
+        String formattedDate = searchDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        List<VacationResponseDto> vacationHistory;
+        int totalElement;
 
-        // If the result is empty, return a Page object with an empty list
+        // 검색 매개변수가 숫자인지 판별
+        boolean isNumeric = isNumeric(searchParameter);
+
+        if (requestDto.getDay() == null || requestDto.getDay() == 0) {
+            if (isNumeric) {
+                vacationHistory = managerMapper1.getVacationHistoryByMonthAndId(size, startRow, formattedDate, searchParameter);
+                totalElement = managerMapper1.countVacationRequestByMonthAndId(formattedDate, searchParameter);
+            } else {
+                vacationHistory = managerMapper1.getVacationHistoryByMonth(size, startRow, formattedDate, searchParameter);
+                totalElement = managerMapper1.countVacationRequestByMonth(formattedDate, searchParameter);
+            }
+        } else {
+            String formattedDay = searchDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (isNumeric) {
+                vacationHistory = managerMapper1.getVacationHistoryByDateAndId(size, startRow, formattedDay, searchParameter);
+                totalElement = managerMapper1.countVacationRequestByDateAndId(formattedDay, searchParameter);
+            } else {
+                vacationHistory = managerMapper1.getVacationHistoryByDate(size, startRow, formattedDay, searchParameter);
+                totalElement = managerMapper1.countVacationRequestByDate(formattedDay, searchParameter);
+            }
+        }
+
+        // 결과 처리
         if (vacationHistory.isEmpty()) {
             return new Page<>(new ArrayList<>(), false, sort, desc, currentPage, 0);
         }
-
-        // Counting total records for pagination
-        int totalElement = managerMapper1.countVacationRequestByEmployeeAndDate(date, searchParameter);
         int lastPageNumber = (int) Math.ceil((double) totalElement / size);
-        boolean isLastPage = (currentPage < lastPageNumber);
+        boolean isLastPage = currentPage >= lastPageNumber;
 
-        // Constructing and returning the response
+        // 페이지 반환
         return new Page<>(vacationHistory, isLastPage, sort, desc, currentPage, totalElement);
     }
 
 
+    //숫자여부판단
+    public static boolean isNumeric(String str) {
+        return str != null && str.matches("^[0-9]+$");
+    }
 
 }
 

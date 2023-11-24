@@ -1,17 +1,17 @@
 package com.example.bootproject.vo.vo1.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
 public class VacationResponseDto {
-    private String vacationRequestStateCategoryKey; //연차 신청 결과
+
+    private int vacationRequestKey; //대리키
+    private String vacationCategoryKey; //연차 종류 - 키
     private String employeeId; // 사원-사원 번호
+    private String vacationRequestStateCategoryKey; //연차 신청 결과
+    private int vacationQuantity; // 한번에 사용한 연차 개수
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate vacationStartDate; // 연차 시작 날짜
     @DateTimeFormat(pattern = "yyyy-MM-dd")

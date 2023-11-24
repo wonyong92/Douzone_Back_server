@@ -1,5 +1,4 @@
 package com.example.bootproject.vo.vo1.response;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -32,15 +31,22 @@ public class PagingRequsetWithDateSearchDto {
     private String SearchParameter;
 
     private String totalElement;
+    public String getDayAsString() {
+        if (day == null || day == 0) {
+            return "''";
+        } else {
+            return day.toString();
+        }
+    }
+
 
     public LocalDate makeLocalDate() {
         return LocalDate.of(year, month, day);
     }
 
-    public void fromLocalDate(LocalDate input) {
-        this.year = input.getYear();
-        this.month = input.getMonthValue();
-        this.day = input.getDayOfMonth();
-    }
+
+
+
 
 }
+

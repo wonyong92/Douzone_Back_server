@@ -57,4 +57,5 @@ public interface ManagerService1 {
     Page<List<EmployeeResponseDto>> getEmployeeList(int currentPage, String sortColumn, String descCheck);
 
     int getVacationDefaultLatestCount (String info);
+
 }
