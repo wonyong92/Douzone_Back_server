@@ -342,7 +342,7 @@ public class EmployeeController {
 
         if (searchResults.isEmpty()) {
             log.info("검색결과가 존재하지않습니다");
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(searchResults);
 
