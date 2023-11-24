@@ -385,6 +385,12 @@ public class ManagerService1Impl implements ManagerService1 {
         return result;
     }
 
+    @Override
+    public int getVacationDefaultLatestCount(String info) {
+        log.info("getVacationDefaultLatestCount : {}",info);
+        return managerMapper1.getVacationDefaultLatestCount(info);
+    }
+
 
     @Override
     public Page<List<VacationResponseDto>> getVacationHistory(PagingRequsetWithDateSearchDto requestDto) {

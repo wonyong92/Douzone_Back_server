@@ -131,7 +131,7 @@ create table vacation_quantity_setting
     freshman     int                                                            not null,
     senior       int                                                            not null,
     setting_time timestamp default Now()                                        not null,
-    target_date  TIMESTAMP DEFAULT (CONCAT(YEAR(NOW()) + 1, '-01-01 00:00:00')) NOT NULL,
+    target_date  DATE DEFAULT (CONCAT(YEAR(NOW()) + 1, '-01-01')) NOT NULL,
     employee_id  varchar(10)                                                    not null,
     constraint vacation_quantity_setting_ibfk_1
         foreign key (employee_id) references employee (employee_id)

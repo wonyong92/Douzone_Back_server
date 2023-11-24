@@ -146,6 +146,14 @@ public interface ManagerMapper1 {
             "ORDER BY setting_time DESC LIMIT 1;")
     int getDefaultSettingVacationValue(int year);
 
+
+    // 가장 최근 데이터 리턴
+    @Select("SELECT ifnull(${info},0)\n" +
+            "FROM VACATION_QUANTITY_SETTING \n" +
+            "ORDER BY setting_time DESC\n" +
+            "LIMIT 1;")
+    int getVacationDefaultLatestCount(String info);
+
     // 올해 조정된 데이터가 있는지 확인하여 존재시 조정 연차 개수 총합 리턴
     // 미존재시 0 리턴
     @Select("SELECT IFNULL(sum(adjust_quantity),0) " +
@@ -188,6 +196,8 @@ public interface ManagerMapper1 {
             "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
             "AND DATE(vr.vacation_request_time) = #{date}")
     int countVacationRequestByEmployeeAndDate(String date, String searchParameter);
+
+
 
 
 

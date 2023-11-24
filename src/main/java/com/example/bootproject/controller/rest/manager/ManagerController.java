@@ -360,6 +360,34 @@ public class ManagerController {
          * */
     }
 
+    // 가장 최근 근속 연수 기본 부여 연차 개수 설정 데이터중 senior, freshman 을 쿼리스트링을 이용해 가져옴
+    // 보여줄 것이 최근 설정 내역인지 올해 내역인지? - 일단 올해 내역으로 (무조건 있다고 가정해야하나?)
+    /* TODO : validation check 추가, @RequestParam 확인, 파라미터 확인 필요함 */
+    @GetMapping("/manager/vacation/defaultSetting/latestInfo")
+    public ResponseEntity<Integer> getVacationDefaultLatestCount(@RequestParam("info")String info, HttpServletRequest req){
+        if (isManager(req)) { // 권한 확인
+            /* 근속 연수에 따른 기본 부여 연차 개수 설정 내역 데이터 반환 받음 */
+            int result = managerService1.getVacationDefaultLatestCount(info);
+            log.info("getVacationDefaultLatestInfo result : {}", result);
+
+            return ResponseEntity.ok(result); //200 OK
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
+
+        /*
+         * 근태 담당자 권한 확인
+         * 1. 권한 확인 성공시
+         * 페이지 번호, 페이지 정렬 기준 컬럼, 정렬 방식에 대한 validation 체크
+         * 근속 연수에 따른 기본 부여 연차 개수 설정 내역 데이터 반환 받음
+         *  - 반환된 데이터가 비어있으면
+         *      -- 204 No Content
+         *  - 정상적으로 반환된 데이터가 존재하면
+         *      -- 200 OK
+         * 2. 권한 확인 실패 시
+         * 403 에러 발생
+         * */
+    }
+
 
     //근속 연수에 따른 기본 부여 연차 개수 설정 내역 확인 메서드
     /*TODO : 추후 권한 확인 추가*/
@@ -411,6 +439,8 @@ public class ManagerController {
          * 403 에러 발생
          * */
     }
+
+
 
 
     // 근속 연수에 따른 연차 개수 설정
