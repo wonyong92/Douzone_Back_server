@@ -1,4 +1,6 @@
-package com.example.bootproject.vo.vo1.response;
+package com.example.bootproject.vo.vo1.response.vacation;
+
+import com.example.bootproject.vo.vo1.response.Page;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -6,7 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-
+import java.time.format.DateTimeFormatter;
 @Data
 @AllArgsConstructor
 public class PagingRequsetWithDateSearchDto {
@@ -31,17 +33,13 @@ public class PagingRequsetWithDateSearchDto {
     private String SearchParameter;
 
     private String totalElement;
-    public String getDayAsString() {
-        if (day == null || day == 0) {
-            return "''";
-        } else {
-            return day.toString();
-        }
-    }
-
 
     public LocalDate makeLocalDate() {
-        return LocalDate.of(year, month, day);
+        if (day == null || day == 0) {
+            return LocalDate.of(year, month, 1); // 일(Day)를 1로 설정
+        } else {
+            return LocalDate.of(year, month, day);
+        }
     }
 
 
@@ -49,4 +47,3 @@ public class PagingRequsetWithDateSearchDto {
 
 
 }
-

@@ -1,15 +1,15 @@
 insert into employee
-values ('200001011', 'test', 'test1', false, '2000-01-01'),
-       ('200001012', 'test', 'test3', true, '2000-01-01'),
-       ('200001013', 'test', 'test2', true, '2000-01-01'),
-       ('200001014', 'test', 'test2', true, '2000-01-01'),
-       ('200001015', 'test', 'test2', false, '2000-01-01'),
-       ('200001016', 'test', 'test2', false, '2000-01-01'),
-       ('200001017', 'test', 'test2', false, '2000-01-01'),
-       ('200001018', 'test', 'test2', false, '2000-01-01'),
-       ('200001019', 'test', 'test2', false, '2000-01-01'),
-       ('200001020', 'test', 'test2', false, '2000-01-01'),
-       ('200001021', 'test', 'test2', false, '2000-01-01');
+values ('200001011', 'test', 'testone', false, '2000-01-01'),
+       ('200001012', 'test', 'testtwo', true, '2000-01-01'),
+       ('200001013', 'test', 'testthree', true, '2000-01-01'),
+       ('200001014', 'test', 'testfour', true, '2000-01-01'),
+       ('200001015', 'test', 'testfive', false, '2000-01-01'),
+       ('200001016', 'test', 'testsix', false, '2000-01-01'),
+       ('200001017', 'test', 'testseven', false, '2000-01-01'),
+       ('200001018', 'test', 'testeight', false, '2000-01-01'),
+       ('200001019', 'test', 'testnine', false, '2000-01-01'),
+       ('200001020', 'test', 'testten', false, '2000-01-01'),
+       ('200001021', 'test', 'testeleven', false, '2000-01-01');
 
 insert into admin
 values ('admin', 'admin');
@@ -46,7 +46,21 @@ insert into vacation_category
 values ('a', 2);
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-01 15:00:00', 'a');
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001012', 'permitted', 1, '2023-01-01', '2023-01-10', '2023-01-01 16:00:00', 'a');
+
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-03', '2023-01-10', '2023-01-04 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001012', 'permitted', 1, '2023-01-04', '2023-01-10', '2023-01-03 16:00:00', 'a');
+
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-05', '2023-01-10', '2023-01-02 15:00:00', 'a');
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('a', '200001012', 'permitted', 1, '2023-01-01', '2023-01-10', '2023-01-01 16:00:00', 'a');
@@ -107,6 +121,9 @@ insert into vacation_quantity_setting(freshman, senior, setting_time, employee_i
 values (21, 44, '2023-10-7 09:00:00', '200001011');
 insert into vacation_quantity_setting(freshman, senior, setting_time, employee_id)
 values (20, 24, '2023-10-8 09:00:00', '200001012');
+insert into vacation_quantity_setting(freshman, senior, setting_time, employee_id)
+values (20, 24, '2023-10-8 09:00:00', '200001012');
+
 
 
 INSERT INTO regular_time_adjustment_history(TARGET_DATE, adjusted_start_time, adjusted_end_time, reason,
@@ -248,3 +265,15 @@ VALUES ('requested', 'abnormal으로 인한 근태 조정 요청', 1, '2023-11-0
         NULL),
        ('requested', '전일 야근 회복을 위한 abnormal 요청', 20, '2023-11-13 10:00:00', '2023-11-13 18:00:00', '200001011', NOW(),
         NULL);
+
+select *
+from employee;
+
+select *
+from vacation_request;
+
+
+SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, vr.vacation_start_date as vacationStartDate, vr.vacation_end_date as vacationEndDate, vr.reason, vr.vacation_request_time as vacationRequestTime, vr.reason_for_rejection as reasonForRejection, e.name FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', 'test', '%')) AND vr.vacation_request_time = '2023-01-01' LIMIT 10 OFFSET 1 ;
+
+
+SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, vr.vacation_start_date as vacationStartDate, vr.vacation_end_date as vacationEndDate, vr.reason, vr.vacation_request_time as vacationRequestTime, vr.reason_for_rejection as reasonForRejection, e.name FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', 'te', '%')) AND DATE(vr.vacation_request_time) = '2023-01' LIMIT 10 OFFSET 1 ;

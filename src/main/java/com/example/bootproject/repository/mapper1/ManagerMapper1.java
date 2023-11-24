@@ -172,29 +172,6 @@ public interface ManagerMapper1 {
     @Select("select count(*) from employee where employee_id=#{id}")
     int getEmployeeCheck(String id);
 
-    //사원에대한 검색과년월일 검색
-    @Select("SELECT vr.employee_id as employeeId, " +
-            "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " +
-            "vr.vacation_start_date as vacationStartDate, " +
-            "vr.vacation_end_date as vacationEndDate, " +
-            "vr.reason, " +
-            "vr.vacation_request_time as vacationRequestTime, " +
-            "vr.reason_for_rejection as reasonForRejection, " +
-            "e.name " +
-            "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
-            "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
-            "AND DATE(vr.vacation_request_time) = #{date} " +
-            "LIMIT #{size} OFFSET #{startRow}")
-    List<VacationResponseDto> getVacationHistoryByEmployeeAndDate(int size, int startRow, String date, String searchParameter);
-
-
-    //사원검색에 대한 총갯수
-    @Select("SELECT COUNT(*) " +
-            "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
-            "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
-            "AND DATE(vr.vacation_request_time) = #{date}")
-    int countVacationRequestByEmployeeAndDate(String date, String searchParameter);
-
 
 
     //사원에대한 검색과년월일 검색
@@ -210,7 +187,7 @@ public interface ManagerMapper1 {
             "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
             "AND DATE(vr.vacation_request_time) = #{date} " +
             "LIMIT #{size} OFFSET #{startRow}")
-    List<VacationResponseDto> getVacationHistoryByDate(int size, int startRow, String date, String searchParameter);
+    List<VacationResponseDto> getVacationHistoryByDatename(int size, int startRow, String date, String searchParameter);
 
 
     @Select("SELECT vr.employee_id as employeeId, " +
@@ -226,7 +203,7 @@ public interface ManagerMapper1 {
             "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " +
             "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " +
             "LIMIT #{size} OFFSET #{startRow}")
-    List<VacationResponseDto> getVacationHistoryByMonth(int size, int startRow, String yearMonth, String searchParameter);
+    List<VacationResponseDto> getVacationHistoryByMonthname(int size, int startRow, String yearMonth, String searchParameter);
 
     @Select("SELECT COUNT(*) " +
             "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
@@ -266,7 +243,7 @@ public interface ManagerMapper1 {
             "vr.reason_for_rejection as reasonForRejection, " +
             "e.name " +
             "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
-            "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
+            "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " +
             "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " +
             "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " +
             "LIMIT #{size} OFFSET #{startRow}")
@@ -276,7 +253,7 @@ public interface ManagerMapper1 {
 
     @Select("SELECT COUNT(*) " +
             "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
-            "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
+            "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " +
             "AND DATE(vr.vacation_request_time) = #{date}")
     int countVacationRequestByDateAndId(String date, String searchParameter);
 
@@ -285,7 +262,7 @@ public interface ManagerMapper1 {
     //사원검색에 대한 총갯수
     @Select("SELECT COUNT(*) " +
             "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " +
-            "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " +
+            "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " +
             "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " +
             "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")
     int countVacationRequestByMonthAndId(String yearMonth, String searchParameter);

@@ -7,6 +7,7 @@ import com.example.bootproject.vo.vo1.request.PagingRequestDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithDateDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
 
 import java.time.LocalDate;
 import java.util.List;

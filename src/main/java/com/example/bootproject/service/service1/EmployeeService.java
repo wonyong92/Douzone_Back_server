@@ -77,5 +77,7 @@ public interface EmployeeService {
 
     Page<List<AttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest);
 
+
+
     List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String loginId, Integer year, Integer month);
 }
