@@ -653,5 +653,18 @@ public class ManagerController {
         return ResponseEntity.ok(result);
     }
 
+    // 가장 최근 근속 연수 기본 부여 연차 개수 설정 데이터중 senior, freshman 을 쿼리스트링을 이용해 가져옴
+    /* TODO : validation check 추가, 파라미터 확인 필요함 */
+    @GetMapping("/manager/vacation/defaultSetting/latestInfo")
+    public ResponseEntity<Integer> getVacationDefaultLatestCount(@RequestParam("info")String info, HttpServletRequest req) {
+        if (isManager(req)) { // 권한 확인
+            /* 근속 연수에 따른 기본 부여 연차 개수 설정 내역 데이터 반환 받음 */
+            int result = managerService1.getVacationDefaultLatestCount(info);
+            log.info("getVacationDefaultLatestInfo result : {}", result);
+
+            return ResponseEntity.ok(result); //200 OK
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
+    }
 
 }
