@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -12,9 +13,8 @@ import java.time.LocalDate;
 public class AttendanceApprovalUpdateResponseDto {
 
     private String employeeId;
-
-    private LocalDate attendanceApprovalDate;
-
+    private LocalDateTime attendanceApprovalDate;
     private Long attendanceInfoId;
     private String message;
+    private LocalDate attendanceDate;
 }
