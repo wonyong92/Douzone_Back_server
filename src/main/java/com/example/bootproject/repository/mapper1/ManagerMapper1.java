@@ -25,7 +25,10 @@ public interface ManagerMapper1 {
 
 
     //타사원 근태이상승인내역
-    @Select("SELECT * FROM attendance_approval WHERE employee_id = #{employeeId} ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
+    @Select("SELECT attendance_approval_id as attendanceApprovalId,attendance_info.attendance_info_id as attendanceInfoId,attendance_approval_date as attendanceApprovalDate," +
+            "attendance_approval.employee_id as employeeId,attendance_date as attendanceDate" +
+            " FROM attendance_approval INNER JOIN attendance_info USING(attendance_info_id)" +
+            "WHERE attendance_approval.employee_id = #{employeeId} ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
     List<AttendanceApprovalUpdateResponseDto> getAllEmployeeByEmployeeId(@Param("employeeId") String employeeId, @Param("sort") String sort, @Param("desc") String desc, @Param("size") int size, @Param("startRow") int startRow);
 
     @Select("SELECT COUNT(*) FROM attendance_approval WHERE employee_id = #{employeeId}")
@@ -266,9 +269,6 @@ public interface ManagerMapper1 {
             "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " +
             "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")
     int countVacationRequestByMonthAndId(String yearMonth, String searchParameter);
-
-
-
 
 
 
