@@ -209,7 +209,7 @@ VALUES ('normal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '20
 
 
 
-INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
+/*INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (1, NOW(), '200001011');
 INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (2, NOW(), '200001012');
@@ -229,6 +229,17 @@ INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, e
 VALUES (9, NOW(), '200001019');
 INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (10, NOW(), '200001021');
+
+*/
+
+INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
+VALUES (15, "2023-11-26T02:56:55", '200001013');
+INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
+VALUES (16, NOW(), '200001013');
+INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
+VALUES (18, "2023-11-26T02:56:56", '200001013');
+INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
+VALUES (19, NOW(), '200001013');
 
 
 INSERT INTO attendance_appeal_request
@@ -252,8 +263,6 @@ VALUES ('requested', 'abnormal으로 인한 근태 조정 요청', 1, '2023-11-0
        ('requested', 'abnormal으로 인한 근태 조정 요청', 11, '2023-11-04 09:15:00', '2023-11-04 18:00:00', '200001011', NOW(),
         NULL),
        ('requested', '개인 사정으로 인한 조기 퇴근 요청', 12, '2023-11-05 09:00:00', '2023-11-05 16:00:00', '200001011', NOW(), NULL),
-       ('requested', '건강 문제로 인한 abnormal 요청', 13, '2023-11-06 00:00:00', '2023-11-06 00:00:00', '200001011', NOW(),
-        NULL),
        ('requested', '외근으로 인한 근태 조정 요청', 14, '2023-11-07 10:00:00', '2023-11-07 15:00:00', '200001011', NOW(), NULL),
        ('requested', '교육 참석으로 인한 반차 요청', 15, '2023-11-08 13:00:00', '2023-11-08 18:00:00', '200001011', NOW(), NULL),
        ('requested', '대중교통 지연으로 인한 abnormal 요청', 16, '2023-11-09 09:30:00', '2023-11-09 18:00:00', '200001011', NOW(),
