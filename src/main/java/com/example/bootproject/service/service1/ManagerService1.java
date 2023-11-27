@@ -63,4 +63,6 @@ public interface ManagerService1 {
     Page<List<AttendanceAppealHistory>>getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto);
 
     List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedByIdOrNumber(@RequestParam String searchParameter);
+
+    List<AllVacationRequestResponseDto> searchAllVacationRequestedByIdOrNumber (@RequestParam String searchParameter);
 }

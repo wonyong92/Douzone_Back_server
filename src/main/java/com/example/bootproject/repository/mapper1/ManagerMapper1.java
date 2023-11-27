@@ -400,7 +400,17 @@ public interface ManagerMapper1 {
     List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedById(String searchParameter);
 
 
+    @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" +
+            "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " +
+            "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id)\n" +
+            "where vacation_request_state_category_key='requested' and employee.employee_id LIKE CONCAT('%', #{searchParameter}, '%')")
+    List<AllVacationRequestResponseDto> searchVacationAllRequestedById(String searchParameter);
 
+    @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" +
+            "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " +
+            "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id)\n" +
+            "where vacation_request_state_category_key='requested' and employee.name LIKE CONCAT('%', #{searchParameter}, '%')")
+    List<AllVacationRequestResponseDto> searchVacationAllRequestedByName(String searchParameter);
 
 }
 

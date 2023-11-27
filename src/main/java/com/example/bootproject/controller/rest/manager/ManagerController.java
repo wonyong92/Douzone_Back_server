@@ -630,7 +630,7 @@ public class ManagerController {
     }
     //TODO : 권한확인, validation 체크, 페이지네이션 적용
     @GetMapping("/manager/vacation/all/requested")
-    public ResponseEntity<Page<List<VacationRequestResponseDto>>> getAllRequestedInformationOfVacation(@ModelAttribute PageRequest pageRequest) {
+    public ResponseEntity<Page<List<AllVacationRequestResponseDto>>> getAllRequestedInformationOfVacation(@ModelAttribute PageRequest pageRequest) {
         return ResponseEntity.ok(employeeService.getAllRequestedInformationOfVacation(pageRequest));
     }
 
@@ -642,6 +642,7 @@ public class ManagerController {
         return ResponseEntity.ok(employeeService.getAllRequestedInformationOfAppeal(pageRequest));
     }
 
+    //근태 조정 요청 데이터 검색용
     @GetMapping("/manager/search/appeal/all/requested")
     public ResponseEntity<List<AllAttendanceAppealMediateResponseDto>> searchAppealAllRequestedByIdOrNumber(@RequestParam String searchParameter) {
 
@@ -661,6 +662,25 @@ public class ManagerController {
 
     }
 
+    //연차 요청 데이터 검색용
+    @GetMapping("/manager/search/vacation/all/requested")
+    public ResponseEntity<List<AllVacationRequestResponseDto>> searchAllVacationRequestedByIdOrNumber(@RequestParam String searchParameter) {
+
+        List<AllVacationRequestResponseDto> searchResults = managerService1.searchAllVacationRequestedByIdOrNumber(searchParameter);
+
+        if (searchParameter.isEmpty()) {
+            log.info("검색요청데이터가 안들어왔습니다");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (searchResults.isEmpty()) {
+            log.info("검색결과가 존재하지않습니다");
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(searchResults);
+
+
+    }
 
     //TODO: 권환확인.validationcheck
     @GetMapping("/manager/vacation/history")
