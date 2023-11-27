@@ -8,6 +8,7 @@ import com.example.bootproject.vo.vo1.request.PagingRequestWithDateDto;
 import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -61,4 +62,5 @@ public interface ManagerService1 {
 
     Page<List<AttendanceAppealHistory>>getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto);
 
+    List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedByIdOrNumber(@RequestParam String searchParameter);
 }

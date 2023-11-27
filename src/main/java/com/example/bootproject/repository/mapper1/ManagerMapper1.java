@@ -375,6 +375,29 @@ public interface ManagerMapper1 {
     int countAttendanceRequestByMonth(String yearMonth, String searchParameter);
 
 
+    //근태 조정 신청 내역 이름검색
+    @Select("SELECT attendance_appeal_request.attendance_appeal_request_id as attendanceAppealRequestId " +
+            ",employee.name as name,attendance_appeal_request.employee_id as employeeId," +
+            "attendance_info.start_time as startTime ,attendance_info.end_time as EndTime, " +
+            "attendance_appeal_request.appealed_start_time as appealedStartTime," +
+            "attendance_appeal_request.appealed_end_time as appealedEndTime," +
+            "attendance_info.attendance_date as attendanceDate,attendance_appeal_request.attendance_appeal_request_time as attendanceAppealRequestTime," +
+            "attendance_appeal_request.reason as reason " +
+            "FROM  attendance_appeal_request inner join employee using(employee_id) inner join attendance_info using(attendance_info_id) " +
+            "WHERE status='requested' and employee.name LIKE CONCAT('%', #{searchParameter}, '%')")
+    List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedByName(String searchParameter);
+
+    //근태 조정 신청 내역 id검색
+    @Select("SELECT attendance_appeal_request.attendance_appeal_request_id as attendanceAppealRequestId " +
+            ",employee.name as name,attendance_appeal_request.employee_id as employeeId," +
+            "attendance_info.start_time as startTime ,attendance_info.end_time as EndTime, " +
+            "attendance_appeal_request.appealed_start_time as appealedStartTime," +
+            "attendance_appeal_request.appealed_end_time as appealedEndTime," +
+            "attendance_info.attendance_date as attendanceDate,attendance_appeal_request.attendance_appeal_request_time as attendanceAppealRequestTime," +
+            "attendance_appeal_request.reason as reason " +
+            "FROM  attendance_appeal_request inner join employee using(employee_id) inner join attendance_info using(attendance_info_id)" +
+            "WHERE status='requested' and employee.employee_id LIKE CONCAT('%', #{searchParameter}, '%')")
+    List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedById(String searchParameter);
 
 
 
