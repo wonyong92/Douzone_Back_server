@@ -416,7 +416,7 @@ public class ManagerService1Impl implements ManagerService1 {
                 vacationHistory = managerMapper1.getVacationHistoryByMonthAndId(size, startRow, formattedDate, searchParameter);
                 totalElement = managerMapper1.countVacationRequestByMonthAndId(formattedDate, searchParameter);
             } else {
-                vacationHistory = managerMapper1.getVacationHistoryByMonthname(size, startRow, formattedDate, searchParameter);
+                vacationHistory = managerMapper1.getVacationHistoryByMonth(size, startRow, formattedDate, searchParameter);
                 totalElement = managerMapper1.countVacationRequestByMonth(formattedDate, searchParameter);
             }
         } else {
@@ -425,7 +425,7 @@ public class ManagerService1Impl implements ManagerService1 {
                 vacationHistory = managerMapper1.getVacationHistoryByDateAndId(size, startRow, formattedDay, searchParameter);
                 totalElement = managerMapper1.countVacationRequestByDateAndId(formattedDay, searchParameter);
             } else {
-                vacationHistory = managerMapper1.getVacationHistoryByDatename(size, startRow, formattedDay, searchParameter);
+                vacationHistory = managerMapper1.getVacationHistoryByDate(size, startRow, formattedDay, searchParameter);
                 totalElement = managerMapper1.countVacationRequestByDate(formattedDay, searchParameter);
             }
         }

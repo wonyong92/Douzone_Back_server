@@ -70,6 +70,10 @@ public class AppealServiceImpl implements AppealService {
 //        3. 가져온 데이터를 분석하여 연차 사용 신청 내역 테이블을 업데이트 하거나 생략
         /*결정이 거절인 경우*/
         AppealRequestResponseDto old = appealMapper.findById(dto.getAttendanceAppealRequestId());
+        if(old==null){
+            log.info("근태 정보를 찾을 수 없습니다");
+            return null;
+        }
         if (!old.getStatus().equals(VACATION_REQUEST_STATE_REQUESTED)) {
             log.info("이미 처리된 연차 요청은 처리 할 수 없습니다");
             return null;

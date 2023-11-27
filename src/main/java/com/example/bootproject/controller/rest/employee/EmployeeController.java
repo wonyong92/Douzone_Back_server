@@ -515,7 +515,7 @@ public class EmployeeController {
         dto.setIp(dto.getIp() == null ? IpAnalyzer.getClientIp(req) : dto.getIp());
         log.info("LoginRequestDto dto : {}", dto);
         LoginResponseDto loginResult = null;
-        loginResult = loginService.sessionLogin(dto, req);
+        loginResult = loginService.sessionLogin(req);
         if (loginResult != null && loginResult.getMessage().equals(SESSION_ID_NOT_MATCHED_LOGIN_REQUEST)) {
             return ResponseEntity.badRequest().body(loginResult);
         }
@@ -569,7 +569,7 @@ public class EmployeeController {
 
     @PostMapping("/employee/vacation")
     public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId") String employeeId, HttpServletRequest req) {
-
+        log.info("/employee/vacation");
         String loginId = getLoginIdOrNull(req);
         if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         dto.setEmployeeId(loginId);

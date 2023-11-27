@@ -275,11 +275,3 @@ VALUES ('requested', 'abnormal으로 인한 근태 조정 요청', 1, '2023-11-0
          NULL),
         ('requested', '야근으로 인한 다음날 abnormal 요청', 24, '2023-11-12 10:00:00', '2023-11-12 18:00:00', '200001011', '2023-11-1 18:05:00',
          NULL);
-
-select *
-from employee;
-
-select *
-from vacation_request;
-
-select * from auth;

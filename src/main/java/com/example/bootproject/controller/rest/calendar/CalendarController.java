@@ -1,24 +1,28 @@
 package com.example.bootproject.controller.rest.calendar;
 
 import com.example.bootproject.service.service3.api.CalendarService;
+import com.example.bootproject.service.service3.api.LoginService;
 import com.example.bootproject.vo.vo1.request.calendar.attendanceinfo.CalendarSearchRequestDtoForAttendanceInfo;
 import com.example.bootproject.vo.vo1.request.calendar.holiday.CalendarSearchRequestDtoForHoliday;
 import com.example.bootproject.vo.vo1.request.calendar.vacation.CalendarSearchRequestDtoForVacation;
 import com.example.bootproject.vo.vo1.response.calendar.attendanceinfo.ApiItemToEventDtoForAttendanceInfo;
 import com.example.bootproject.vo.vo1.response.calendar.holiday.ApiItemToEventDtoForHoliday;
 import com.example.bootproject.vo.vo1.response.calendar.vacation.ApiItemToEventDtoForVacation;
+import com.example.bootproject.vo.vo1.response.login.LoginResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -95,10 +99,19 @@ public class CalendarController {
         );
         return ResponseEntity.ok(appendedResult);
     }
+    private final LoginService loginService;
 
     @GetMapping("/system/isLogin")
-    public ResponseEntity isLogin() {
+    public ResponseEntity isLogin(HttpServletRequest req) {
         log.info("isLogin");
-        return ResponseEntity.ok(Map.of("userType", "employee", "success", "true"));
+
+        LoginResponseDto result = loginService.sessionLogin(req);
+        if(result==null){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        if(!result.getMessage().isEmpty()){
+            return new ResponseEntity(result,HttpStatus.FORBIDDEN);
+        }
+        return ResponseEntity.ok(Map.of("userData",result,"success", "true"));
     }
 }

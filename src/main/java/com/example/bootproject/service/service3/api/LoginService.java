@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface LoginService {
 
-    LoginResponseDto sessionLogin(LoginRequestDto dto, HttpServletRequest req);
+    LoginResponseDto sessionLogin(HttpServletRequest req);
 
     LoginResponseDto formLogin(LoginRequestDto dto, HttpServletRequest req);
 }

@@ -1,5 +1,6 @@
 package com.example.bootproject.service.service3.impl;
 
+import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper3.login.AdminLoginMapper;
 import com.example.bootproject.repository.mapper3.login.EmployeeLoginMapper;
 import com.example.bootproject.repository.mapper3.login.SessionLoginMapper;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
 import static com.example.bootproject.system.StaticString.SESSION_ID_NOT_MATCHED_LOGIN_REQUEST;
+import static com.example.bootproject.system.util.IpAnalyzer.getClientIp;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +29,11 @@ public class LoginServiceImpl implements LoginService {
     private final AdminLoginMapper adminLoginMapper;
     //    private final HttpSession session;
     private final SessionLoginMapper sessionLoginMapper;
+    private  final EmployeeMapper1 employeeMapper1;
 
 
     @Override
-    public LoginResponseDto sessionLogin(LoginRequestDto dto, HttpServletRequest req) {
+    public LoginResponseDto sessionLogin(HttpServletRequest req) {
         /*
          * 세션 로그인을 통해 동시로그인 방지 기능을 구현
          * jsessionId + client Ip로 검사 - 내부망에서 각자 할당된 IP로 로그인을 시도할 것이므로 세션이 유지된 상태에서 IP 변경이 발생하지 않아야 한다
@@ -48,19 +51,17 @@ public class LoginServiceImpl implements LoginService {
         log.info("session login 검삭 결과 {}", !(session == null || session.getAttribute("loginId") == null));
         if (session == null || session.getAttribute("loginId") == null) {
             /*세션이 존재하지 않는 경우 null 반환*/
-
         } else {
-
             String sessionLoginId = (String) session.getAttribute("loginId");
-            if (!dto.getLoginId().equals(sessionLoginId)) {
-                log.info("login 요청자와 세션의 아이디가 다릅니다 - 로그아웃이 필요합니다");
-                LoginResponseDto result = new LoginResponseDto();
-                result.setMessage(SESSION_ID_NOT_MATCHED_LOGIN_REQUEST);
-                return result;
-            }
+//            if (!dto.getLoginId().equals(sessionLoginId)) {
+//                log.info("login 요청자와 세션의 아이디가 다릅니다 - 로그아웃이 필요합니다");
+//                LoginResponseDto result = new LoginResponseDto();
+//                result.setMessage(SESSION_ID_NOT_MATCHED_LOGIN_REQUEST);
+//                return result;
+//            }
             String sessionLoginIp = (String) session.getAttribute("ip");
             /*세션에서 인증 정보 찾기*/
-            String ip = dto.getIp();
+            String ip = getClientIp(req);
             if (sessionLoginId == null || sessionLoginIp == null) {
                 /*세션에 인증 정보가 없는 경우 null 반환*/
                 log.info("세션에서 인증 정보 찾지 못함");
@@ -79,6 +80,7 @@ public class LoginServiceImpl implements LoginService {
             sessionLoginMapper.updateAuthInforamtion(sessionLoginId, sessionLoginIp);
             /*업데이트 후 재조회*/
             loginResult = sessionLoginMapper.sessionLogin(sessionLoginId, sessionLoginIp);
+            loginResult.setEmployeeName(employeeMapper1.findEmployeeNameByEmployeeId(loginResult.getLoginId()));
         }
         return loginResult;
     }
@@ -238,6 +240,7 @@ public class LoginServiceImpl implements LoginService {
                     adminLoginMapper.updateAuthInforamtion(loginResult);
                     /*업데이트 후 재조회*/
                     loginResult = adminLoginMapper.adminLogin(dto);
+                    loginResult.setAdmin(true);
                     log.info("admin form 재로그인 {}", loginResult);
                     if (session == null) {
                         session = req.getSession(true);
@@ -258,6 +261,7 @@ public class LoginServiceImpl implements LoginService {
                 adminLoginMapper.insertAuthInforamtion(loginResult);
                 /*로그인 성공 후 재조회*/
                 loginResult = adminLoginMapper.adminLogin(dto);
+                loginResult.setAdmin(true);
                 log.info("admin form 최초 로그인 {}", loginResult);
                 if (session == null) {
                     session = req.getSession(true);
