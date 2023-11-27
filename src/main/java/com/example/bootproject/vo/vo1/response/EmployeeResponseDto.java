@@ -18,8 +18,9 @@ public class EmployeeResponseDto {
 
     private Boolean attendanceManager;
 
-    @DateTimeFormat(pattern = "yyyy")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate hireYear;
+
 
 
 }

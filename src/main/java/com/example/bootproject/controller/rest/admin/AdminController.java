@@ -62,24 +62,30 @@ public class AdminController {
         return employeeId.matches("^[0-9]+$") && idCheck == 1;
     }
 
+
+    //TODO: 아이디가 중복일때 프론트로 따로 알림처리를 어떻게 할지
     //사원등록
     @PostMapping("/admin/register")
     public ResponseEntity<EmployeeResponseDto> registerEmployee(@ModelAttribute EmployeeInsertRequestDto dto, HttpServletRequest req) {
-        if (!isAdmin(req)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        try {
+            if (!isAdmin(req)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            log.info("request{}", dto);
+
+            EmployeeResponseDto responseDto = adminService1.insertEmployee(dto);
+
+            if (responseDto != null) {
+                log.info("성공적으로 데이터를 받았습니다: {}", responseDto);
+                return ResponseEntity.ok(responseDto);
+            } else {
+                log.info("안좋은 데이터를 받았습니다: {}", responseDto);
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+        } catch (Exception e) {
+            log.error("Internal Server Error: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        log.info("request{}", dto);
-
-        EmployeeResponseDto responseDto = adminService1.insertEmployee(dto);
-
-        if (responseDto != null) {
-            log.info("성공적으로 데이터를 받았습니다: {}", responseDto);
-            return ResponseEntity.ok(responseDto);
-        } else {
-            log.info("안좋은 데이터를 받았습니다: {}", responseDto);
-            return ResponseEntity.badRequest().build();
-        }
-
     }
 
     @PostMapping("/admin/update/{employeeId}")
