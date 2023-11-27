@@ -12,7 +12,7 @@ import java.util.List;
 public interface AdminMapper {
 
 
-    @Insert("INSERT INTO employee (employee_id,password, name, attendance_manager, hire_year) VALUES (#{dto.employeeId},#{dto.passWord}, #{dto.name}, #{dto.attendanceManager}, now() )")
+    @Insert("INSERT INTO employee (employee_id,password, name, attendance_manager, hire_year) VALUES (#{dto.employeeId},#{dto.passWord}, #{dto.name}, #{dto.attendanceManager}, #{dto.hireYear} )")
     int insertEmployee(@Param("dto") EmployeeInsertRequestDto dto);
 
 //TODO:입사일로 넣는데이터로 수정하고 업데이트도 진행
