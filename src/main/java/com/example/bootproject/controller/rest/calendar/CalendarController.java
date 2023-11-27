@@ -99,6 +99,7 @@ public class CalendarController {
         );
         return ResponseEntity.ok(appendedResult);
     }
+
     private final LoginService loginService;
 
     @GetMapping("/system/isLogin")
@@ -106,12 +107,13 @@ public class CalendarController {
         log.info("isLogin");
 
         LoginResponseDto result = loginService.sessionLogin(req);
-        if(result==null){
+
+        if (result == null) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
-        if(!result.getMessage().isEmpty()){
-            return new ResponseEntity(result,HttpStatus.FORBIDDEN);
+        if (!result.getMessage().isEmpty()) {
+            return new ResponseEntity(result, HttpStatus.FORBIDDEN);
         }
-        return ResponseEntity.ok(Map.of("userData",result,"success", "true"));
+        return ResponseEntity.ok(Map.of("userData", result, "success", "true"));
     }
 }

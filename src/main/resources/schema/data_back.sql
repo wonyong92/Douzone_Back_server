@@ -33,7 +33,13 @@ values ('abnormal'),
        ('requested'),
        ('pending'),
        ('normal');
-
+insert into douzone_test.attendance_info (attendance_info_id, attendance_status_category, employee_id, start_time,
+                                          end_time, attendance_date)
+values (1, 'abnormal', '200001011', '2023-10-31 09:24:57', '2023-10-31 16:24:59', '2023-10-31');
+insert into douzone_test.attendance_appeal_request (status, reason, attendance_info_id, appealed_start_time,
+                                                    appealed_end_time, employee_id, attendance_appeal_request_time,
+                                                    reason_for_rejection, attendance_appeal_request_id)
+values ('requested', 'dddd', 1, '14:17:49', '16:17:58', '200001011', '2023-10-31 16:18:10', null, 1);
 
 
 insert into vacation_category
@@ -275,3 +281,8 @@ VALUES ('requested', 'abnormal으로 인한 근태 조정 요청', 1, '2023-11-0
          NULL),
         ('requested', '야근으로 인한 다음날 abnormal 요청', 24, '2023-11-12 10:00:00', '2023-11-12 18:00:00', '200001011', '2023-11-1 18:05:00',
          NULL);
+
+INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (1, '200001011', '1st', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (2, '200001011', '2nd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (3, '200001011', '3rd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (4, '200001011', '4th', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
