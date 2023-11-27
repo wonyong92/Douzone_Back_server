@@ -523,16 +523,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Page<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(PageRequest pageRequest) {
+    public Page<List<AllVacationRequestResponseDto>> getAllRequestedInformationOfVacation(PageRequest pageRequest) {
         int page = pageRequest.getPage();
         int size = Page.PAGE_SIZE;
         String sort = pageRequest.getSort();
         String desc = pageRequest.getDesc();
         int startRow = (page - 1) * size;
         int totalElements = employeeMapper1.countAllRequestedInformationOfVacation();
-        List<VacationRequestResponseDto> data = employeeMapper1.getAllRequestedInformationOfVacation(size,sort,startRow,desc);
+        List<AllVacationRequestResponseDto> data = employeeMapper1.getAllRequestedInformationOfVacation(size,sort,startRow,desc);
         boolean hasNext = (page * size) < totalElements;
-        Page<List<VacationRequestResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
+        Page<List<AllVacationRequestResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
         return response;
     }
 

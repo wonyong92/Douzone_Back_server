@@ -73,11 +73,9 @@ public interface EmployeeService {
 
     List<AttendanceInfoResponseDto> findAllAttendanceInfoOfMineByYearAndMonth(String loginId, Integer year, Integer month);
 
-    Page<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(PageRequest pagedLocalDateDto);
+    Page<List<AllVacationRequestResponseDto>> getAllRequestedInformationOfVacation(PageRequest pagedLocalDateDto);
 
     Page<List<AllAttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest);
-
-
 
     List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String loginId, Integer year, Integer month);
 }

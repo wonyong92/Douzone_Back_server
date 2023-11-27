@@ -275,8 +275,13 @@ public interface EmployeeMapper1 {
     List<AttendanceInfoResponseDto> getAllAttendanceInfoByIdByYearByMonth(String employeeId, Integer year, Integer month);
 
     //TODO : 페이지네이션 적용
-    @Select("SELECT * FROM  vacation_request WHERE vacation_request_state_category_key="+"'requested'"+" ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
-    List<VacationRequestResponseDto> getAllRequestedInformationOfVacation(int size, String sort, int startRow, String desc);
+    @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" +
+            "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " +
+            "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id)\n" +
+            "where vacation_request_state_category_key='requested'\n" +
+            "ORDER BY ${sort} ${desc}\n" +
+            "LIMIT #{size} OFFSET #{startRow}")
+    List<AllVacationRequestResponseDto> getAllRequestedInformationOfVacation(int size, String sort, int startRow, String desc);
 
     @Select("SELECT count(*) FROM  vacation_request WHERE vacation_request_state_category_key="+"'requested'")
     int countAllRequestedInformationOfVacation();
