@@ -1,7 +1,7 @@
 package com.example.bootproject.aop.to_manager;
 
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
-import com.example.bootproject.repository.mapper1.SseMapper;
+import com.example.bootproject.repository.mapper3.notification.NotificationMapper;
 import com.example.bootproject.vo.vo1.request.notification.SseEmitterWithEmployeeInformationDto;
 import com.example.bootproject.vo.vo1.request.sse.SseMessageInsertDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto;
@@ -27,7 +27,7 @@ import static com.example.bootproject.system.util.ValidationChecker.getLoginIdOr
 public class SendMessageForVacationRequestToManager {
 
     private final EmployeeMapper1 employeeMapper1;
-    private final SseMapper sseMapper;
+    private final NotificationMapper notificationMapper;
 
     @Around("execution(* com.example.bootproject.controller.rest.employee.EmployeeController.requestVacation(..)) && args(dto,employeeId, req)")
     public Object sendVacationRequestMessageToManager(ProceedingJoinPoint joinPoint, VacationRequestDto dto, String employeeId, HttpServletRequest req) throws Throwable {
@@ -43,12 +43,12 @@ public class SendMessageForVacationRequestToManager {
         String message = "New Appeal Request from " + loginId;
         for (SseEmitterWithEmployeeInformationDto emitterDto : managerEmitters) {
             //모든 매니저 목록을 확인해야한다 -> 모든 매니저에게 메세지를 전달하고, 매니저는 자신의 메세지 목록만 확인 할 수 있어야 한다
-            List<String> managerEmployeeIds = sseMapper.getManagerId();
+            List<String> managerEmployeeIds = notificationMapper.getManagerId();
             for (String managerId : managerEmployeeIds) {
                 SseMessageInsertDto insertDto = new SseMessageInsertDto(managerId, message, "vacation", String.valueOf(requestId));
                 try {
                     if (emitterDto.getEmployeeNumber().equals(managerId)&&emitterDto.getUserType().equals("manager") && !emitterDto.getEmployeeNumber().equals(loginId)) {
-                        sseMapper.addUnreadMsgOfManager(insertDto);
+                        notificationMapper.addUnreadMsgOfManager(insertDto);
                         log.info("inserted msg : {}", insertDto);
                         emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message"));
                     }

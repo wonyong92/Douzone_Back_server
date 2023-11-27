@@ -1,7 +1,7 @@
 package com.example.bootproject.aop.to_employee;
 
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
-import com.example.bootproject.repository.mapper1.SseMapper;
+import com.example.bootproject.repository.mapper3.notification.NotificationMapper;
 import com.example.bootproject.vo.vo1.request.notification.SseEmitterWithEmployeeInformationDto;
 import com.example.bootproject.vo.vo1.request.sse.SseMessageInsertDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationProcessRequestDto;
@@ -23,7 +23,7 @@ import static com.example.bootproject.system.interceptor.SseBroadCastingIntercep
 @RequiredArgsConstructor
 public class SendMessageForProcessVacationRequestToEmployee {
     private final ManagerMapper1 managerMapper1;
-    private final SseMapper sseMapper;
+    private final NotificationMapper notificationMapper;
 
     @Around("execution(* com.example.bootproject.controller.rest.manager.ManagerController.processVacationRequest(..)) && args(dto, req)")
     public Object sendMessageForProcessVacationRequestMessageToEmployee(ProceedingJoinPoint joinPoint, VacationProcessRequestDto dto, HttpServletRequest req) throws Throwable {
@@ -57,7 +57,7 @@ public class SendMessageForProcessVacationRequestToEmployee {
                 } finally {
                     SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
                     log.info("request insert msg {}", insertDto);
-                    sseMapper.addUnreadMsgOfEmployee(insertDto);
+                    notificationMapper.addUnreadMsgOfEmployee(insertDto);
                     log.info("inserted msg : {}", insertDto);
                     emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                     break;

@@ -1,7 +1,7 @@
 package com.example.bootproject.aop.to_employee;
 
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
-import com.example.bootproject.repository.mapper1.SseMapper;
+import com.example.bootproject.repository.mapper3.notification.NotificationMapper;
 import com.example.bootproject.vo.vo1.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo1.request.notification.SseEmitterWithEmployeeInformationDto;
 import com.example.bootproject.vo.vo1.request.sse.SseMessageInsertDto;
@@ -23,7 +23,7 @@ import static com.example.bootproject.system.interceptor.SseBroadCastingIntercep
 @RequiredArgsConstructor
 public class SendMessageForProcessAppealRequestToEmployee {
     private final ManagerMapper1 managerMapper1;
-    private final SseMapper sseMapper;
+    private final NotificationMapper notificationMapper;
 
     @Around("execution(* com.example.bootproject.controller.rest.manager.ManagerController.processAppealRequest(..)) && args(dto, req)")
     public Object sendMessageForProcessAppealRequestMessageToEmployee(ProceedingJoinPoint joinPoint, AppealProcessRequestDto dto, HttpServletRequest req) throws Throwable {
@@ -32,7 +32,7 @@ public class SendMessageForProcessAppealRequestToEmployee {
         log.info("target appealRequestId = {}", requestId);
 
         if (requestId != null) {
-            String employeeId = sseMapper.findEmployeeIdByAttendanceAppealRequestId(requestId);
+            String employeeId = notificationMapper.findEmployeeIdByAttendanceAppealRequestId(requestId);
             log.info("Before processing Appeal request. Employee ID: {}", employeeId);
             String message = "";
             for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {
@@ -54,7 +54,7 @@ public class SendMessageForProcessAppealRequestToEmployee {
                 } finally {
                     SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "Appeal", String.valueOf(requestId));
                     log.info("request insert msg {}", insertDto);
-                    sseMapper.addUnreadMsgOfEmployee(insertDto);
+                    notificationMapper.addUnreadMsgOfEmployee(insertDto);
                     log.info("inserted msg : {}", insertDto);
                     emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                     break;
