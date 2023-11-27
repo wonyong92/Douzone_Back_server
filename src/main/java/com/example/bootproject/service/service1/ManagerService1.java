@@ -59,4 +59,6 @@ public interface ManagerService1 {
 
     int getVacationDefaultLatestCount (String info);
 
+    Page<List<AttendanceAppealHistory>>getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto);
+
 }

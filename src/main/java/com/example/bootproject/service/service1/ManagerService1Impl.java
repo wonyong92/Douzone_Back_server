@@ -392,9 +392,6 @@ public class ManagerService1Impl implements ManagerService1 {
         return managerMapper1.getVacationDefaultLatestCount(info);
     }
 
-
-
-
     @Override
     public Page<List<VacationResponseDto>> getVacationHistory(PagingRequsetWithDateSearchDto requestDto) {
         // 파라미터 추출
@@ -443,6 +440,53 @@ public class ManagerService1Impl implements ManagerService1 {
         // 페이지 반환
         return new Page<>(vacationHistory, isLastPage, sort, desc, currentPage, totalElement);
     }
+
+    @Override
+    public Page<List<AttendanceAppealHistory>> getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto) {
+        int size = Page.PAGE_SIZE;
+        int currentPage = requestDto.getPage();
+        int startRow = (currentPage - 1) * size;
+        String searchParameter = requestDto.getSearchParameter();
+        String sort = requestDto.getSort();
+        String desc = requestDto.getDesc();
+
+        LocalDate searchDate = requestDto.makeLocalDate();
+        String formattedDate = searchDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        List<AttendanceAppealHistory> attendanceAppealHistory;
+        int totalElement;
+
+        boolean isNumeric = isNumeric(searchParameter);
+
+        if (requestDto.getDay() == null || requestDto.getDay() == 0) {
+            if (isNumeric) {
+                attendanceAppealHistory = managerMapper1.getAttendanceHistoryByMonthAndId(size, startRow, formattedDate, searchParameter);
+                totalElement = managerMapper1.countAttendanceRequestByMonthAndId(formattedDate, searchParameter);
+            } else {
+                attendanceAppealHistory = managerMapper1.getAttendanceHistoryByMonthname(size, startRow, formattedDate, searchParameter);
+                totalElement = managerMapper1.countAttendanceRequestByMonth(formattedDate, searchParameter);
+            }
+        } else {
+            String formattedDay = searchDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            if (isNumeric) {
+                attendanceAppealHistory = managerMapper1.getAttendanceHistoryByDateAndId(size, startRow, formattedDay, searchParameter);
+                totalElement = managerMapper1.countAttendanceRequestByDateAndId(formattedDay, searchParameter);
+            } else {
+                attendanceAppealHistory = managerMapper1.getAttendanceHistoryByDatename(size, startRow, formattedDay, searchParameter);
+                totalElement = managerMapper1.countAttendanceRequestByDate(formattedDay, searchParameter);
+            }
+        }
+
+        if (attendanceAppealHistory.isEmpty()) {
+            return new Page<>(new ArrayList<>(), false, sort, desc, currentPage, 0);
+        }
+        int lastPageNumber = (int) Math.ceil((double) totalElement / size);
+        boolean isLastPage = currentPage >= lastPageNumber;
+
+        // 페이지 반환
+        return new Page<>(attendanceAppealHistory, isLastPage, sort, desc, currentPage, totalElement);
+
+    }
+
 
 
     //숫자여부판단

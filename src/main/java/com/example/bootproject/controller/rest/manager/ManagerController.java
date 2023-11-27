@@ -653,6 +653,15 @@ public class ManagerController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/manager/attendance/history")
+    public ResponseEntity<Page<List<AttendanceAppealHistory>>> getAttendanceHistory(
+            @Valid PagingRequsetWithDateSearchDto requestDto) {
+        Page<List<AttendanceAppealHistory>> result = managerService1.getAttendanceHistory(requestDto);
+        return ResponseEntity.ok(result);
+    }
+
+
+
     // 가장 최근 근속 연수 기본 부여 연차 개수 설정 데이터중 senior, freshman 을 쿼리스트링을 이용해 가져옴
     /* TODO : validation check 추가, 파라미터 확인 필요함 */
     @GetMapping("/manager/vacation/defaultSetting/latestInfo")

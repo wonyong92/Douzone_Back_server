@@ -23,10 +23,10 @@ public class VacationResponseDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate vacationStartDate; // 연차 시작 날짜
+
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-
     private LocalDate vacationEndDate; // 연차 끝 날짜
-
 
     private String reason; // 사유
 

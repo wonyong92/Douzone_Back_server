@@ -49,6 +49,30 @@ insert into vacation_request(vacation_category_key, employee_id, vacation_reques
 values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001011', 'requested', 1, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', 'a');
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('a', '200001012', 'permitted', 1, '2023-01-01', '2023-01-10', '2023-01-01 16:00:00', 'a');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
@@ -273,7 +297,14 @@ VALUES ('requested', 'abnormal으로 인한 근태 조정 요청', 1, '2023-11-0
        ('requested', '야근으로 인한 다음날 abnormal 요청', 19, '2023-11-12 10:00:00', '2023-11-12 18:00:00', '200001011', NOW(),
         NULL),
        ('requested', '전일 야근 회복을 위한 abnormal 요청', 20, '2023-11-13 10:00:00', '2023-11-13 18:00:00', '200001011', NOW(),
-        NULL);
+        NULL),
+       ('requested', '대중교통 지연으로 인한 abnormal 요청', 21, '2023-11-09 09:30:00', '2023-11-09 18:00:00', '200001011', '2023-11-1 18:05:00',
+        NULL),
+       ('requested', '가족 행사 참석으로 인한 휴가 요청', 22, '2023-11-10 09:00:00', '2023-11-10 18:00:00', '200001011', '2023-11-1 18:05:00' ,NULL),
+        ('requested', '긴급한 개인 사정으로 인한 abnormal 요청', 23, '2023-11-11 00:00:00', '2023-11-11 00:00:00', '200001011','2023-11-1 18:05:00',
+         NULL),
+        ('requested', '야근으로 인한 다음날 abnormal 요청', 24, '2023-11-12 10:00:00', '2023-11-12 18:00:00', '200001011', '2023-11-1 18:05:00',
+         NULL);
 
 select *
 from employee;
@@ -286,3 +317,7 @@ SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as v
 
 
 SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, vr.vacation_start_date as vacationStartDate, vr.vacation_end_date as vacationEndDate, vr.reason, vr.vacation_request_time as vacationRequestTime, vr.reason_for_rejection as reasonForRejection, e.name FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', 'te', '%')) AND DATE(vr.vacation_request_time) = '2023-01' LIMIT 10 OFFSET 1 ;
+
+select * from regular_time_adjustment_history;
+
+select * from attendance_appeal_request;
