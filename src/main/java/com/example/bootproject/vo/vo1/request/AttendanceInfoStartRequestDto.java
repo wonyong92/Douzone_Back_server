@@ -14,6 +14,6 @@ import java.time.LocalDateTime;
 public class AttendanceInfoStartRequestDto {
     @JsonIgnore
     private String employeeId;
-    private LocalDate attendanceDate;
-    private LocalDateTime startTime;
+    private LocalDate attendanceDate = LocalDate.now();
+    private LocalDateTime startTime = LocalDateTime.now();
 }

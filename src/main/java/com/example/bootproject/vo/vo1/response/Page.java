@@ -3,11 +3,14 @@ package com.example.bootproject.vo.vo1.response;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 //        페이지네이션을 위한 쿼리 파라미터 목록 : page=int, sort=string, desc=boolean
 @Data
 @NoArgsConstructor
 public class Page<T> {
-    public static int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 10;
+    public static final int MESSAGE_PAGE_SIZE = 4;
 
     //제네릭으로 여러 데이터 타입을 처리
     private T data;
@@ -32,6 +35,19 @@ public class Page<T> {
         this.desc = desc;
         this.page = page;
         this.totalElement = totalElement;
+    }
+    public Page(T data,int size, boolean hasNext, String sort, String desc, int page, int totalElement) {
+        this.data = data;
+        this.hasNext = hasNext;
+        this.sort = sort;
+        this.desc = desc;
+        this.page = page;
+        this.totalElement = totalElement;
+        this.size=size;
+    }
+
+    public static Page<? extends Object> makeEmptyList(){
+        return new Page(List.of(),false,"","",1,0);
     }
 
 

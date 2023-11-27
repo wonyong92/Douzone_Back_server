@@ -294,6 +294,10 @@ public interface EmployeeMapper1 {
 
     @Select("select * from vacation_request where employee_id=#{employeeId} and year(vacation_start_date) =#{year} and month(vacation_start_date) = #{month}")
     List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String employeeId, Integer year, Integer month);
+    @Select("select employee_id from vacation_request where vacation_request_key=${requestId}")
+    String findEmployeeIdByVacationRequestId(Long requestId);
+    @Select("select name from employee where employee_id=${loginId}")
+    String findEmployeeNameByEmployeeId(String loginId);
 
     @Select("SELECT attendance_appeal_request.attendance_appeal_request_id as attendanceAppealRequestId ,employee.name as name,attendance_appeal_request.employee_id as employeeId,\n" +
             "       attendance_info.start_time as startTime ,attendance_info.end_time as EndTime, attendance_appeal_request.appealed_start_time as appealedStartTime,attendance_appeal_request.appealed_end_time as appealedEndTime,\n" +
