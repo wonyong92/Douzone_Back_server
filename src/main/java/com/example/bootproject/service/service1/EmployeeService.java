@@ -75,7 +75,7 @@ public interface EmployeeService {
 
     Page<List<VacationRequestResponseDto>> getAllRequestedInformationOfVacation(PageRequest pagedLocalDateDto);
 
-    Page<List<AttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest);
+    Page<List<AllAttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest);
 
 
 

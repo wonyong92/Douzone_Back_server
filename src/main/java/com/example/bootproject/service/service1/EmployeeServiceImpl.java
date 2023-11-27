@@ -536,8 +536,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         return response;
     }
 
+
     @Override
-    public Page<List<AttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest) {
+    public Page<List<AllAttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest) {
 
         int page = pageRequest.getPage();
         int size = Page.PAGE_SIZE;
@@ -545,9 +546,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         String desc = pageRequest.getDesc();
         int startRow = (page - 1) * size;
         int totalElements = employeeMapper1.countAllRequestedInformationOfAppeal();
-        List<AttendanceAppealMediateResponseDto> data = employeeMapper1.getAllRequestedInformationOfAppeal(size,sort,startRow,desc);
+        List<AllAttendanceAppealMediateResponseDto> data = employeeMapper1.getAllRequestedInformationOfAppeal(size,sort,startRow,desc);
         boolean hasNext = (page * size) < totalElements;
-        Page<List<AttendanceAppealMediateResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
+        Page<List<AllAttendanceAppealMediateResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
         return response;
     }
 
