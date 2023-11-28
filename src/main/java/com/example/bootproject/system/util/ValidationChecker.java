@@ -30,7 +30,7 @@ public class ValidationChecker {
             log.info("로그인 정보가 없습니다 {}", req.getRequestURL());
             return false;
         }
-        return session.getAttribute("admin") != null ? (boolean) session.getAttribute("admin") : false;
+        return session.getAttribute("admin") != null && (boolean) session.getAttribute("admin");
     }
 
     /* 정렬할 컬럼이 영문자와 '_'로 이루어 져있는지 확인 후 해당 값 반환, 조건 만족하지 않으면 비어있는 값 반환 */

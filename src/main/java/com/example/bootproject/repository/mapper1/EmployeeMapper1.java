@@ -4,7 +4,6 @@ import com.example.bootproject.entity.Employee;
 import com.example.bootproject.service.service1.AdminService1Impl;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import org.apache.ibatis.annotations.*;
@@ -283,7 +282,7 @@ public interface EmployeeMapper1 {
             "LIMIT #{size} OFFSET #{startRow}")
     List<AllVacationRequestResponseDto> getAllRequestedInformationOfVacation(int size, String sort, int startRow, String desc);
 
-    @Select("SELECT count(*) FROM  vacation_request WHERE vacation_request_state_category_key="+"'requested'")
+    @Select("SELECT count(*) FROM  vacation_request WHERE vacation_request_state_category_key=" + "'requested'")
     int countAllRequestedInformationOfVacation();
 
     //TODO : 페이지네이션 적용
@@ -294,8 +293,10 @@ public interface EmployeeMapper1 {
 
     @Select("select * from vacation_request where employee_id=#{employeeId} and year(vacation_start_date) =#{year} and month(vacation_start_date) = #{month}")
     List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String employeeId, Integer year, Integer month);
+
     @Select("select employee_id from vacation_request where vacation_request_key=${requestId}")
     String findEmployeeIdByVacationRequestId(Long requestId);
+
     @Select("select name from employee where employee_id=${loginId}")
     String findEmployeeNameByEmployeeId(String loginId);
 
@@ -303,7 +304,7 @@ public interface EmployeeMapper1 {
             "       attendance_info.start_time as startTime ,attendance_info.end_time as EndTime, attendance_appeal_request.appealed_start_time as appealedStartTime,attendance_appeal_request.appealed_end_time as appealedEndTime,\n" +
             "       attendance_info.attendance_date as attendanceDate,attendance_appeal_request.attendance_appeal_request_time as attendanceAppealRequestTime,attendance_appeal_request.reason as reason " +
             "FROM  attendance_appeal_request inner join employee using(employee_id) inner join attendance_info using(attendance_info_id) " +
-            "WHERE status =" + "'requested'"+" " +
+            "WHERE status =" + "'requested'" + " " +
             "ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
     List<AllAttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(int size, String sort, int startRow, String desc);
 }

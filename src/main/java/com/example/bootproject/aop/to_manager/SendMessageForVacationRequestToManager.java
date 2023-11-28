@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.List;
 
 import static com.example.bootproject.system.interceptor.SseBroadCastingInterceptorForManager.managerEmitters;
@@ -47,14 +46,14 @@ public class SendMessageForVacationRequestToManager {
             for (String managerId : managerEmployeeIds) {
                 SseMessageInsertDto insertDto = new SseMessageInsertDto(managerId, message, "vacation", String.valueOf(requestId));
                 try {
-                    if (emitterDto.getEmployeeNumber().equals(managerId)&&emitterDto.getUserType().equals("manager") && !emitterDto.getEmployeeNumber().equals(loginId)) {
+                    if (emitterDto.getEmployeeNumber().equals(managerId) && emitterDto.getUserType().equals("manager") && !emitterDto.getEmployeeNumber().equals(loginId)) {
                         notificationMapper.addUnreadMsgOfManager(insertDto);
                         log.info("inserted msg : {}", insertDto);
                         emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message"));
                     }
                 } catch (Exception e) {
                     for (SseEmitterWithEmployeeInformationDto reRegisteredEmitterDto : managerEmitters) {
-                        if(emitterDto.getEmployeeNumber().equals(managerId)&&emitterDto.getEmployeeNumber().equals(reRegisteredEmitterDto.getEmployeeNumber())){
+                        if (emitterDto.getEmployeeNumber().equals(managerId) && emitterDto.getEmployeeNumber().equals(reRegisteredEmitterDto.getEmployeeNumber())) {
                             log.info("타임아웃으로 인해 재전송");
                             reRegisteredEmitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                         }

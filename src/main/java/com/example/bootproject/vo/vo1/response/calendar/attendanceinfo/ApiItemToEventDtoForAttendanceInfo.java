@@ -5,7 +5,6 @@ import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.Data;
 
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 
 import static com.example.bootproject.system.StaticString.ATTENDANCE_INFO_STATUS_ABSENT;
 import static com.example.bootproject.system.StaticString.ATTENDANCE_INFO_STATUS_NORMAL;
@@ -31,7 +30,7 @@ public class ApiItemToEventDtoForAttendanceInfo {
      * */
     public ApiItemToEventDtoForAttendanceInfo(AttendanceInfoResponseDto dto) {
         title = dto.getAttendanceStatusCategory();
-        date = dto.getAttendanceDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).toString();
+        date = dto.getAttendanceDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String status = dto.getAttendanceStatusCategory();
         switch (status) {
             case ATTENDANCE_INFO_STATUS_ABSENT:

@@ -1,14 +1,11 @@
 package com.example.bootproject.vo.vo1.response.calendar.vacation;
 
-import com.example.bootproject.vo.vo1.request.calendar.holiday.ExtendPropsForHoliday;
 import com.example.bootproject.vo.vo1.request.calendar.vacation.ExtendPropsForVacation;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 
 @Data
 public class ApiItemToEventDtoForVacation {
@@ -16,6 +13,7 @@ public class ApiItemToEventDtoForVacation {
     String date;
     String backgroundColor = "red";
     ExtendPropsForVacation extendedProps;
+
     /*
      * 응답 데이터 생성을 위한 자료
      * 데이터의 종류 -> extendProps 저장 및 backgroundColor 설정

@@ -19,27 +19,27 @@ import static com.example.bootproject.vo.vo1.response.Page.makeEmptyList;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
 
-    public Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfEmployee(String employeeId, int page){
-        List<NotificationMessageResponseDto> data = notificationMapper.findCurrentUnreadMessageOfEmployee(employeeId,(page-1)*MESSAGE_PAGE_SIZE);
-        if(!data.isEmpty()){
+    public Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfEmployee(String employeeId, int page) {
+        List<NotificationMessageResponseDto> data = notificationMapper.findCurrentUnreadMessageOfEmployee(employeeId, (page - 1) * MESSAGE_PAGE_SIZE);
+        if (!data.isEmpty()) {
             int totalElement = notificationMapper.countUnreadMessageOfEmployee(employeeId);
-            boolean hasNext = Page.MESSAGE_PAGE_SIZE*page<totalElement;
-            return new Page<>(data,Page.MESSAGE_PAGE_SIZE,hasNext,"","",page,totalElement);
+            boolean hasNext = Page.MESSAGE_PAGE_SIZE * page < totalElement;
+            return new Page<>(data, Page.MESSAGE_PAGE_SIZE, hasNext, "", "", page, totalElement);
         }
         return (Page<List<NotificationMessageResponseDto>>) makeEmptyList();
     }
 
-    public Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfManager(String managerId, int page){
+    public Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfManager(String managerId, int page) {
         List<NotificationMessageResponseDto> data = notificationMapper.findCurrentUnreadMessageOfManager(managerId);
-        if(!data.isEmpty()){
+        if (!data.isEmpty()) {
             int totalElement = notificationMapper.countUnreadMessageOfManager(managerId);
-            boolean hasNext = Page.MESSAGE_PAGE_SIZE*page<totalElement;
-            return new Page<>(data,Page.MESSAGE_PAGE_SIZE,hasNext,"","",page,totalElement);
+            boolean hasNext = Page.MESSAGE_PAGE_SIZE * page < totalElement;
+            return new Page<>(data, Page.MESSAGE_PAGE_SIZE, hasNext, "", "", page, totalElement);
         }
         return (Page<List<NotificationMessageResponseDto>>) makeEmptyList();
     }
 
-    public int countUnreadMsgOfEmployee(String employeeId){
+    public int countUnreadMsgOfEmployee(String employeeId) {
         return notificationMapper.countUnreadMessageOfEmployee(employeeId);
     }
 

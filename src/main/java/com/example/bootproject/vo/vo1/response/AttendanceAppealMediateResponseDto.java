@@ -1,6 +1,5 @@
 package com.example.bootproject.vo.vo1.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Time;

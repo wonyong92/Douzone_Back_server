@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
-import static com.example.bootproject.system.StaticString.SESSION_ID_NOT_MATCHED_LOGIN_REQUEST;
 import static com.example.bootproject.system.util.IpAnalyzer.getClientIp;
 
 @Service
@@ -29,7 +28,7 @@ public class LoginServiceImpl implements LoginService {
     private final AdminLoginMapper adminLoginMapper;
     //    private final HttpSession session;
     private final SessionLoginMapper sessionLoginMapper;
-    private  final EmployeeMapper1 employeeMapper1;
+    private final EmployeeMapper1 employeeMapper1;
 
 
     @Override
@@ -80,10 +79,10 @@ public class LoginServiceImpl implements LoginService {
             sessionLoginMapper.updateAuthInforamtion(sessionLoginId, sessionLoginIp);
             /*업데이트 후 재조회*/
             loginResult = sessionLoginMapper.sessionLogin(sessionLoginId, sessionLoginIp);
-            loginResult.setManager(sessionLoginMapper.isManager(loginResult.getLoginId())==1);
-            loginResult.setAdmin(sessionLoginMapper.isAdmin(loginResult.getLoginId())==1);
+            loginResult.setManager(sessionLoginMapper.isManager(loginResult.getLoginId()) == 1);
+            loginResult.setAdmin(sessionLoginMapper.isAdmin(loginResult.getLoginId()) == 1);
             loginResult.setEmployeeName(employeeMapper1.findEmployeeNameByEmployeeId(loginResult.getLoginId()));
-            log.info("session 로그인 결과 : {}",loginResult);
+            log.info("session 로그인 결과 : {}", loginResult);
         }
         return loginResult;
     }

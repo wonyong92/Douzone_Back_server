@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,13 +55,13 @@ public class CalendarServiceImpl implements CalendarService {
         log.info("api key = {}", API_KEY);
         log.info("dto = {}", dto.toString());
 //        Map<String,Object> param = Map.of("ServiceKey",API_KEY,"solYear", String.valueOf(dto.getYear()),"solMonth" ,dto.getMonth()!=null?String.valueOf(dto.getMonth()):"","numOfRows",100);
-        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo"); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=moUu8f7YSUIZr9pViDvm%2FCnqZsTX%2Btjw6y7%2BrVy1dnD239wRULAmzD675WYkDtXXL6ZIO592qNII9Tr6rqLWBg%3D%3D"); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("solYear", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(dto.getYear()), "UTF-8")); /*연*/
-        urlBuilder.append("&" + URLEncoder.encode("solMonth", "UTF-8") + "=" + URLEncoder.encode(String.format("%02d", dto.getMonth()), "UTF-8")); /*월*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); /*출력 개수*/
+        /*URL*/
+        String urlBuilder = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo" + "?" + URLEncoder.encode("serviceKey", StandardCharsets.UTF_8) + "=moUu8f7YSUIZr9pViDvm%2FCnqZsTX%2Btjw6y7%2BrVy1dnD239wRULAmzD675WYkDtXXL6ZIO592qNII9Tr6rqLWBg%3D%3D" + /*Service Key*/
+                "&" + URLEncoder.encode("solYear", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(String.valueOf(dto.getYear()), StandardCharsets.UTF_8) + /*연*/
+                "&" + URLEncoder.encode("solMonth", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(String.format("%02d", dto.getMonth()), StandardCharsets.UTF_8) + /*월*/
+                "&" + URLEncoder.encode("numOfRows", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("100", StandardCharsets.UTF_8); /*출력 개수*/
 
-        URL url = new URL(urlBuilder.toString());
+        URL url = new URL(urlBuilder);
         log.info("request URI {}", url.toURI());
         String result = restTemplate.getForObject(url.toURI(), String.class);
         log.info("api 요청 결과 {}", result);

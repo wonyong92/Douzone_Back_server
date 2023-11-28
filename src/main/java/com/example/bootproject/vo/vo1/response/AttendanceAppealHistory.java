@@ -30,5 +30,4 @@ public class AttendanceAppealHistory {
     private String name;
 
 
-
 }

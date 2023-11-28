@@ -1,7 +1,10 @@
 package com.example.bootproject.repository.mapper3.login;
 
 import com.example.bootproject.vo.vo1.response.login.LoginResponseDto;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface SessionLoginMapper {
@@ -13,6 +16,7 @@ public interface SessionLoginMapper {
 
     @Insert("insert into auth values (#{sessionLoginId}, #{ip},now(),now()) on duplicate key update login_time = now(), logout_time=now()")
     void withOutAuthDataLogout(@Param("sessionLoginId") String sessionLoginId, @Param("ip") String ip);
+
     @Select("select attendance_manager from employee where employee_id=${loginId}")
     int isManager(String loginId);
 

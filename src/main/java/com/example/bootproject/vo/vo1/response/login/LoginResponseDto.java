@@ -15,7 +15,8 @@ public class LoginResponseDto {
     private String ip;
     private boolean manager;
     private String message = "";
-    private boolean admin=false;
+    private boolean admin = false;
+
     public LoginResponseDto(String loginId, String ip) {
         this.loginId = loginId;
         this.ip = ip;

@@ -4,11 +4,8 @@ package com.example.bootproject.service.service1;
 import com.example.bootproject.entity.Employee;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.vo.vo1.request.*;
-import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
-import com.example.bootproject.vo.vo1.response.VacationRequestDto;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
-import com.example.bootproject.vo.vo1.response.Page;
+import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -530,9 +527,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         String desc = pageRequest.getDesc();
         int startRow = (page - 1) * size;
         int totalElements = employeeMapper1.countAllRequestedInformationOfVacation();
-        List<AllVacationRequestResponseDto> data = employeeMapper1.getAllRequestedInformationOfVacation(size,sort,startRow,desc);
+        List<AllVacationRequestResponseDto> data = employeeMapper1.getAllRequestedInformationOfVacation(size, sort, startRow, desc);
         boolean hasNext = (page * size) < totalElements;
-        Page<List<AllVacationRequestResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
+        Page<List<AllVacationRequestResponseDto>> response = new Page<>(data, hasNext, sort, desc, page, totalElements);
         return response;
     }
 
@@ -546,9 +543,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         String desc = pageRequest.getDesc();
         int startRow = (page - 1) * size;
         int totalElements = employeeMapper1.countAllRequestedInformationOfAppeal();
-        List<AllAttendanceAppealMediateResponseDto> data = employeeMapper1.getAllRequestedInformationOfAppeal(size,sort,startRow,desc);
+        List<AllAttendanceAppealMediateResponseDto> data = employeeMapper1.getAllRequestedInformationOfAppeal(size, sort, startRow, desc);
         boolean hasNext = (page * size) < totalElements;
-        Page<List<AllAttendanceAppealMediateResponseDto>> response = new Page<>(data,hasNext,sort,desc,page,totalElements );
+        Page<List<AllAttendanceAppealMediateResponseDto>> response = new Page<>(data, hasNext, sort, desc, page, totalElements);
         return response;
     }
 

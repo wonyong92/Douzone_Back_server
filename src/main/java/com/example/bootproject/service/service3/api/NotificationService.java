@@ -6,8 +6,9 @@ import com.example.bootproject.vo.vo1.response.notification.NotificationMessageR
 import java.util.List;
 
 public interface NotificationService {
-    public int countUnreadMsgOfEmployee(String employeeId);
-    public Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfEmployee(String employeeId, int page);
+    int countUnreadMsgOfEmployee(String employeeId);
 
-    public Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfManager(String managerId, int page);
+    Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfEmployee(String employeeId, int page);
+
+    Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfManager(String managerId, int page);
 }

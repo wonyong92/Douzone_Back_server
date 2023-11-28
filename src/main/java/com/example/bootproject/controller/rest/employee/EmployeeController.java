@@ -162,7 +162,7 @@ public class EmployeeController {
         // 입력된 날짜가 유효한지 검증
 
         if (!validateDateIsRealDate(pagedLocalDateDto)) {
-            log.info("유효하지 않은 날짜: {}}", pagedLocalDateDto.toString());
+            log.info("유효하지 않은 날짜: {}}", pagedLocalDateDto);
             return ResponseEntity.badRequest().build();
         }
 

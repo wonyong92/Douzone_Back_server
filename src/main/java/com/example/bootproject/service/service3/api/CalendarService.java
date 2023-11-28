@@ -14,9 +14,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 public interface CalendarService {
-    public List<ApiItemToEventDtoForHoliday> getHolidayEvents(CalendarSearchRequestDtoForHoliday dto) throws IOException, URISyntaxException, JSONException, ParseException;
+    List<ApiItemToEventDtoForHoliday> getHolidayEvents(CalendarSearchRequestDtoForHoliday dto) throws IOException, URISyntaxException, JSONException, ParseException;
 
-    public List<ApiItemToEventDtoForAttendanceInfo> getAttendanceInfoEvents(CalendarSearchRequestDtoForAttendanceInfo dto, String loginId) throws IOException, URISyntaxException, JSONException, ParseException;
+    List<ApiItemToEventDtoForAttendanceInfo> getAttendanceInfoEvents(CalendarSearchRequestDtoForAttendanceInfo dto, String loginId) throws IOException, URISyntaxException, JSONException, ParseException;
 
     List<ApiItemToEventDtoForVacation> getVacationInfoEvents(CalendarSearchRequestDtoForVacation dto, String loginId);
 }

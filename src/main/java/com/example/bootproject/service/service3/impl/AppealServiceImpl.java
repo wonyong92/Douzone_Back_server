@@ -45,18 +45,17 @@ public class AppealServiceImpl implements AppealService {
             log.info("attendanceInfoId를 찾지 못함");
             return null;
         }
-        if (appealMapper.checkAppealRequestExist(dto.getAttendanceInfoId()) >0) {
+        if (appealMapper.checkAppealRequestExist(dto.getAttendanceInfoId()) > 0) {
             //TODO : 해당 근태기록에 대해 이미 조정 요청이 있는 경우 처리
             log.info("근태기록에 대해 이미 조정요청이 존재함");
             return null;
         }
-            appealMapper.makeRequest(dto);
-            AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
-            log.info("해당 근태 정보(id {})의 현재 상태를 조정 요청 중({})으로 변경", dto.getAttendanceInfoId(), APPEAL_REQUEST_STATE_REQUESTED);
-            attendanceInfoMapper.updateAttendanceInfoStatus(APPEAL_REQUEST_STATE_REQUESTED, dto.getAttendanceInfoId());
-            return result;
+        appealMapper.makeRequest(dto);
+        AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
+        log.info("해당 근태 정보(id {})의 현재 상태를 조정 요청 중({})으로 변경", dto.getAttendanceInfoId(), APPEAL_REQUEST_STATE_REQUESTED);
+        attendanceInfoMapper.updateAttendanceInfoStatus(APPEAL_REQUEST_STATE_REQUESTED, dto.getAttendanceInfoId());
+        return result;
     }
-
 
 
     @Override
@@ -70,7 +69,7 @@ public class AppealServiceImpl implements AppealService {
 //        3. 가져온 데이터를 분석하여 연차 사용 신청 내역 테이블을 업데이트 하거나 생략
         /*결정이 거절인 경우*/
         AppealRequestResponseDto old = appealMapper.findById(dto.getAttendanceAppealRequestId());
-        if(old==null){
+        if (old == null) {
             log.info("근태 정보를 찾을 수 없습니다");
             return null;
         }

@@ -9,8 +9,8 @@ public class NotificationMessageResponseDto {
     Long messageId;
     String receiver;
     String message;
-    LocalDateTime  receiveTime;
-    LocalDateTime  readTime;
+    LocalDateTime receiveTime;
+    LocalDateTime readTime;
     String linkTo;
     String identifier;
     boolean forManger;

@@ -1,6 +1,5 @@
 package com.example.bootproject.system.validator;
 
-import com.example.bootproject.vo.vo1.request.PageRequest;
 import com.example.bootproject.vo.vo1.request.PagedLocalDateDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

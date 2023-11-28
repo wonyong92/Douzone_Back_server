@@ -1,12 +1,10 @@
 package com.example.bootproject.vo.vo1.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 public class AllAttendanceAppealMediateResponseDto {

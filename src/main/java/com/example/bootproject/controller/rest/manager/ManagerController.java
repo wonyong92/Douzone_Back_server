@@ -9,10 +9,10 @@ import com.example.bootproject.service.service3.api.VacationService;
 import com.example.bootproject.system.validator.PageRequestValidator;
 import com.example.bootproject.system.validator.PagedLocalDateDtoValidator;
 import com.example.bootproject.vo.vo1.request.*;
-import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationAdjustRequestDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationProcessRequestDto;
+import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
@@ -628,12 +628,12 @@ public class ManagerController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
     }
+
     //TODO : 권한확인, validation 체크, 페이지네이션 적용
     @GetMapping("/manager/vacation/all/requested")
     public ResponseEntity<Page<List<AllVacationRequestResponseDto>>> getAllRequestedInformationOfVacation(@ModelAttribute PageRequest pageRequest) {
         return ResponseEntity.ok(employeeService.getAllRequestedInformationOfVacation(pageRequest));
     }
-
 
 
     //TODO : 권한확인, validation 체크, 페이지네이션 적용
@@ -698,11 +698,10 @@ public class ManagerController {
     }
 
 
-
     // 가장 최근 근속 연수 기본 부여 연차 개수 설정 데이터중 senior, freshman 을 쿼리스트링을 이용해 가져옴
     /* TODO : validation check 추가, 파라미터 확인 필요함 */
     @GetMapping("/manager/vacation/defaultSetting/latestInfo")
-    public ResponseEntity<Integer> getVacationDefaultLatestCount(@RequestParam("info")String info, HttpServletRequest req) {
+    public ResponseEntity<Integer> getVacationDefaultLatestCount(@RequestParam("info") String info, HttpServletRequest req) {
         if (isManager(req)) { // 권한 확인
             /* 근속 연수에 따른 기본 부여 연차 개수 설정 내역 데이터 반환 받음 */
             int result = managerService1.getVacationDefaultLatestCount(info);

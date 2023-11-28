@@ -1,8 +1,6 @@
 package com.example.bootproject.config;
 
 import com.example.bootproject.system.interceptor.LogginInterceptor;
-import com.example.bootproject.system.interceptor.SseBroadCastingInterceptorForManager;
-import com.example.bootproject.system.interceptor.WorkingQueueInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,9 +18,9 @@ public class WebApplicationConfig implements WebMvcConfigurer {
 //        registry.addInterceptor(new WorkingQueueInterceptor()).addPathPatterns("/employee/vacation", "/employee/appeal", "/manager/vacation/process", "/manager/vacation/modify");
 //        registry.addInterceptor(new SseBroadCastingInterceptorForManager()).addPathPatterns("/manager/appeal/process","/manager/vacation/process");
         /*
-        * /manager/appeal/process -> dto에서 찾아야함
-        * /manager/vacation/process -> dto에서 찾아야함
-        * */
+         * /manager/appeal/process -> dto에서 찾아야함
+         * /manager/vacation/process -> dto에서 찾아야함
+         * */
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

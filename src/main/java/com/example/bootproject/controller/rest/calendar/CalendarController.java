@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -38,6 +37,7 @@ import static com.example.bootproject.system.util.ValidationChecker.getLoginIdOr
 public class CalendarController {
     private final CalendarService calendarService;
     private final ObjectMapper obj;
+    private final LoginService loginService;
 
     //쿼리 파라미터로 year month day를 받을 수 있다
     @GetMapping("/system/calendar/holiday")
@@ -99,8 +99,6 @@ public class CalendarController {
         );
         return ResponseEntity.ok(appendedResult);
     }
-
-    private final LoginService loginService;
 
     @GetMapping("/system/isLogin")
     public ResponseEntity isLogin(HttpServletRequest req) {

@@ -3,12 +3,8 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
-import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
+import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.request.DefaultVacationRequestDto;
-import com.example.bootproject.vo.vo1.request.PagingRequestDto;
-import com.example.bootproject.vo.vo1.request.PagingRequestWithDateDto;
-import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +63,11 @@ public class ManagerService1Impl implements ManagerService1 {
 - 조회 결과를 Page 객체에 담아 반환한다.
 - 로그를 남겨 조회 정보를 기록한다.
 */
+
+    //숫자여부판단
+    public static boolean isNumeric(String str) {
+        return str != null && str.matches("^[0-9]+$");
+    }
 
     // 정규 출퇴근 시간 설정
     @Override
@@ -364,8 +365,6 @@ public class ManagerService1Impl implements ManagerService1 {
         return managerMapper1.getEmployeeCheck(id);
     }
 
-
-
     public Page<List<EmployeeResponseDto>> getEmployeeList(int page, String sort, String desc) {
         int size = PAGE_SIZE; // Page 객체로부터 size를 가져옴
         int startRow = (page - 1) * size; // 가져오기 시작할 row의 번호
@@ -388,7 +387,7 @@ public class ManagerService1Impl implements ManagerService1 {
 
     @Override
     public int getVacationDefaultLatestCount(String info) {
-        log.info("getVacationDefaultLatestCount : {}",info);
+        log.info("getVacationDefaultLatestCount : {}", info);
         return managerMapper1.getVacationDefaultLatestCount(info);
     }
 
@@ -486,14 +485,6 @@ public class ManagerService1Impl implements ManagerService1 {
         return new Page<>(attendanceAppealHistory, isLastPage, sort, desc, currentPage, totalElement);
 
     }
-
-
-
-    //숫자여부판단
-    public static boolean isNumeric(String str) {
-        return str != null && str.matches("^[0-9]+$");
-    }
-
 
     @Override
     public List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedByIdOrNumber(String searchParameter) {

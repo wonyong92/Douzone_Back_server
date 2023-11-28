@@ -36,18 +36,19 @@ public class Page<T> {
         this.page = page;
         this.totalElement = totalElement;
     }
-    public Page(T data,int size, boolean hasNext, String sort, String desc, int page, int totalElement) {
+
+    public Page(T data, int size, boolean hasNext, String sort, String desc, int page, int totalElement) {
         this.data = data;
         this.hasNext = hasNext;
         this.sort = sort;
         this.desc = desc;
         this.page = page;
         this.totalElement = totalElement;
-        this.size=size;
+        this.size = size;
     }
 
-    public static Page<? extends Object> makeEmptyList(){
-        return new Page(List.of(),false,"","",1,0);
+    public static Page<? extends Object> makeEmptyList() {
+        return new Page(List.of(), false, "", "", 1, 0);
     }
 
 

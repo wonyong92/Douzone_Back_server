@@ -31,7 +31,7 @@ public class SendMessageForProcessVacationRequestToEmployee {
         Object result = joinPoint.proceed();
         Long requestId = dto.getVacationRequestKey();
         log.info("target vacation request id = {}", requestId);
-        if(requestId!=null) {
+        if (requestId != null) {
 
             String employeeId = managerMapper1.getEmployeeIdAttendanceAppealByVacationRequestId(requestId);
             log.info("current employeeEmitters {}", employeeEmitters);
@@ -46,7 +46,7 @@ public class SendMessageForProcessVacationRequestToEmployee {
                     }
                 } catch (Exception e) {
                     for (SseEmitterWithEmployeeInformationDto reRegisteredEmitterDto : employeeEmitters) {
-                        if(emitterDto.getEmployeeNumber().equals(reRegisteredEmitterDto.getEmployeeNumber())){
+                        if (emitterDto.getEmployeeNumber().equals(reRegisteredEmitterDto.getEmployeeNumber())) {
                             log.info("타임아웃으로 메세지 전송 실패. 재전송 수행!");
                             if (reRegisteredEmitterDto.getEmployeeNumber().equals(employeeId)) {
                                 log.info("find employee sseEmitter. will send event");

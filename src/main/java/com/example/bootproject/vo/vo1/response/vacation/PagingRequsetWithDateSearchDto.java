@@ -8,7 +8,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 @Data
 @AllArgsConstructor
 public class PagingRequsetWithDateSearchDto {
@@ -41,9 +41,6 @@ public class PagingRequsetWithDateSearchDto {
             return LocalDate.of(year, month, day);
         }
     }
-
-
-
 
 
 }

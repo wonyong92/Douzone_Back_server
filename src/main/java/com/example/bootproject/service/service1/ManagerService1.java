@@ -1,11 +1,7 @@
 package com.example.bootproject.service.service1;
 
-import com.example.bootproject.vo.vo1.request.RegularTimeAdjustmentHistoryRequestDto;
+import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.request.DefaultVacationRequestDto;
-import com.example.bootproject.vo.vo1.request.PagingRequestDto;
-import com.example.bootproject.vo.vo1.request.PagingRequestWithDateDto;
-import com.example.bootproject.vo.vo1.request.PagingRequestWithIdStatusDto;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,11 +54,11 @@ public interface ManagerService1 {
 
     Page<List<EmployeeResponseDto>> getEmployeeList(int currentPage, String sortColumn, String descCheck);
 
-    int getVacationDefaultLatestCount (String info);
+    int getVacationDefaultLatestCount(String info);
 
-    Page<List<AttendanceAppealHistory>>getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto);
+    Page<List<AttendanceAppealHistory>> getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto);
 
     List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedByIdOrNumber(@RequestParam String searchParameter);
 
-    List<AllVacationRequestResponseDto> searchAllVacationRequestedByIdOrNumber (@RequestParam String searchParameter);
+    List<AllVacationRequestResponseDto> searchAllVacationRequestedByIdOrNumber(@RequestParam String searchParameter);
 }
