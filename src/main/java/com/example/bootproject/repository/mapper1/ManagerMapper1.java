@@ -118,7 +118,10 @@ public interface ManagerMapper1 {
 
 
     // 가장 최근 데이터 리턴
-    @Select("SELECT ifnull(${info},0)\n" + "FROM VACATION_QUANTITY_SETTING \n" + "ORDER BY setting_time DESC\n" + "LIMIT 1;")
+    @Select("SELECT ifnull(${info},0)\n" +
+            "FROM VACATION_QUANTITY_SETTING WHERE YEAR(target_date) = YEAR(NOW())  " +
+            "ORDER BY setting_time DESC\n" +
+            "LIMIT 1;")
     int getVacationDefaultLatestCount(String info);
 
     // 올해 조정된 데이터가 있는지 확인하여 존재시 조정 연차 개수 총합 리턴

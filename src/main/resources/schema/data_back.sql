@@ -61,9 +61,9 @@ values ('a', '200001012', 'permitted', 1, '2023-01-04', '2023-01-10', '2023-01-0
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('a', '200001011', 'requested', 1, '2023-01-05', '2023-01-10', '2023-01-02 15:00:00', '사유1');
-insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
-                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001012', 'permitted', 1, '2023-01-01', '2023-01-10', '2023-01-01 16:00:00', '사유1');
+# insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+#                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
+# values ('a', '200001012', 'permitted', 1, '2023-01-01', '2023-01-10', '2023-01-01 16:00:00', '사유1');
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('a', '200001011', 'permitted', 10, '2023-03-01', '2023-03-10', '2023-03-01 15:00:00', '사유1');
@@ -209,7 +209,7 @@ VALUES ('normal', '200001011', '2023-02-01 09:00:00', '2023-02-01 18:00:00', '20
 
 
 
-/*INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
+INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (1, NOW(), '200001011');
 INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (2, NOW(), '200001012');
@@ -230,7 +230,7 @@ VALUES (9, NOW(), '200001019');
 INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (10, NOW(), '200001021');
 
-*/
+
 
 INSERT INTO attendance_approval (attendance_info_id, attendance_approval_date, employee_id)
 VALUES (15, "2023-11-26T02:56:55", '200001013');
@@ -286,3 +286,8 @@ INSERT INTO douzone_test.notification_message (message_id, receiver, message, re
 INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (2, '200001011', '2nd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
 INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (3, '200001011', '3rd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
 INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (4, '200001011', '4th', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+
+
+
+
+
