@@ -79,9 +79,15 @@ public class LoginServiceImpl implements LoginService {
             sessionLoginMapper.updateAuthInforamtion(sessionLoginId, sessionLoginIp);
             /*업데이트 후 재조회*/
             loginResult = sessionLoginMapper.sessionLogin(sessionLoginId, sessionLoginIp);
-            loginResult.setManager(sessionLoginMapper.isManager(loginResult.getLoginId()) == 1);
-            loginResult.setAdmin(sessionLoginMapper.isAdmin(loginResult.getLoginId()) == 1);
-            loginResult.setEmployeeName(employeeMapper1.findEmployeeNameByEmployeeId(loginResult.getLoginId()));
+            if(sessionLoginId.matches("^\\d+$"))
+                loginResult.setManager(sessionLoginMapper.isManager(loginResult.getLoginId()) == 1);
+            if(!sessionLoginId.matches("^\\d+$"))
+                loginResult.setAdmin(sessionLoginMapper.isAdmin(loginResult.getLoginId()) == 1);
+            if(sessionLoginId.matches("^\\d+$"))
+                loginResult.setEmployeeName(employeeMapper1.findEmployeeNameByEmployeeId(loginResult.getLoginId()));
+            else{
+                loginResult.setEmployeeName(sessionLoginId);
+            }
             log.info("session 로그인 결과 : {}", loginResult);
         }
         return loginResult;

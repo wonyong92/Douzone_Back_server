@@ -14,7 +14,7 @@ import static com.example.bootproject.system.StaticString.ATTENDANCE_INFO_STATUS
 public interface AttendanceInfoMapper {
     @Select("select count(*) from attendance_info where attendance_info_id = #{id}")
     Integer countById(Long id);
-
+    //공휴일 체크하여 근태 정보 삽입을 막기
     @Select("select attendance_info_id from attendance_info where attendance_info_id = #{id} and employee_id=#{employeeId}")
     Integer countByIdEmployeeId(Long id, String employeeId);
 
@@ -23,7 +23,7 @@ public interface AttendanceInfoMapper {
 
     @Select("select attendance_info_id, attendance_status_category, start_time, end_time from attendance_info where attendance_date = curdate()")
     List<AttendanceCheckResponse> getListAttendanceInfoOfTodayAfterAutoInsert();
-
+    //공휴일 체크하여 근태 판정 막기
     @Update("update attendance_info set attendance_status_category = #{status} where attendance_info_id=#{attendanceInfoId}")
     int updateAttendanceInfoStatus(String status, Long attendanceInfoId);
 }
