@@ -568,7 +568,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee/vacation")
-    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId") String employeeId, HttpServletRequest req) {
+    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId" ,required = false) String employeeId, HttpServletRequest req) {
         log.info("/employee/vacation");
         String loginId = getLoginIdOrNull(req);
         if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -577,7 +577,7 @@ public class EmployeeController {
         log.info("정상 작업 진행");
         VacationRequestResponseDto result = null;
         if (dto.getEmployeeId() == null) {
-            dto.setEmployeeId(employeeId);
+            dto.setEmployeeId(loginId);
         } else if (!dto.getEmployeeId().equals(employeeId)) {
             return ResponseEntity.badRequest().build();
         }
