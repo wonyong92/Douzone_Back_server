@@ -14,6 +14,13 @@ import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATU
 public interface ManagerMapper1 {
 
 
+    //12/4일 수정
+    @Select("SELECT ifnull(${info},0)\n" +
+            "FROM vacation_quantity_setting " +
+            "ORDER BY setting_time DESC\n" +
+            "LIMIT 1;")
+    int getVacationDefaultLatestCount(String info);
+
     //정규출퇴근시간 설정
     @Insert("INSERT INTO regular_time_adjustment_history (" + "target_date, adjusted_start_time, adjusted_end_time, reason, regular_time_adjustment_time, employee_id) " + "VALUES (#{dto.targetDate}, #{dto.adjustedStartTime}, #{dto.adjustedEndTime}, #{dto.reason}, #{dto.regularTimeAdjustmentTime}, #{dto.employeeId})")
     int insertregulartimeadjustment(@Param("dto") RegularTimeAdjustmentHistoryRequestDto dto, String employeeId);
@@ -109,20 +116,16 @@ public interface ManagerMapper1 {
     DefaultVacationResponseDto getDefaultVacationResponseDto(int generatedKey);
 
     //입사년도 데이터 가져옴
-    @Select("SELECT YEAR(hire_year) FROM EMPLOYEE WHERE employee_id=#{id}; ")
+    @Select("SELECT YEAR(hire_year) FROM employee WHERE employee_id=#{id}; ")
     int getHireYear(String id);
 
     //작년의 가장 최근 데이터에서 입사연도에 따라서 기본 연차 부여 설정값 가져옴
-    @Select("SELECT CASE\n" + "        WHEN #{year} = YEAR(NOW()) THEN freshman\n" + "        WHEN #{year} < YEAR(now()) THEN senior\n" + "       END AS settingValue\n" + "FROM vacation_quantity_setting " + "WHERE YEAR(setting_time) = YEAR(CURDATE() - INTERVAL 1 YEAR) " + "ORDER BY setting_time DESC LIMIT 1;")
+    @Select("SELECT CASE\n" + "WHEN #{year} = YEAR(NOW()) THEN freshman\n" + "WHEN #{year} < YEAR(now()) THEN senior\n" + "END AS settingValue\n" + "FROM vacation_quantity_setting " + "WHERE YEAR(setting_time) = YEAR(CURDATE() - INTERVAL 1 YEAR) " + "ORDER BY setting_time DESC LIMIT 1;")
     int getDefaultSettingVacationValue(int year);
 
 
     // 가장 최근 데이터 리턴
-    @Select("SELECT ifnull(${info},0)\n" +
-            "FROM VACATION_QUANTITY_SETTING WHERE YEAR(target_date) = YEAR(NOW())  " +
-            "ORDER BY setting_time DESC\n" +
-            "LIMIT 1;")
-    int getVacationDefaultLatestCount(String info);
+
 
     // 올해 조정된 데이터가 있는지 확인하여 존재시 조정 연차 개수 총합 리턴
     // 미존재시 0 리턴
