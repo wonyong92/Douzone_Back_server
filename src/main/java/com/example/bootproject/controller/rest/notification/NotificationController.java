@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.bootproject.system.interceptor.SseBroadCastingInterceptorForEmployee.employeeEmitters;
 import static com.example.bootproject.system.interceptor.SseBroadCastingInterceptorForManager.managerEmitters;
@@ -27,11 +29,12 @@ import static com.example.bootproject.system.util.ValidationChecker.getLoginIdOr
 public class NotificationController {
     private final ObjectMapper objectMapper;
     private final NotificationService notificationService;
-
+    @Value("${sse.timeout}")
+    Long timeout;
     @GetMapping("/register")
     public SseEmitter registerEmployeeSseEmitter(@ModelAttribute SseEmitterWithEmployeeInformationDto dto, HttpServletResponse resp, HttpServletRequest req) throws JsonProcessingException {
         log.info("registered dto : {}", dto);
-        SseEmitter emitter = new SseEmitter(30000L);
+        SseEmitter emitter = new SseEmitter(timeout);
         dto.setSseEmitter(emitter);
         boolean find = false;
         for (SseEmitterWithEmployeeInformationDto saved : employeeEmitters) {
@@ -62,7 +65,7 @@ public class NotificationController {
     @GetMapping("/register/manager")
     public SseEmitter registerMangerSseEmitter(@ModelAttribute SseEmitterWithEmployeeInformationDto dto, HttpServletResponse resp, HttpServletRequest req) throws JsonProcessingException {
         log.info("registered dto : {}", dto);
-        SseEmitter emitter = new SseEmitter(30000L);
+        SseEmitter emitter = new SseEmitter(timeout);
         dto.setSseEmitter(emitter);
         boolean find = false;
         for (SseEmitterWithEmployeeInformationDto saved : managerEmitters) {
@@ -153,4 +156,31 @@ public class NotificationController {
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
+
+    @GetMapping("/notification/employee/read/{messageId}")
+    public ResponseEntity<Map<String,Integer>> changeUnreadToReadEmployeeMessage(@PathVariable Long messageId, HttpServletRequest req){
+        String loginId = getLoginIdOrNull(req);
+        log.info("{} {}","changeUnreadToReadEmployeeMessage",loginId);
+        if(loginId != null){
+            boolean result = notificationService.changeUnreadToReadEmployeeMessage(loginId,messageId);
+            Integer totalCountAfterRead = notificationService.countUnreadMsgOfEmployee(loginId);
+            log.info("{} {}","totalCountAfterRead",totalCountAfterRead);
+            return result ? ResponseEntity.ok(Map.of("totalCount",totalCountAfterRead)):ResponseEntity.badRequest().build();
+        }
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/notification/manager/read/{messageId}")
+    public ResponseEntity<Map<String,Integer>> changeUnreadToReadManagerMessage(@PathVariable Long messageId, HttpServletRequest req){
+        String loginId = getLoginIdOrNull(req);
+        log.info("{} {}","changeUnreadToReadManagerMessage",loginId);
+        if(loginId != null){
+            boolean result = notificationService.changeUnreadToReadManagerMessage(loginId,messageId);
+            Integer totalCountAfterRead = notificationService.countUnreadMsgOfManager(loginId);
+            log.info("{} {}","totalCountAfterRead",totalCountAfterRead);
+            return result ? ResponseEntity.ok(Map.of("totalCount",totalCountAfterRead)):ResponseEntity.badRequest().build();
+        }
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
+
 }

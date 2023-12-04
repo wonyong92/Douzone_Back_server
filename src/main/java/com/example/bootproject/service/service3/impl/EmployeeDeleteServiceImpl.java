@@ -1,11 +1,11 @@
 package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.controller.rest.admin.EmployeeListMapper;
+import com.example.bootproject.controller.rest.admin.EmployeeNumberSearchResponseDto;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper3.employee_delete.EmployeeIdDeleteAndBackupMapper;
 import com.example.bootproject.service.service3.api.EmployeeDeleteService;
 import com.example.bootproject.vo.vo1.request.PageRequest;
-import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import com.example.bootproject.vo.vo1.response.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +49,21 @@ public class EmployeeDeleteServiceImpl implements EmployeeDeleteService {
                 log.info("사원 정보 백업 및 삭제 수행 도중 에러 발생 - 롤백 수행");
                 return false;
         }
+    }
+
+    @Override
+    public Page<List<String>> searchEmployeeNumbers(PageRequest pageRequest, String searchText) {
+        int page = pageRequest.getPage();
+        int size = Page.PAGE_SIZE;
+        List<String> data = employeeListMapper.searchEmployeeNumbers(searchText,pageRequest,size);
+        int totalElements = Integer.parseInt(data.get(data.size()-1));
+
+        boolean hasNext = (page * size) < totalElements;
+        String sort = pageRequest.getSort();
+        String desc = pageRequest.getDesc();
+        Page<List<String>> result = new Page<>(data.subList(0,data.size()-1), hasNext, sort, desc, page, totalElements);
+
+        return result;
     }
 
     @Override

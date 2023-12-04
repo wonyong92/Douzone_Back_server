@@ -11,4 +11,10 @@ public interface NotificationService {
     Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfEmployee(String employeeId, int page);
 
     Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfManager(String managerId, int page);
+
+    boolean changeUnreadToReadEmployeeMessage(String loginId, Long messageId);
+
+    boolean changeUnreadToReadManagerMessage(String loginId, Long messageId);
+
+    Integer countUnreadMsgOfManager(String loginId);
 }

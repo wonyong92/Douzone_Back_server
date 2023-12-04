@@ -10,7 +10,7 @@ import static com.example.bootproject.vo.vo1.response.Page.MESSAGE_PAGE_SIZE;
 
 @Mapper
 public interface NotificationMapper {
-    @Select("select * from notification_message where receiver = ${employeeId} and for_manager=false  limit " + MESSAGE_PAGE_SIZE + " offset ${startRow} ")
+    @Select("select * from notification_message where receiver = ${employeeId} and for_manager=false and read_time is null  limit " + MESSAGE_PAGE_SIZE + " offset ${startRow} ")
     List<NotificationMessageResponseDto> findCurrentUnreadMessageOfEmployee(String employeeId, int startRow);
 
     @Select("select count(*) from notification_message where receiver = ${employeeId} and ISNULL(read_time) and  for_manager=false")
@@ -19,8 +19,8 @@ public interface NotificationMapper {
     @Update("update notification_message set read_time=now() where message_id=${messageId}")
     int makeReadMessage(Long messageId);
 
-    @Select("select * from notification_message where receiver = ${managerId} and for_manager=true limit " + MESSAGE_PAGE_SIZE + " offset 0 ")
-    List<NotificationMessageResponseDto> findCurrentUnreadMessageOfManager(String managerId);
+    @Select("select * from notification_message where receiver = ${managerId} and for_manager=true and read_time is null limit " + MESSAGE_PAGE_SIZE + " offset ${startRow} ")
+    List<NotificationMessageResponseDto> findCurrentUnreadMessageOfManager(String managerId, int startRow);
 
     @Select("select count(*) from notification_message where receiver = ${managerId} and ISNULL(read_time) and  for_manager=true")
     int countUnreadMessageOfManager(String managerId);
@@ -38,4 +38,8 @@ public interface NotificationMapper {
     @Insert("insert into notification_message(receiver, message, receive_time, read_time, link_to, identifier, for_manager) values (#{receiver},#{message},now(),null,#{linkTo},#{identifier},true)")
     @Options(useGeneratedKeys = true, keyProperty = "messageId")
     int addUnreadMsgOfManager(SseMessageInsertDto dto);
+    @Update("update notification_message set read_time = NOW() where receiver=#{loginId} and message_id=#{messageId} and for_manager=false")
+    int changeUnreadToReadEmployeeMessage(String loginId, Long messageId);
+    @Update("update notification_message set read_time = NOW() where receiver=#{loginId} and message_id=#{messageId} and for_manager=true")
+    int changeUnreadToReadManagerMessage(String loginId, Long messageId);
 }

@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface EmployeeDeleteService {
     boolean backUpDataAndDeleteEmployeeInformation(String employeeId);
+
+    Page<List<String>> searchEmployeeNumbers(PageRequest pageRequest, String searchText);
+
     Page<List<String>> getEmployeeNumbers(PageRequest pageRequest);
 }

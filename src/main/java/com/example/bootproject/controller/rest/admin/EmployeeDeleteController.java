@@ -52,5 +52,15 @@ public class EmployeeDeleteController {
 
     }
 
+    @GetMapping("/admin/employee/search")
+    public ResponseEntity<Page<List<String>>> searchAllEmployeeNumber(@RequestParam String searchText,HttpServletRequest req, @ModelAttribute PageRequest pageRequest){
+        if(isAdmin(req)){
+            Page<List<String>> result = employeeDeleteService.searchEmployeeNumbers(pageRequest,searchText);
+            return ResponseEntity.ok(result);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+    }
+
 
 }

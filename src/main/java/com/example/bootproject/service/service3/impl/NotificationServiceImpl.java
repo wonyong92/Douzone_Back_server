@@ -30,13 +30,31 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public Page<List<NotificationMessageResponseDto>> getPagedUnreadMessageListOfManager(String managerId, int page) {
-        List<NotificationMessageResponseDto> data = notificationMapper.findCurrentUnreadMessageOfManager(managerId);
+        List<NotificationMessageResponseDto> data = notificationMapper.findCurrentUnreadMessageOfManager(managerId,(page - 1) * MESSAGE_PAGE_SIZE);
+        data.forEach((entity) -> entity.setForManger(true));
         if (!data.isEmpty()) {
             int totalElement = notificationMapper.countUnreadMessageOfManager(managerId);
             boolean hasNext = Page.MESSAGE_PAGE_SIZE * page < totalElement;
             return new Page<>(data, Page.MESSAGE_PAGE_SIZE, hasNext, "", "", page, totalElement);
         }
         return (Page<List<NotificationMessageResponseDto>>) makeEmptyList();
+    }
+
+    @Override
+    public boolean changeUnreadToReadEmployeeMessage(String loginId, Long messageId) {
+        int result = notificationMapper.changeUnreadToReadEmployeeMessage(loginId, messageId);
+        return result==1;
+    }
+
+    @Override
+    public boolean changeUnreadToReadManagerMessage(String loginId, Long messageId) {
+        int result = notificationMapper.changeUnreadToReadManagerMessage(loginId, messageId);
+        return result==1;
+    }
+
+    @Override
+    public Integer countUnreadMsgOfManager(String employeeId) {
+        return notificationMapper.countUnreadMessageOfManager(employeeId);
     }
 
     public int countUnreadMsgOfEmployee(String employeeId) {
