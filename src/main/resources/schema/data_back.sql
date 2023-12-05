@@ -64,10 +64,27 @@ insert into vacation_request(vacation_category_key, employee_id, vacation_reques
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('a', '200001012', 'rejected', 6, '2023-01-15', '2023-01-20', '2023-01-03 16:00:00', '사유1');
 
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001012', 'rejected', 2, '2022-12-31', '2023-01-01', '2023-01-03 16:00:00', '사유1');
+
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001012', 'rejected', 2, '2023-01-31', '2023-02-01', '2023-01-03 18:00:00', '사유1');
+values ('a', '200001012', 'rejected', 5, '2023-01-21', '2023-01-25', '2023-01-03 16:00:00', '사유1');
+
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001012', 'rejected', 3, '2023-01-30', '2023-02-01', '2023-01-03 18:00:00', '사유1');
+
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001012', 'rejected', 2, '2023-02-28', '2023-03-01', '2023-03-03 18:00:00', '사유1');
+
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('a', '200001012', 'rejected', 3, '2023-02-14', '2023-02-16', '2023-03-03 18:00:00', '사유1');
+
 
 
 
