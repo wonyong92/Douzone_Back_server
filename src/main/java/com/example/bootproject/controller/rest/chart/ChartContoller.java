@@ -124,5 +124,76 @@ public class ChartContoller {
         return ResponseEntity.ok(requstedAttendance);
     }
 
+    //아현 작업 아래 6개 - controller
+
+    // 전 사원의 연차 요청의 횟수
+    @GetMapping("chart/manager/vacation/requested")
+    public ResponseEntity<Integer>getAllEmployeesRequestedVacation(@RequestParam int year , @RequestParam int month , HttpServletRequest req)
+    {
+        if (isManager(req)) {
+            int allEmployeesRequestedVacation = chartService.getAllEmployeesRequestedVacation(year,month);
+            return ResponseEntity.ok(allEmployeesRequestedVacation);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+    }
+
+    // 전 사원의 연차 승인 횟수
+    @GetMapping("chart/manager/vacation/approval")
+    public ResponseEntity<Integer>getAllEmployeesApprovalVacation(@RequestParam int year , @RequestParam int month , HttpServletRequest req)
+    {
+        if (isManager(req)) {
+            int allEmployeesApprovalVacation = chartService.getAllEmployeesApprovalVacation(year,month);
+            return ResponseEntity.ok(allEmployeesApprovalVacation);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+
+
+    }
+
+    //전 사원의 연차 반려 횟수
+    @GetMapping("chart/manager/vacation/rejected")
+    public ResponseEntity<Integer>getAllEmployeesRejectedVacation(@RequestParam int year , @RequestParam int month , HttpServletRequest req)
+    {
+        if (isManager(req)) {
+            int allEmployeesRejectedVacation = chartService.getAllEmployeesRejectedVacation(year,month);
+            return ResponseEntity.ok(allEmployeesRejectedVacation);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    //전 사원의 요청중인 근태 조정 요청 횟수
+    @GetMapping("chart/manager/attendance/requested")
+    public ResponseEntity<Integer>getAllEmployeesAttendanceRequested(@RequestParam int year , @RequestParam int month , HttpServletRequest req)
+    {
+        if (isManager(req)) {
+            int allEmployeesAttendanceRequested = chartService.getAllEmployeesAttendanceRequested(year,month);
+            return ResponseEntity.ok(allEmployeesAttendanceRequested);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    //전 사원의 정상 근태 횟수
+    @GetMapping("chart/manager/attendance/normal")
+    public ResponseEntity<Integer>getAllEmployeesAttendanceNormal(@RequestParam int year , @RequestParam int month , HttpServletRequest req)
+    {
+        if(isManager(req)){
+            int allEmployeesAttendanceNormal = chartService.getAllEmployeesAttendanceNormal(year,month);
+            return ResponseEntity.ok(allEmployeesAttendanceNormal);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    //전 사원의 요청중인 근태 조정 반려 횟수
+    @GetMapping("chart/manager/attendance/abnormal")
+    public ResponseEntity<Integer>getAllEmployeesAttendanceAbnormal(@RequestParam int year , @RequestParam int month , HttpServletRequest req)
+    {
+        if(isManager(req)){
+            int allEmployeesAttendanceAbnormal = chartService.getAllEmployeesAttendanceAbnormal(year,month);
+            return ResponseEntity.ok(allEmployeesAttendanceAbnormal);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
 
 }

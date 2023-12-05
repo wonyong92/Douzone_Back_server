@@ -70,4 +70,36 @@ public class ChartServiceImpl implements  ChartService{
     }
 
 
+    //아현 작업 아래 6개 - serviceimpl
+    @Override
+    public int getAllEmployeesRequestedVacation(int year, int month) {
+        return chartMapper.getAllEmployeesRequestedVacation(year,month);
+    }
+
+    @Override
+    public int getAllEmployeesApprovalVacation(int year, int month) {
+        return chartMapper.getAllEmployeesApprovalVacation(year,month);
+    }
+
+    @Override
+    public int getAllEmployeesRejectedVacation(int year, int month) {
+        return chartMapper.getAllEmployeesRejectedVacation(year,month);
+    }
+
+    @Override
+    public int getAllEmployeesAttendanceRequested(int year, int month) {
+        return chartMapper.getAllEmployeesAttendanceRequested(year,month);
+    }
+
+    @Override
+    public int getAllEmployeesAttendanceNormal(int year, int month) {
+        return chartMapper.getAllEmployeesAttendanceNormal(year,month);
+    }
+
+    @Override
+    public int getAllEmployeesAttendanceAbnormal(int year, int month) {
+        return chartMapper.getAllEmployeesAttendanceAbnormal(year,month);
+    }
+
+
 }
