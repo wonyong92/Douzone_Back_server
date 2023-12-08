@@ -8,10 +8,10 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class EmployeeResponseDto {
+public class EmployeeResponseWithoutPasswordDto {
     String employeeId;
     String name;
-    boolean attendance_manager;
+    boolean attendanceManager;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate hire_year;
+    LocalDate hireYear;
 }

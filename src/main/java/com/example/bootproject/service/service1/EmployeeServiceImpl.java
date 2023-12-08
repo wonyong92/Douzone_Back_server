@@ -6,7 +6,7 @@ import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -492,7 +492,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto updateInformation(String loginId, EmployeeInformationUpdateDto dto) {
+    public EmployeeResponseWithoutPasswordDto updateInformation(String loginId, EmployeeInformationUpdateDto dto) {
         Employee find = employeeMapper1.findEmployeeInfoById(loginId);
 
         if (find == null) {
@@ -508,7 +508,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 return null;
             }
             Employee updated = employeeMapper1.findEmployeeInfoById(loginId);
-            return new EmployeeResponseDto(updated.getEmployeeId(), updated.getName(), updated.isAttendanceManager(), updated.getHireYear());
+            return new EmployeeResponseWithoutPasswordDto(updated.getEmployeeId(), updated.getName(), updated.isAttendanceManager(), updated.getHireYear());
         }
 
         return null;

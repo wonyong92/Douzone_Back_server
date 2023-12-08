@@ -2,7 +2,7 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -52,7 +52,7 @@ public interface ManagerService1 {
     Page<List<VacationResponseDto>> getVacationHistory(PagingRequsetWithDateSearchDto requestDto);
 
 
-    Page<List<EmployeeResponseDto>> getEmployeeList(int currentPage, String sortColumn, String descCheck);
+    Page<List<EmployeeResponseWithoutPasswordDto>> getEmployeeList(int currentPage, String sortColumn, String descCheck);
 
     int getVacationDefaultLatestCount(String info);
 

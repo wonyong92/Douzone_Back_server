@@ -4,7 +4,7 @@ import com.example.bootproject.entity.Employee;
 import com.example.bootproject.service.service1.AdminService1Impl;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
@@ -193,7 +193,7 @@ public interface EmployeeMapper1 {
     void toggleManager(@Param("generatedKeyDto") AdminService1Impl.TempDto generatedKey, @Param("employeeId") String employeeId);
 
     @Select("select employee_id,name,attendance_manager,hire_year from employee order by ${orderByCondition} ${desc} LIMIT #{size} OFFSET #{startRow}")
-    List<EmployeeResponseDto> getAllEmployee(@Param("orderByCondition") String sort, @Param("desc") String desc, @Param("size") int size, @Param("startRow") int startRow);
+    List<EmployeeResponseWithoutPasswordDto> getAllEmployee(@Param("orderByCondition") String sort, @Param("desc") String desc, @Param("size") int size, @Param("startRow") int startRow);
 
     @Select("select count(*) from employee;")
     int getEmpInfoTotalRow();

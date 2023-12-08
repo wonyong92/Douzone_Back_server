@@ -1,5 +1,6 @@
 package com.example.bootproject.vo.vo1.response.calendar.attendanceinfo;
 
+import com.example.bootproject.vo.vo1.request.calendar.attendanceinfo.ExtendPropsForAttendanceInfo;
 import com.example.bootproject.vo.vo1.request.calendar.holiday.ExtendPropsForHoliday;
 import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import lombok.Data;
@@ -14,7 +15,7 @@ public class ApiItemToEventDtoForAttendanceInfo {
     String title;
     String date;
     String backgroundColor = "gray";
-    ExtendPropsForHoliday extendedProps = new ExtendPropsForHoliday("attendance_info");
+    ExtendPropsForAttendanceInfo extendedProps = null;
 
     /*
      * 응답 데이터 생성을 위한 자료
@@ -35,6 +36,7 @@ public class ApiItemToEventDtoForAttendanceInfo {
         switch (status) {
             case ATTENDANCE_INFO_STATUS_ABSENT:
                 this.backgroundColor = "red";
+
                 break;
             case ATTENDANCE_INFO_STATUS_NORMAL:
                 this.backgroundColor = "blue";
@@ -42,5 +44,6 @@ public class ApiItemToEventDtoForAttendanceInfo {
             default:
                 this.backgroundColor = "gray";
         }
+        this.extendedProps = new ExtendPropsForAttendanceInfo("attendance_info",status,String.valueOf(dto.getAttendanceInfoId()));
     }
 }

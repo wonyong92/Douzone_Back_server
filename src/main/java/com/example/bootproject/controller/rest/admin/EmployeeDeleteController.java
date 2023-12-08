@@ -4,6 +4,7 @@ import com.example.bootproject.entity.Employee;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.service.service3.api.EmployeeDeleteService;
 import com.example.bootproject.vo.vo1.request.PageRequest;
+
 import com.example.bootproject.vo.vo1.response.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +44,9 @@ public class EmployeeDeleteController {
     }
 
     @GetMapping("/admin/employee/numbers")
-    public ResponseEntity<Page<List<String>>> getAllEmployeeNumber(HttpServletRequest req, @ModelAttribute PageRequest pageRequest){
+    public ResponseEntity<Page<List<String>>> getAllEmployeeNumber(HttpServletRequest req, @ModelAttribute PageRequest pageRequest,@RequestParam(defaultValue = "false") boolean isManager){
         if(isAdmin(req)){
-            Page<List<String>> result = employeeDeleteService.getEmployeeNumbers(pageRequest);
+            Page<List<String>> result = employeeDeleteService.searchEmployeeNumbersAndEmployeeName(pageRequest,"",isManager);
             return ResponseEntity.ok(result);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -53,9 +54,9 @@ public class EmployeeDeleteController {
     }
 
     @GetMapping("/admin/employee/search")
-    public ResponseEntity<Page<List<String>>> searchAllEmployeeNumber(@RequestParam String searchText,HttpServletRequest req, @ModelAttribute PageRequest pageRequest){
+    public ResponseEntity<Page<List<String>>> searchAllEmployeeNumber(@RequestParam String searchText,HttpServletRequest req, @ModelAttribute PageRequest pageRequest,@RequestParam(defaultValue = "false") boolean isManager){
         if(isAdmin(req)){
-            Page<List<String>> result = employeeDeleteService.searchEmployeeNumbers(pageRequest,searchText);
+            Page<List<String>> result = employeeDeleteService.searchEmployeeNumbersAndEmployeeName(pageRequest,searchText,isManager);
             return ResponseEntity.ok(result);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);

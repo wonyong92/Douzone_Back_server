@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExtendPropsForAttendanceInfo {
-    String kind = "holiday";
+    String kind = "attendance_info";
+    String status = "normal";
+    String identifier =null;
 }

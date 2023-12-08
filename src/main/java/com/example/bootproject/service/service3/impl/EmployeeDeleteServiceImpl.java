@@ -1,7 +1,7 @@
 package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.controller.rest.admin.EmployeeListMapper;
-import com.example.bootproject.controller.rest.admin.EmployeeNumberSearchResponseDto;
+import com.example.bootproject.controller.rest.admin.EmployeeSearchResponseDto;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper3.employee_delete.EmployeeIdDeleteAndBackupMapper;
 import com.example.bootproject.service.service3.api.EmployeeDeleteService;
@@ -14,6 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -55,7 +56,41 @@ public class EmployeeDeleteServiceImpl implements EmployeeDeleteService {
     public Page<List<String>> searchEmployeeNumbers(PageRequest pageRequest, String searchText) {
         int page = pageRequest.getPage();
         int size = Page.PAGE_SIZE;
-        List<String> data = employeeListMapper.searchEmployeeNumbers(searchText,pageRequest,size);
+        List<String> data = new ArrayList<>();
+        if(searchText.trim().isEmpty()){
+            data = employeeListMapper.getAllEmployeeNumbers(searchText,pageRequest,size);
+        }else{
+            data = employeeListMapper.searchEmployeeNumbers(searchText,pageRequest,size);
+        }
+        int totalElements = Integer.parseInt(data.get(data.size()-1));
+
+        boolean hasNext = (page * size) < totalElements;
+        String sort = pageRequest.getSort();
+        String desc = pageRequest.getDesc();
+        Page<List<String>> result = new Page<>(data.subList(0,data.size()-1), hasNext, sort, desc, page, totalElements);
+
+        return result;
+    }
+
+    @Override
+    public Page<List<String>> searchEmployeeNumbersAndEmployeeName(PageRequest pageRequest, String searchText,boolean isManager) {
+        int page = pageRequest.getPage();
+        int size = Page.PAGE_SIZE;
+
+        List<String> data = new ArrayList<>();
+        if((searchText!=null) && !searchText.trim().isEmpty()){
+            if(pageRequest.getSort().trim().isEmpty()){
+                pageRequest.setSort("employee_id");
+            }
+            log.info("특정 유저의 사원 번호 찾기 {}", searchText );
+            data = employeeListMapper.findEmployeeNumbersAndEmployeeName(searchText,pageRequest,size,isManager);
+        }else{
+            log.info("전체 사원 번호 호출 ");
+            if(pageRequest.getSort().trim().isEmpty()){
+                pageRequest.setSort("employee_id");
+            }
+            data = employeeListMapper.getAllEmployeeNumbersAndEmployeeName(searchText,pageRequest,size,isManager);
+        }
         int totalElements = Integer.parseInt(data.get(data.size()-1));
 
         boolean hasNext = (page * size) < totalElements;
@@ -80,4 +115,6 @@ public class EmployeeDeleteServiceImpl implements EmployeeDeleteService {
 
         return result;
     }
+
+
 }

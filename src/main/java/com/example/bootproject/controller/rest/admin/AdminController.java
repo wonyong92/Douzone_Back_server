@@ -13,6 +13,7 @@ import com.example.bootproject.vo.vo1.response.AttendanceApprovalUpdateResponseD
 import com.example.bootproject.vo.vo1.response.EmployeeDto;
 import com.example.bootproject.vo.vo1.response.EmployeeResponseDto;
 import com.example.bootproject.vo.vo1.response.Page;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.image.MultipartUploadResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import static com.example.bootproject.system.util.ValidationChecker.getLoginIdOrNull;
@@ -169,7 +172,7 @@ public class AdminController {
 
     }
 
-    //특정 사원의 정보 조회 메서드
+    //특정 사원의 모든 정보 조회 메서드
     @GetMapping("/admin/employee/information/{employee_id}")
     public ResponseEntity<EmployeeDto> getEmployeeInformationByEmployeeId(@PathVariable(name = "employee_id") String employeeId, HttpServletRequest req) {
         if (isAdmin(req)) { //권한 확인 api
@@ -181,6 +184,35 @@ public class AdminController {
                 return ResponseEntity.noContent().build(); //204 No Content 반환
             }
             return ResponseEntity.ok(result); // 200 OK, result 객체를 응답 본문으로 반환
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 error 반환
+        /*
+         * admin 권한 확인 (+로그인 확인)
+         * 1. admin 권한, 로그인 확인 성공시
+         * employeeId에 validation 체크
+         *  - validation check 실패시 400 Bad Request 반환
+         *  - validation check 성공시
+         *   -- 특정 사원의 정보 반환 받음
+         *     --- 리턴 데이터가 null 일 때 204 No Content
+         *     --- 리턴 데이터가 null이 아닐 때 200 OK
+         * 2. admin 권한 확인 실패 시
+         * 403 에러 반환
+         * */
+    }
+
+
+    @GetMapping("/admin/employee/{employee_id}")
+    public ResponseEntity<EmployeeResponseWithoutPasswordDto> getLimitedEmployeeInformationByEmployeeId(@PathVariable(name = "employee_id") String employeeId, HttpServletRequest req) {
+        if (isAdmin(req)) { //권한 확인 api
+            if (!validationId(employeeId))  //validation 체크
+                return ResponseEntity.badRequest().build(); // 400 Bad Request 반환
+            EmployeeDto result = adminService1.getOneEmpInfo(employeeId); // 특정 사원의 정보 반환 받음
+            log.info("getOneEmpInfo result : {}", result);
+            if (result == null) {
+                return ResponseEntity.noContent().build(); //204 No Content 반환
+            }
+            EmployeeResponseWithoutPasswordDto mappedResult = new EmployeeResponseWithoutPasswordDto(result.getEmployeeId(),result.getName(),result.isAttendanceManager(),LocalDate.ofInstant(result.getHireYear().toInstant(), ZoneId.systemDefault()));
+            return ResponseEntity.ok(mappedResult); // 200 OK, result 객체를 응답 본문으로 반환
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 error 반환
         /*

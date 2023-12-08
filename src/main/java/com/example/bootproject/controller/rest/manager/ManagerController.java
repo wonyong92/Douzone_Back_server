@@ -14,7 +14,7 @@ import com.example.bootproject.vo.vo1.request.vacation.VacationAdjustRequestDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationProcessRequestDto;
 import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
-import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationAdjustResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
@@ -489,7 +489,7 @@ public class ManagerController {
     //manager 3
 
     @GetMapping("/manager/employees")
-    public ResponseEntity<Page<List<EmployeeResponseDto>>> getEmployeeList(HttpServletRequest req, @Valid PageRequest pageRequest, BindingResult br) {
+    public ResponseEntity<Page<List<EmployeeResponseWithoutPasswordDto>>> getEmployeeList(HttpServletRequest req, @Valid PageRequest pageRequest, BindingResult br) {
         if (br.hasErrors()) {
             log.info("Validation rule violated" + br.getAllErrors());
             if (br.hasFieldErrors("page")) {
@@ -510,7 +510,7 @@ public class ManagerController {
             String descCheck = pageRequest.getDesc();
             log.info("get Employee list - validation result : {} {} {}", currentPage, sortColumn, descCheck);
 
-            Page<List<EmployeeResponseDto>> result = managerService.getEmployeeList(currentPage, sortColumn, descCheck);
+            Page<List<EmployeeResponseWithoutPasswordDto>> result = managerService.getEmployeeList(currentPage, sortColumn, descCheck);
             log.info("getEmpInfo result : {}", result);
             if (result.getData().isEmpty()) {
                 return ResponseEntity.noContent().build();

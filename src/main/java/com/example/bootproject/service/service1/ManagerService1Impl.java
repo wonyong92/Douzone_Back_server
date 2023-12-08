@@ -5,7 +5,7 @@ import com.example.bootproject.repository.mapper1.EmployeeMapper1;
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.response.*;
-import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.vacation.PagingRequsetWithDateSearchDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -365,14 +365,14 @@ public class ManagerService1Impl implements ManagerService1 {
         return managerMapper1.getEmployeeCheck(id);
     }
 
-    public Page<List<EmployeeResponseDto>> getEmployeeList(int page, String sort, String desc) {
+    public Page<List<EmployeeResponseWithoutPasswordDto>> getEmployeeList(int page, String sort, String desc) {
         int size = PAGE_SIZE; // Page 객체로부터 size를 가져옴
         int startRow = (page - 1) * size; // 가져오기 시작할 row의 번호
 
-        List<EmployeeResponseDto> findEmployees = employeeMapper.getAllEmployee(sort, desc, size, startRow);
+        List<EmployeeResponseWithoutPasswordDto> findEmployees = employeeMapper.getAllEmployee(sort, desc, size, startRow);
         log.info("List<EmployeeResponseDto> result : {}", findEmployees);
         if (findEmployees.isEmpty()) {
-            Page<List<EmployeeResponseDto>> empty = new Page<>();
+            Page<List<EmployeeResponseWithoutPasswordDto>> empty = new Page<>();
             empty.setData(new ArrayList<>());
             return empty;
         }
@@ -380,7 +380,7 @@ public class ManagerService1Impl implements ManagerService1 {
         int totalRowCount = employeeMapper.getEmpInfoTotalRow(); // 전제 행
         int lastPageNumber = (int) Math.ceil((double) totalRowCount / size); //마지막 페이지 번호
 
-        Page<List<EmployeeResponseDto>> result = new Page<>(findEmployees, page < lastPageNumber, sort, desc, page, totalRowCount);
+        Page<List<EmployeeResponseWithoutPasswordDto>> result = new Page<>(findEmployees, page < lastPageNumber, sort, desc, page, totalRowCount);
         log.info("Page<List<EmployeeResponseDto>> result : {}", result);
         return result;
     }

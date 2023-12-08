@@ -14,7 +14,7 @@ import com.example.bootproject.vo.vo1.request.appeal.AppealRequestDto;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
-import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto;
+import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.login.LoginResponseDto;
 import com.example.bootproject.vo.vo1.response.logout.LogoutResponseDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
@@ -483,11 +483,11 @@ public class EmployeeController {
     }
 
     @PostMapping("/employee/information")
-    public ResponseEntity<com.example.bootproject.vo.vo1.response.employee.EmployeeResponseDto> modifyEmployeeInformationOfMine(HttpServletRequest req, @ModelAttribute EmployeeInformationUpdateDto dto) {
+    public ResponseEntity<EmployeeResponseWithoutPasswordDto> modifyEmployeeInformationOfMine(HttpServletRequest req, @ModelAttribute EmployeeInformationUpdateDto dto) {
         String loginId = getLoginIdOrNull(req);
         if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        EmployeeResponseDto result = employeeService.updateInformation(loginId, dto);
+        EmployeeResponseWithoutPasswordDto result = employeeService.updateInformation(loginId, dto);
         if (result != null) {
             return ResponseEntity.ok(result);
         }
@@ -561,12 +561,12 @@ public class EmployeeController {
 
         result = appealService.makeAppealRequest(dto);
 
-        if (result != null) {
+        if (result == null) {
             return ResponseEntity.ok(result);
         }
         return ResponseEntity.badRequest().build();
     }
-
+    
     @PostMapping("/employee/vacation")
     public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId" ,required = false) String employeeId, HttpServletRequest req) {
         log.info("/employee/vacation");
