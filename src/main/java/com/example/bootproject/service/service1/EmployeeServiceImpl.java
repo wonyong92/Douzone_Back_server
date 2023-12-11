@@ -528,7 +528,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String desc = pageRequest.getDesc();
         int startRow = (page - 1) * size;
         int totalElements = employeeMapper1.countAllRequestedInformationOfVacation();
-        List<AllVacationRequestResponseDto> data = employeeMapper1.getAllRequestedInformationOfVacation(size, sort, startRow, desc);
+        List<AllVacationRequestResponseDto> data = employeeMapper1.getAllRequestedInformationOfVacation(size, "employee."+sort, startRow, desc);
         boolean hasNext = (page * size) < totalElements;
         Page<List<AllVacationRequestResponseDto>> response = new Page<>(data, hasNext, sort, desc, page, totalElements);
         return response;
@@ -543,7 +543,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String desc = pageRequest.getDesc();
         int startRow = (page - 1) * size;
         int totalElements = employeeMapper1.countAllRequestedInformationOfAppeal();
-        List<AllAttendanceAppealMediateResponseDto> data = employeeMapper1.getAllRequestedInformationOfAppeal(size, sort, startRow, desc);
+        List<AllAttendanceAppealMediateResponseDto> data = employeeMapper1.getAllRequestedInformationOfAppeal(size, "employee."+sort, startRow, desc);
         boolean hasNext = (page * size) < totalElements;
         Page<List<AllAttendanceAppealMediateResponseDto>> response = new Page<>(data, hasNext, sort, desc, page, totalElements);
         return response;

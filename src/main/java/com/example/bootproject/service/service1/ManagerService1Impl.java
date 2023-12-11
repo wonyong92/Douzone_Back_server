@@ -112,9 +112,8 @@ public class ManagerService1Impl implements ManagerService1 {
         int size = Page.PAGE_SIZE;
         int startRow = (page - 1) * size;
         log.info("사원 ID {}에 대한 승인 정보 페이지: {}, 정렬: {}, 방향: {}", employeeId, page, sort, desc);
-
         // 데이터베이스에서 데이터 조회
-        List<AttendanceApprovalUpdateResponseDto> data = managerMapper1.getAllEmployeeByEmployeeId(employeeId, sort, desc, size, startRow);
+        List<AttendanceApprovalUpdateResponseDto> data = managerMapper1.getAllEmployeeByEmployeeId(employeeId, "attendance_info."+sort, desc, size, startRow);
         int totalElements = managerMapper1.countApprovalInfoByEmployeeId(employeeId);
 
         // 다음 페이지 존재 여부 계산
