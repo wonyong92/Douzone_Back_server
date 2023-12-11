@@ -8,10 +8,12 @@ import com.example.bootproject.vo.vo1.response.calendar.holiday.ApiItemToEventDt
 import com.example.bootproject.vo.vo1.response.calendar.vacation.ApiItemToEventDtoForVacation;
 import org.apache.tomcat.util.json.ParseException;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 public interface CalendarService {
     List<ApiItemToEventDtoForHoliday> getHolidayEvents(CalendarSearchRequestDtoForHoliday dto) throws IOException, URISyntaxException, JSONException, ParseException;
@@ -19,4 +21,8 @@ public interface CalendarService {
     List<ApiItemToEventDtoForAttendanceInfo> getAttendanceInfoEvents(CalendarSearchRequestDtoForAttendanceInfo dto, String loginId) throws IOException, URISyntaxException, JSONException, ParseException;
 
     List<ApiItemToEventDtoForVacation> getVacationInfoEvents(CalendarSearchRequestDtoForVacation dto, String loginId);
+
+    Map<String, String> getRegularStartEndTime(int year);
+
+    Map<String,String> getRegularStartEndTime();
 }

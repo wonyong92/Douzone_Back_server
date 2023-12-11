@@ -351,15 +351,35 @@ public class EmployeeController {
 
     //employee 2
 
+    @GetMapping("/employee/vacation/historyOf/{identifier}")
+    public ResponseEntity<VacationRequestDto> getSpecificVacationRequestInformation(@PathVariable String identifier, HttpServletRequest req) {
+        String loginId = getLoginIdOrNull(req);
+        VacationRequestDto result;
+        if (loginId != null) {
+            result = employeeService.getSpecificVacationRequestInformation(loginId, identifier);
+        } else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/employee/appeal/historyOf/{identifier}")
+    public ResponseEntity<AllAttendanceAppealMediateResponseDto> getSpecificAppealRequestInformation(@PathVariable String identifier, HttpServletRequest req) {
+        String loginId = getLoginIdOrNull(req);
+        AllAttendanceAppealMediateResponseDto result;
+        if (loginId != null) {
+            result = employeeService.findAppealRequestByIdentifier(loginId, identifier);
+        } else {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+        return ResponseEntity.ok(result);
+    }
 
     // 본인의 연차 이력 조회 메서드 (승인, 반려, 전체 필터링 가능)
     /* TODO : 추후 권한 확인 추가 */
     @GetMapping("/employee/vacation/history")
     public ResponseEntity<Page<List<VacationRequestDto>>> getHistoryOfVacationOfMine(/*@RequestParam(name = "page", defaultValue = "1") String getPageNum, @RequestParam(name = "sort", defaultValue = "") String getSort, @RequestParam(name = "sortOrder", defaultValue = "") String getSortOrder*/
-            @RequestParam(name = "status", defaultValue = "") String getStatus,
-            @Valid PagedLocalDateDto pagedLocalDateDto, BindingResult br,
-            HttpServletRequest req) {
-
+            @RequestParam(name = "status", defaultValue = "") String getStatus, @Valid PagedLocalDateDto pagedLocalDateDto, BindingResult br, HttpServletRequest req) {
         if (br.hasErrors()) {
             AttendanceInfoResponseDto body = new AttendanceInfoResponseDto();
             body.setMessage(br.getAllErrors().toString());
@@ -374,16 +394,12 @@ public class EmployeeController {
                 log.info("잘못된 정렬 방식 요청, 기본값인 1로 초기화 수행");
                 pagedLocalDateDto.setDesc("desc");
             }
-
         }
-
         // 입력된 날짜가 유효한지 검증
-
         if (!validateDateIsRealDate(pagedLocalDateDto)) {
             log.info("유효하지 않은 날짜: {}}", pagedLocalDateDto.makeLocalDate().toString());
             return ResponseEntity.badRequest().build();
         }
-
         //status validation check 추가 필요
         //TODO : 로그인 정보를 가져오기
         String employeeId = getLoginIdOrNull(req);
@@ -394,7 +410,6 @@ public class EmployeeController {
 //            String sort = validationSort(pagedLocalDateDto.getSort()); // 페이지 정렬 기준 컬럼에 대한 validation 체크
 //            String sortOrder = validationDesc(pagedLocalDateDto.getDesc()); // 정렬 방식에 대한 validation 체크
             String status = validateVacationRequestResultStatus(getStatus); // 신청 결과에 대한 validation 체크
-
 //            PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), employeeId, status);
 
             Page<List<VacationRequestDto>> result = employeeService.getHistoryOfVacationOfMine(pagedLocalDateDto, employeeId, status); // 본인의 연차 이력 데이터 반환 받음
@@ -461,13 +476,8 @@ public class EmployeeController {
          * 403 ERROR 반환
          */
     }
-
-
     //employee 2 end
-
-    //employee 3
-
-
+    //employee
     @GetMapping("/employee/information")
     public ResponseEntity<Employee> getInformationOfMine(HttpServletRequest req) {
         String loginId = getLoginIdOrNull(req);
@@ -479,7 +489,6 @@ public class EmployeeController {
         }
         log.info("조회 결과 없음 혹은 실패");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
     }
 
     @PostMapping("/employee/information")
@@ -493,7 +502,6 @@ public class EmployeeController {
         }
         log.info("조회 결과 없음 혹은 실패");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
     }
 
     @PostMapping("/login")
@@ -504,8 +512,6 @@ public class EmployeeController {
             log.info("Validation rule violated" + br.getAllErrors());
             return ResponseEntity.badRequest().body(body);
         }
-
-
         if (br.hasErrors()) {
             log.info("LoginRequestDto validation error");
             return ResponseEntity.badRequest().build();
@@ -564,11 +570,12 @@ public class EmployeeController {
         if (result == null) {
             return ResponseEntity.ok(result);
         }
+
         return ResponseEntity.badRequest().build();
     }
-    
+
     @PostMapping("/employee/vacation")
-    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId" ,required = false) String employeeId, HttpServletRequest req) {
+    public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId", required = false) String employeeId, HttpServletRequest req) {
         log.info("/employee/vacation");
         String loginId = getLoginIdOrNull(req);
         if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -594,14 +601,3 @@ public class EmployeeController {
     }
     //employee 3 end
 }
-
-
-
-
-
-
-
-
-
-
-

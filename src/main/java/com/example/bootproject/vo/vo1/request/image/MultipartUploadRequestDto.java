@@ -6,6 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class MultipartUploadRequestDto {
     MultipartFile uploadFile;
-    String employeeId;
+    String identifier;
     Long fileId;
 }

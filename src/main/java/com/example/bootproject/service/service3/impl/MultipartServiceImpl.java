@@ -28,9 +28,13 @@ public class MultipartServiceImpl implements MultipartService {
     @Value("${multipart.upload.path}")
     private String uploadPath;
 
+    @Value("${multipart.upload.path.appeal}")
+    private String appealUploadPath;
+
+
+
     public MultipartUploadResponseDto uploadFile(MultipartUploadRequestDto dto) {
         MultipartFile file = dto.getUploadFile();
-        String employeeId = dto.getEmployeeId();
 
         String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -57,12 +61,67 @@ public class MultipartServiceImpl implements MultipartService {
         return result;
     }
 
-    @Override
-    public Resource download(String employeeId) {
+    public MultipartUploadResponseDto uploadAppealDataFile(MultipartUploadRequestDto dto) {
+        MultipartFile file = dto.getUploadFile();
 
+        String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        String uniqueFileName = generateUniqueFileName(originalFileName);
+
+        Path directoryPath = Paths.get(appealUploadPath);
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        Path targetLocation = Paths.get(appealUploadPath).resolve(uniqueFileName);
+        try {
+            Files.copy(file.getInputStream(), targetLocation);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        multipartMapper.uploadAppealData(dto, uniqueFileName);
+        Long generatedFileId = dto.getFileId();
+        MultipartUploadResponseDto result = multipartMapper.findAppealDataFileByFileId(generatedFileId);
+        return result;
+    }
+
+    @Override
+    public Resource downloadAppeal(String appealRequestId) {
         String filePath = "uploads/";
         AtomicReference<Resource> result = new AtomicReference<>();
-        Long findFileNum = multipartMapper.findByEmployeeId(employeeId);
+        Long findFileNum = multipartMapper.findByAppealRequestId(appealRequestId);
+        MultipartUploadResponseDto fileData = multipartMapper.findByFileId(findFileNum);
+        String fileName = null;
+        if (fileData == null) {
+            fileName = "default.png";
+        } else {
+            fileName = fileData.getFileName();
+        }
+        try {
+            Path filePathPath = Paths.get(filePath + fileName).normalize();
+            log.info("find Path {}", filePathPath);
+            Resource resource = new UrlResource(filePathPath.toUri());
+            if (resource.exists()) {
+                result.set(resource);
+            } else {
+                result.set(null);
+            }
+        } catch (Exception ex) {
+            result.set(null);
+        }
+        return result.get();
+
+    }
+
+    @Override
+    public Resource download(String appealRequestId) {
+        String filePath = "uploads/";
+        AtomicReference<Resource> result = new AtomicReference<>();
+        Long findFileNum = multipartMapper.findByAppealRequestId(appealRequestId);
         MultipartUploadResponseDto fileData = multipartMapper.findByFileId(findFileNum);
         String fileName = null;
         if (fileData == null) {

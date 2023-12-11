@@ -5,6 +5,8 @@ import com.example.bootproject.vo.vo1.request.appeal.AppealRequestDto;
 import com.example.bootproject.vo.vo1.response.appeal.AppealRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
+import static com.example.bootproject.system.StaticString.APPEAL_REQUEST_STATE_REQUESTED;
+
 @Mapper
 public interface AppealMapper {
     @Select("select count(*) from attendance_appeal_request where attendance_info_id=#{attId}")
@@ -20,15 +22,15 @@ public interface AppealMapper {
             "    employee_id,\n" +
             "    attendance_appeal_request_time,\n" +
             "    reason_for_rejection\n" +
-            ") VALUES (\n" +
-            "    'requested',\n" +
-            "    #{dto.reason},\n" +
+            ") VALUES (\n'" +
+                APPEAL_REQUEST_STATE_REQUESTED +
+            "',    #{dto.reason},\n" +
             "    #{dto.attendanceInfoId},\n" +
             "    #{dto.appealedStartTime},\n" +
             "    #{dto.appealedEndTime},\n" +
             "    #{dto.employeeId},\n" +
             "    now(),\n" +
-            "    'empty'\n" +
+            "    '처리 되지 않음'\n" +
             ");\n")
     @Options(useGeneratedKeys = true, keyProperty = "dto.attendanceAppealRequestId")
     Long makeRequest(@Param("dto") AppealRequestDto dto);

@@ -537,7 +537,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Page<List<AllAttendanceAppealMediateResponseDto>> getAllRequestedInformationOfAppeal(PageRequest pageRequest) {
-
         int page = pageRequest.getPage();
         int size = Page.PAGE_SIZE;
         String sort = pageRequest.getSort();
@@ -551,9 +550,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public VacationRequestDto getSpecificVacationRequestInformation(String loginId, String identifier) {
+        VacationRequestDto result = employeeMapper1.getSpecificVacationRequestInformation(loginId,identifier);
+        return result;
+    }
+
+    @Override
     public List<VacationRequestResponseDto> findAllVacationRequestByEmployeeIdByYearAndByMonth(String loginId, Integer year, Integer month) {
         return employeeMapper1.findAllVacationRequestByEmployeeIdByYearAndByMonth(loginId, year, month);
     }
 
+    public AllAttendanceAppealMediateResponseDto findAppealRequestByIdentifier(String loginId, String identifier){
+        return employeeMapper1.getRequestedInformationOfAppeal(loginId,identifier);
+    }
 }
-

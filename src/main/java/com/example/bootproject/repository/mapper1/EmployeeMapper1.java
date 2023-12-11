@@ -12,8 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATUS_CATEGORY_APPROVAL;
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATUS_CATEGORY_REQUESTED;
+import static com.example.bootproject.system.StaticString.*;
 
 @Mapper
 public interface EmployeeMapper1 {
@@ -101,7 +100,7 @@ public interface EmployeeMapper1 {
 
     //세션에서 attendance_info정보를 찾아오는걸로 변경
     //'지각' key값을 찾는 쿼리문이다
-    @Select("SELECT * FROM attendance_status_category WHERE `key` = 'abnormal'")
+    @Select("SELECT * FROM attendance_status_category WHERE `key` = '"+ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END+"'")
     AttendanceStatusCategoryRequestDto findLateStatus();
 
     //todo 그럼 자바에서 저장해서 public static final
@@ -277,18 +276,18 @@ public interface EmployeeMapper1 {
     @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" +
             "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " +
             "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id)\n" +
-            "where vacation_request_state_category_key='requested'\n" +
+            "where vacation_request_state_category_key= '"+VACATION_REQUEST_STATUS_CATEGORY_REQUESTED+"'\n" +
             "ORDER BY ${sort} ${desc}\n" +
             "LIMIT #{size} OFFSET #{startRow}")
     List<AllVacationRequestResponseDto> getAllRequestedInformationOfVacation(int size, String sort, int startRow, String desc);
 
-    @Select("SELECT count(*) FROM  vacation_request WHERE vacation_request_state_category_key=" + "'requested'")
+    @Select("SELECT count(*) FROM  vacation_request WHERE vacation_request_state_category_key= '"+VACATION_REQUEST_STATUS_CATEGORY_REQUESTED+"'")
     int countAllRequestedInformationOfVacation();
 
     //TODO : 페이지네이션 적용
 
 
-    @Select("SELECT count(*) FROM  attendance_appeal_request WHERE status =" + "'requested'")
+    @Select("SELECT count(*) FROM  attendance_appeal_request WHERE status = '" + APPEAL_REQUEST_STATE_REQUESTED+"'")
     int countAllRequestedInformationOfAppeal();
 
     @Select("select * from vacation_request where employee_id=#{employeeId} and year(vacation_start_date) =#{year} and month(vacation_start_date) = #{month}")
@@ -304,7 +303,30 @@ public interface EmployeeMapper1 {
             "       attendance_info.start_time as startTime ,attendance_info.end_time as EndTime, attendance_appeal_request.appealed_start_time as appealedStartTime,attendance_appeal_request.appealed_end_time as appealedEndTime,\n" +
             "       attendance_info.attendance_date as attendanceDate,attendance_appeal_request.attendance_appeal_request_time as attendanceAppealRequestTime,attendance_appeal_request.reason as reason " +
             "FROM  attendance_appeal_request inner join employee using(employee_id) inner join attendance_info using(attendance_info_id) " +
-            "WHERE status =" + "'requested'" + " " +
+            "WHERE status ='" + APPEAL_REQUEST_STATE_REQUESTED + "' " +
             "ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
     List<AllAttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(int size, String sort, int startRow, String desc);
+
+    @Select("SELECT vacation_request_key, vacation_category_key , employee_id, vacation_request_state_category_key , vacation_quantity, vacation_start_date , vacation_end_date, reason, vacation_request_time , reason_for_rejection " +
+            "FROM VACATION_REQUEST " +
+            "WHERE vacation_request_key = #{identifier} AND EMPLOYEE_ID=#{loginId} ")
+    VacationRequestDto getSpecificVacationRequestInformation(String loginId, String identifier);
+/*
+    private Long attendanceAppealRequestId;
+    private String status;
+    private String reason;
+    private Long attendanceInfoId;
+    private Time appealedStartTime;
+    private Time appealedEndTime;
+    private String employeeId;
+    private LocalDateTime attendanceAppealRequestTime;
+    private String reasonForRejection;
+    private String message;
+    private String name;
+    private Time startTime;
+    private Time EndTime;
+    private LocalDate attendanceDate; */
+    @Select("select start_time,end_time,status,reason,appealed_start_time, appealed_end_time, attendance_appeal_request_time,reason_for_rejection  from attendance_appeal_request join attendance_info using(attendance_info_id) where attendance_appeal_request.attendance_info_id=#{identifier} and attendance_appeal_request.employee_id = #{loginId}")
+    AllAttendanceAppealMediateResponseDto getRequestedInformationOfAppeal(String loginId,String identifier);
+
 }

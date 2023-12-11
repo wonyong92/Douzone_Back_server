@@ -60,7 +60,7 @@ public class ChartContoller {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         int approvalVacationDays = chartService.getApprovalMonthUseVacation(year, month, employeeId);
-        log.info("연과 월에대한 연차 승인 사용갯수",approvalVacationDays);
+        log.info("연과 월에 대한 연차 승인 개수",approvalVacationDays);
         return ResponseEntity.ok(approvalVacationDays);
     }
 
@@ -72,7 +72,7 @@ public class ChartContoller {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         int requestedVacationDays = chartService.getRequestedMonthUseVacation(year,month,employeeId);
-        log.info("연과 월에대한 연차 승인 사용갯수",requestedVacationDays);
+        log.info("연과 월에 대한 연차 요청 개수",requestedVacationDays);
         return ResponseEntity.ok(requestedVacationDays);
     }
 
@@ -84,7 +84,7 @@ public class ChartContoller {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         int rejectedVacationDays = chartService.getRejectedMonthUseVacation(year,month,employeeId);
-        log.info("연과 월에대한 연차 거부 사용갯수",rejectedVacationDays);
+        log.info("연과 월에 대한 연차 거부 개수",rejectedVacationDays);
         return ResponseEntity.ok(rejectedVacationDays);
     }
 

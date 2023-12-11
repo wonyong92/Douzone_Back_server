@@ -36,7 +36,6 @@ public class ApiItemToEventDtoForAttendanceInfo {
         switch (status) {
             case ATTENDANCE_INFO_STATUS_ABSENT:
                 this.backgroundColor = "red";
-
                 break;
             case ATTENDANCE_INFO_STATUS_NORMAL:
                 this.backgroundColor = "blue";

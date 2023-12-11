@@ -20,7 +20,14 @@ public interface ChartMapper {
 
 
 
-    @Select("SELECT COUNT(*) FROM attendance_info WHERE employee_id = #{employeeId} AND attendance_status_category = '" +  ATTENDANCE_INFO_STATUS_ABSENT  + "' AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
+    @Select("SELECT COUNT(*) FROM attendance_info WHERE employee_id = #{employeeId} AND " +
+            "(attendance_status_category = '" + ATTENDANCE_INFO_STATUS_ABSENT + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NULL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NULL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END + "') AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
     int countAbnormalAttendance( String employeeId,  int year,  int month);
 
     @Select("SELECT COUNT(*) FROM attendance_info WHERE employee_id = #{employeeId} AND attendance_status_category = '"+  ATTENDANCE_INFO_STATUS_NORMAL+"' AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
@@ -42,18 +49,28 @@ public interface ChartMapper {
     @Select("SELECT IFNULL(SUM(CASE WHEN YEAR(vacation_start_date) = #{year} - 1 AND YEAR(vacation_end_date) = #{year} AND MONTH(vacation_end_date) = #{month} THEN DATEDIFF(vacation_end_date, CONCAT(#{year},'-',#{month},'-01')) + 1 WHEN MONTH(vacation_start_date) = #{month} AND MONTH(vacation_end_date) = #{month} THEN DATEDIFF(vacation_end_date, vacation_start_date) + 1 WHEN MONTH(vacation_end_date) = #{month} THEN DATEDIFF(vacation_end_date, CONCAT(#{year},'-',#{month},'-01')) + 1 WHEN MONTH(vacation_start_date) = #{month} AND MONTH(vacation_end_date) > #{month} THEN DATEDIFF(CONCAT(#{year},'-',#{month} + 1,'-01'), vacation_start_date) ELSE 0 END),0) FROM vacation_request WHERE vacation_request_state_category_key = '"+VACATION_REQUEST_STATUS_CATEGORY_REJECTED+"' AND  ((YEAR(vacation_start_date) = #{year} AND MONTH(vacation_start_date) = #{month}) OR (YEAR(vacation_end_date) = #{year} AND MONTH(vacation_end_date) = #{month}))")
     int getAllEmployeesRejectedVacation(int year, int month);
 
-    @Select("SELECT COUNT(*) FROM attendance_info WHERE  attendance_status_category = '" + ATTENDANCE_INFO_STATUS_REQUESTED+"' AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
-    int getAllEmployeesAttendanceRequested(int year, int month);
+//    @Select("SELECT COUNT(*) FROM attendance_info WHERE YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month} AND " +
+//            "(attendance_status_category = '" + ATTENDANCE_INFO_STATUS_ABSENT + "' OR " +
+//            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END + "' OR " +
+//            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END + "' OR " +
+//            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END + "' OR " +
+//            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NULL_END + "' OR " +
+//            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NULL_END + "' OR " +
+//            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END + "')")
 
     @Select("SELECT COUNT(*) FROM attendance_info WHERE  attendance_status_category = '"+  ATTENDANCE_INFO_STATUS_NORMAL+"' AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
     int getAllEmployeesAttendanceNormal(int year, int month);
 
-    @Select("SELECT COUNT(*) FROM attendance_info WHERE  attendance_status_category = '" +  ATTENDANCE_INFO_STATUS_ABSENT  + "' AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
+    @Select("SELECT COUNT(*) FROM attendance_info WHERE  "+
+            "(attendance_status_category = '" + ATTENDANCE_INFO_STATUS_ABSENT + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NULL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NULL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END + "')"+ "AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
     int getAllEmployeesAttendanceAbnormal(int year, int month);
 
-
-
-
-
-
+    @Select("select count(*) from attendance_appeal_request where status ='"+APPEAL_REQUEST_STATE_REQUESTED+"'")
+    int getAllEmployeesAttendanceRequested(int year, int month);
 }

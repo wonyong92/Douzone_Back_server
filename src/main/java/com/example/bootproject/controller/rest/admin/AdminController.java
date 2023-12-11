@@ -267,6 +267,17 @@ public class AdminController {
         log.info("admin이 아닌 사용자의 요청 발생");
         return new ResponseEntity(HttpStatus.FORBIDDEN);
     }
+    @PostMapping("/admin/upload/appeal")
+    public ResponseEntity<Integer> uploadAppealDataPhoto(@ModelAttribute MultipartUploadRequestDto dto, HttpServletRequest req) {
+
+            MultipartUploadResponseDto result = multipartService.uploadAppealDataFile(dto);
+            if(result!=null)
+            return ResponseEntity.ok(result.getFileId());
+
+        //TODO : admin 확인 로직을 인터셉터로 공통 부분 추출 필요
+
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
 
 
     //admin3 end

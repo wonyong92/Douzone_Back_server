@@ -2,6 +2,7 @@ package com.example.bootproject.service.service3.impl;
 
 import com.example.bootproject.repository.mapper3.appeal.AppealMapper;
 import com.example.bootproject.repository.mapper3.attendanceinfo.AttendanceInfoMapper;
+import com.example.bootproject.repository.mapper3.regular_work_time.RegularWorkTimeMapper;
 import com.example.bootproject.service.service3.api.AppealService;
 import com.example.bootproject.vo.vo1.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo1.request.appeal.AppealRequestDto;
@@ -12,6 +13,11 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Map;
+
 import static com.example.bootproject.system.StaticString.*;
 
 @Service
@@ -21,6 +27,7 @@ public class AppealServiceImpl implements AppealService {
     private final AttendanceInfoMapper attendanceInfoMapper;
     private final AppealMapper appealMapper;
     private final HttpSession session;
+    private final RegularWorkTimeMapper regularWorkTimeMapper;
     /*
      *
      * 1. 로그인 정보 확인 - 로그인 확인 API 혹은 로직 사용
@@ -73,7 +80,7 @@ public class AppealServiceImpl implements AppealService {
             log.info("근태 정보를 찾을 수 없습니다");
             return null;
         }
-        if (!old.getStatus().equals(VACATION_REQUEST_STATE_REQUESTED)) {
+        if (!old.getStatus().equals(APPEAL_REQUEST_STATE_REQUESTED)) {
             log.info("이미 처리된 연차 요청은 처리 할 수 없습니다");
             return null;
         }
@@ -86,8 +93,46 @@ public class AppealServiceImpl implements AppealService {
         /*요청 번호에 문제가 있는 경우 null 반환*/
         if (old != null) {
             log.info("요청 처리 쓰기 수행 - 기존 데이터 {}", old);
+            LocalTime startTime = LocalTime.parse(old.getAppealedStartTime());
+            LocalTime endTime = LocalTime.parse(old.getAppealedEndTime());
+            Map<String, String> regularWorkTime= regularWorkTimeMapper.getRegularStartEndTime(LocalDate.now().getYear());
+            LocalTime regularStartTime= ((Time)(Object)regularWorkTime.get("adjusted_start_time")).toLocalTime();
+            LocalTime regularEndTime= ((Time)(Object)regularWorkTime.get("adjusted_end_time")).toLocalTime();
+
+            if (startTime == null && endTime == null) {
+                //결근
+                attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_ABSENT, old.getAttendanceInfoId());
+
+                log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "결근");
+            } else if (endTime.isBefore(regularEndTime) && startTime.isBefore(regularStartTime)) {
+                //정상 출근 +조기 퇴근
+                attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END, old.getAttendanceInfoId());
+                log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "정상 출근 +조기 퇴근");
+            } else if (endTime.isBefore(regularEndTime) && startTime.isAfter(regularStartTime)) {
+                //지각 출근 +조기 퇴근
+                attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END, old.getAttendanceInfoId());
+                log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "지각 출근 +조기 퇴근");
+            } else if (endTime.isAfter(regularEndTime) && startTime.isAfter(regularStartTime)) {
+                //지각 출근 + 정규 퇴근
+                attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END, old.getAttendanceInfoId());
+                log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "지각 출근 + 정규 퇴근");
+            } else if (endTime.isAfter(regularEndTime) && startTime.isBefore(regularStartTime)) {
+                //정규 출근 + 정규 퇴근
+                attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_NORMAL, old.getAttendanceInfoId());
+                log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "정규 출근 + 정규 퇴근");
+            } else if (startTime.isBefore(regularStartTime) && (endTime == null || endTime.isAfter(regularEndTime))) {
+                attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END, old.getAttendanceInfoId());
+                log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "정상 출근 + 야근 상태");
+                //정상 출근 + 야근 상태
+            } else if (startTime.isAfter(regularStartTime) && (endTime == null || endTime.isAfter(regularEndTime))) {
+                //지각 출근 + 야근 상태
+                attendanceInfoMapper.updateAttendanceInfoStatus(ATTENDANCE_INFO_STATUS_LATE_START_NULL_END, old.getAttendanceInfoId());
+                log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "지각 출근 + 야근 상태");
+            }
+
+
             appealMapper.process(dto);
-            if (dto.getStatus().equals(VACATION_REQUEST_STATE_PERMITTED))
+            if (dto.getStatus().equals(APPEAL_REQUEST_STATE_PERMITTED))
                 dto.setReasonForRejection("permitted");
             AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceAppealRequestId());
             log.info("요청 처리 쓰기 수행 결과 {}", result);

@@ -42,7 +42,7 @@ create table if not exists  admin
 
 create table if not exists attendance_status_category
 (
-    `key` varchar(10) not null
+    `key` varchar(30) not null
         primary key
 ) default character set utf8
   collate utf8_general_ci;
@@ -166,14 +166,27 @@ create table if not exists image
 (
     file_id     bigint                    not null
         primary key auto_increment,
-    employee_id varchar(10)               not null,
+    identifier varchar(10)               not null,
     file_name   varchar(255)              not null,
     uuid        varchar(255)              not null,
     upload_date timestamp default (now()) not null,
     constraint image_ibfk_1
-        FOREIGN KEY (employee_id) REFERENCES employee (employee_id) on delete cascade
+        FOREIGN KEY (identifier) REFERENCES employee (employee_id) on delete cascade
 ) default character set utf8
   collate utf8_general_ci;
+
+create table if not exists image_appeal
+(
+    file_id     bigint                    not null
+        primary key auto_increment,
+    identifier varchar(10)               not null,
+    file_name   varchar(255)              not null,
+    uuid        varchar(255)              not null,
+    upload_date timestamp default (now()) not null
+
+) default character set utf8
+  collate utf8_general_ci;
+
 
 create table if not exists vacation_adjusted_history
 (

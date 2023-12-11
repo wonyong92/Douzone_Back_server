@@ -34,10 +34,11 @@ public class JobContainer {
     //공휴일에는 동작을 안하게 막아야한다
     public boolean checkIsTodayHoliday() throws JSONException, IOException, URISyntaxException, ParseException {
         //TODO:Test 코드이므로 반드시 삭제 - now()로 변경 필요
-        LocalDate today = LocalDate.of(2023,12,25);
+//        LocalDate today = LocalDate.of(2023,12,25);
+        LocalDate today = LocalDate.now();
         CalendarSearchRequestDtoForHoliday dto = new CalendarSearchRequestDtoForHoliday();
         //TODO:Test 코드이므로 반드시 삭제
-        dto.setMonth(12);
+//        dto.setMonth(12);
         List<ApiItemToEventDtoForHoliday> holidays = calendarService.getHolidayEvents(dto);
 
         log.info("checkIsTodayHoliday");
@@ -50,7 +51,7 @@ public class JobContainer {
     }
 
 
-    @Scheduled(cron = "0 58 13 * * *")
+    @Scheduled(cron = "0 4 23 * * *")
     public void autoInsertAttedanceInfo() throws JSONException, IOException, URISyntaxException, ParseException {
         if(checkIsTodayHoliday()){
             return;
@@ -59,11 +60,11 @@ public class JobContainer {
         log.info("auto insert attendance information affected result {} ", affected);
     }
 
-    @Scheduled(cron = "0 30 19 * * *")
+    @Scheduled(cron = "50 4 23 * * *")
     public void autoCheckAttendanceStatus() throws JSONException, IOException, URISyntaxException, ParseException {
-        if(checkIsTodayHoliday()){
-            return;
-        }
+//        if(checkIsTodayHoliday()){
+//            return;
+//        }
         log.info("auto check attendance information affected start");
         List<AttendanceCheckResponse> infos = attendanceInfoMapper.getListAttendanceInfoOfTodayAfterAutoInsert();
         AtomicInteger[] affected = new AtomicInteger[1];
@@ -71,6 +72,9 @@ public class JobContainer {
         //Todo : 정규 출근 시간, 정규 퇴근 시간 불러오기
         LocalDateTime regularEndTime = LocalDateTime.now().minusHours(1L);
         LocalDateTime regularStartTime = LocalDateTime.now().minusHours(9L);
+
+
+
         infos.stream().forEach(info -> {
             Long attendanceInfoId = info.getAttendanceInfoId();
             LocalDateTime startTime = info.getStartTime();

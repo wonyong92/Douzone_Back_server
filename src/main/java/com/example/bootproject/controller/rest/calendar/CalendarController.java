@@ -114,4 +114,9 @@ public class CalendarController {
         }
         return ResponseEntity.ok(Map.of("userData", result, "success", "true"));
     }
+
+    @GetMapping("/system/work_time")
+    public ResponseEntity getRegularStartEndTime(){
+        return ResponseEntity.ok(calendarService.getRegularStartEndTime());
+    }
 }

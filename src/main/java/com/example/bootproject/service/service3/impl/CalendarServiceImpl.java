@@ -1,5 +1,6 @@
 package com.example.bootproject.service.service3.impl;
 
+import com.example.bootproject.repository.mapper3.regular_work_time.RegularWorkTimeMapper;
 import com.example.bootproject.service.service1.EmployeeService;
 import com.example.bootproject.service.service3.api.CalendarService;
 import com.example.bootproject.vo.vo1.request.calendar.attendanceinfo.CalendarSearchRequestDtoForAttendanceInfo;
@@ -26,14 +27,17 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CalendarServiceImpl implements CalendarService {
+    private final RegularWorkTimeMapper regularWorkTimeMapper;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final EmployeeService employeeService;
@@ -105,5 +109,17 @@ public class CalendarServiceImpl implements CalendarService {
         List<ApiItemToEventDtoForVacation> mappedResult = attendanceInfoResponseDtos.stream().map(entity ->
                 new ApiItemToEventDtoForVacation(entity)).collect(Collectors.toList());
         return mappedResult;
+    }
+
+    @Override
+    public Map<String, String> getRegularStartEndTime(int year) {
+        Map<String,String> result = regularWorkTimeMapper.getRegularStartEndTime(year);
+        return result;
+    }
+    @Override
+    public Map<String, String> getRegularStartEndTime() {
+        Map<String,String> result = regularWorkTimeMapper.getRegularStartEndTime(LocalDate.now().getYear());
+        log.info("getRegularStartEndTime : {}",result);
+        return result;
     }
 }

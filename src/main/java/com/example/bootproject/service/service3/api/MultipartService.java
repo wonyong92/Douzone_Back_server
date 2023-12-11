@@ -8,4 +8,7 @@ public interface MultipartService {
     MultipartUploadResponseDto uploadFile(MultipartUploadRequestDto dto);
 
     Resource download(String employeeId);
+    Resource downloadAppeal(String appealRequestId);
+
+    MultipartUploadResponseDto uploadAppealDataFile(MultipartUploadRequestDto dto);
 }
