@@ -28,8 +28,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.bootproject.system.StaticString.SESSION_ID_NOT_MATCHED_LOGIN_REQUEST;
 import static com.example.bootproject.system.util.ValidationChecker.*;
@@ -600,4 +603,18 @@ public class EmployeeController {
         return ResponseEntity.badRequest().build();
     }
     //employee 3 end
+
+    @GetMapping("/employee/attendance/today")
+    public ResponseEntity<Map<String, String>> checkAttendanceInfoExist(HttpServletRequest req){
+        String loginId = getLoginIdOrNull(req);
+        if(loginId!=null)
+        {
+            Map<String, String> result = employeeService.checkAttendanceInfoExist(loginId);
+            log.info("checkAttendanceInfoExist {}", result);
+            return result ==null ? ResponseEntity.ok(Map.of("startTime","null","endTime","null")):ResponseEntity.ok(result);
+
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+    }
 }

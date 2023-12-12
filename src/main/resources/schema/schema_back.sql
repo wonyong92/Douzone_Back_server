@@ -35,34 +35,34 @@ drop table if exists back_vacation_request_state_category;
 
 create table if not exists  admin
 (
-    admin_id varchar(10) not null
+    admin_id varchar(100)not null
         primary key,
-    password varchar(10) not null
+    password varchar(100)not null
 );
 
 create table if not exists attendance_status_category
 (
-    `key` varchar(30) not null
+    `key` varchar(100) not null
         primary key
 ) default character set utf8
   collate utf8_general_ci;
 
 create table if not exists employee
 (
-    employee_id        varchar(10) not null
+    employee_id        varchar(100)not null
         primary key,
-    password           varchar(10) not null,
-    name               varchar(10) not null,
+    password           varchar(100)not null,
+    name               varchar(100)not null,
     attendance_manager boolean     not null,
     hire_year          date        not null
 ) default character set utf8
   collate utf8_general_ci;
 create table if not exists back_employee
 (
-    employee_id        varchar(10) not null
+    employee_id        varchar(100)not null
         primary key,
-    password           varchar(10) not null,
-    name               varchar(10) not null,
+    password           varchar(100)not null,
+    name               varchar(100)not null,
     attendance_manager boolean     not null,
     hire_year          date        not null
 ) default character set utf8
@@ -71,8 +71,8 @@ create table if not exists back_employee
 CREATE TABLE attendance_info
 (
     attendance_info_id         BIGINT      NOT NULL AUTO_INCREMENT,
-    attendance_status_category VARCHAR(10) NOT NULL default 'pending',
-    employee_id                VARCHAR(10) NOT NULL,
+    attendance_status_category VARCHAR(100) NOT NULL default 'pending',
+    employee_id                VARCHAR(100)NOT NULL,
     start_time                 timestamp,
     end_time                   timestamp,
     attendance_date            DATE                 DEFAULT (CURRENT_DATE) NOT NULL,
@@ -85,8 +85,8 @@ CREATE TABLE attendance_info
 CREATE TABLE back_attendance_info
 (
     attendance_info_id         BIGINT      NOT NULL primary key AUTO_INCREMENT,
-    attendance_status_category VARCHAR(10) NOT NULL default 'pending',
-    employee_id                VARCHAR(10) NOT NULL,
+    attendance_status_category VARCHAR(100) NOT NULL default 'pending',
+    employee_id                VARCHAR(100)NOT NULL,
     start_time                 timestamp,
     end_time                   timestamp,
     attendance_date            DATE                 DEFAULT (CURRENT_DATE) NOT NULL
@@ -96,7 +96,7 @@ CREATE TABLE back_attendance_info
 
 create table if not exists attendance_appeal_request_status
 (
-    attendance_appeal_request_status_key varchar(10) not null primary key
+    attendance_appeal_request_status_key varchar(100) not null primary key
 ) default character set utf8
   collate utf8_general_ci;
 
@@ -104,12 +104,12 @@ create table if not exists attendance_appeal_request
 (
     attendance_appeal_request_id   bigint                    not null
         primary key auto_increment,
-    status                         varchar(10)               not null,
+    status                         varchar(100)              not null,
     reason                         text                      not null,
     attendance_info_id             bigint                    not null,
     appealed_start_time            time                      not null,
     appealed_end_time              time                      not null,
-    employee_id                    varchar(10)               not null,
+    employee_id                    varchar(100)              not null,
     attendance_appeal_request_time timestamp default (now()) not null,
     reason_for_rejection           text,
     constraint attendance_appeal_request_ibfk_1
@@ -124,12 +124,12 @@ create table if not exists back_attendance_appeal_request
 (
     attendance_appeal_request_id   bigint                    not null
         primary key auto_increment,
-    status                         varchar(10)               not null,
+    status                         varchar(100)              not null,
     reason                         text                      not null,
     attendance_info_id             bigint                    not null,
     appealed_start_time            time                      not null,
     appealed_end_time              time                      not null,
-    employee_id                    varchar(10)               not null,
+    employee_id                    varchar(100)              not null,
     attendance_appeal_request_time timestamp default (now()) not null,
     reason_for_rejection           text
 
@@ -142,7 +142,7 @@ create table if not exists attendance_approval
         primary key,
     attendance_info_id       bigint      not null,
     attendance_approval_date timestamp   not null,
-    employee_id              varchar(10) not null,
+    employee_id              varchar(100)not null,
     constraint attendance_approval_unique
         unique (attendance_info_id, employee_id),
     constraint attendance_approval_ibfk_1
@@ -157,7 +157,7 @@ create table if not exists back_attendance_approval
         primary key,
     attendance_info_id       bigint      not null,
     attendance_approval_date timestamp   not null,
-    employee_id              varchar(10) not null
+    employee_id              varchar(100)not null
 
 ) default character set utf8
   collate utf8_general_ci;
@@ -166,7 +166,7 @@ create table if not exists image
 (
     file_id     bigint                    not null
         primary key auto_increment,
-    identifier varchar(10)               not null,
+    identifier varchar(100)              not null,
     file_name   varchar(255)              not null,
     uuid        varchar(255)              not null,
     upload_date timestamp default (now()) not null,
@@ -179,7 +179,7 @@ create table if not exists image_appeal
 (
     file_id     bigint                    not null
         primary key auto_increment,
-    identifier varchar(10)               not null,
+    identifier varchar(100)              not null,
     file_name   varchar(255)              not null,
     uuid        varchar(255)              not null,
     upload_date timestamp default (now()) not null
@@ -192,7 +192,7 @@ create table if not exists vacation_adjusted_history
 (
     vacation_adjusted_history_id bigint                  not null
         primary key auto_increment,
-    employee_id                  varchar(10)             null,
+    employee_id                  varchar(100)            null,
     adjust_type                  varchar(100)            not null,
     adjust_time                  timestamp default now() not null,
     adjust_quantity              int                     not null,
@@ -205,7 +205,7 @@ create table if not exists back_vacation_adjusted_history
 (
     vacation_adjusted_history_id bigint                  not null
         primary key auto_increment,
-    employee_id                  varchar(10)             null,
+    employee_id                  varchar(100)            null,
     adjust_type                  varchar(100)            not null,
     adjust_time                  timestamp default now() not null,
     adjust_quantity              int                     not null,
@@ -230,7 +230,7 @@ create table if not exists vacation_quantity_setting
     senior       int                                                            not null,
     setting_time timestamp default Now()                                        not null,
     target_date  DATE DEFAULT (CONCAT(YEAR(NOW()) + 1, '-01-01')) NOT NULL,
-    employee_id  varchar(10)                                                    not null,
+    employee_id  varchar(100)                                                   not null,
     constraint vacation_quantity_setting_ibfk_1
         FOREIGN KEY (employee_id) REFERENCES employee (employee_id) on delete cascade
 ) default character set utf8
@@ -243,14 +243,14 @@ create table if not exists back_vacation_quantity_setting
     senior       int                                                            not null,
     setting_time timestamp default Now()                                        not null,
     target_date  DATE DEFAULT (CONCAT(YEAR(NOW()) + 1, '-01-01')) NOT NULL,
-    employee_id  varchar(10)                                                    not null
+    employee_id  varchar(100)                                                   not null
 
 ) default character set utf8
   collate utf8_general_ci;
 
 create table if not exists vacation_request_state_category
 (
-    vacation_request_state_category_key varchar(10) not null primary key
+    vacation_request_state_category_key varchar(100)not null primary key
 ) default character set utf8
   collate utf8_general_ci;
 
@@ -259,8 +259,8 @@ create table if not exists vacation_request
     vacation_request_key                bigint       not null
         primary key auto_increment,
     vacation_category_key               varchar(100) not null,
-    employee_id                         varchar(10)  not null,
-    vacation_request_state_category_key varchar(10),
+    employee_id                         varchar(100) not null,
+    vacation_request_state_category_key varchar(100),
     vacation_quantity                   int          not null,
     vacation_start_date                 date         not null,
     vacation_end_date                   date         not null,
@@ -280,8 +280,8 @@ create table if not exists back_vacation_request
     vacation_request_key                bigint       not null
         primary key auto_increment,
     vacation_category_key               varchar(100) not null,
-    employee_id                         varchar(10)  not null,
-    vacation_request_state_category_key varchar(10),
+    employee_id                         varchar(100) not null,
+    vacation_request_state_category_key varchar(100),
     vacation_quantity                   int          not null,
     vacation_start_date                 date         not null,
     vacation_end_date                   date         not null,
@@ -301,7 +301,7 @@ CREATE TABLE `regular_time_adjustment_history`
     `adjusted_end_time`                  TIME        NOT NULL,
     `reason`                             TEXT        NOT NULL,
     `regular_time_adjustment_time`       timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `employee_id`                        varchar(10) not null,
+    `employee_id`                        varchar(100)not null,
     constraint regular_time_adjustment_history_ibfk_1
         FOREIGN KEY (employee_id) REFERENCES employee (employee_id) on delete cascade
 ) default character set utf8
@@ -314,7 +314,7 @@ CREATE TABLE `back_regular_time_adjustment_history`
     `adjusted_end_time`                  TIME        NOT NULL,
     `reason`                             TEXT        NOT NULL,
     `regular_time_adjustment_time`       timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `employee_id`                        varchar(10) not null
+    `employee_id`                        varchar(100)not null
 
 ) default character set utf8
   collate utf8_general_ci;
@@ -343,7 +343,7 @@ create table if not exists `back_auth`
 create table if not exists `notification_message`
 (
     message_id BIGINT PRIMARY KEY auto_increment,
-    receiver   varchar(10) not null,
+    receiver   varchar(100)not null,
     message    varchar(254),
     receive_time datetime,
     read_time datetime,
@@ -359,7 +359,7 @@ create table if not exists `notification_message`
 create table if not exists `back_notification_message`
 (
     message_id BIGINT PRIMARY KEY auto_increment,
-    receiver   varchar(10) not null,
+    receiver   varchar(100)not null,
     message    varchar(254),
     receive_time datetime,
     read_time datetime,

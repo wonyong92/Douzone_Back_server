@@ -13,10 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.bootproject.vo.vo1.response.Page.PAGE_SIZE;
 
@@ -562,5 +564,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public AllAttendanceAppealMediateResponseDto findAppealRequestByIdentifier(String loginId, String identifier){
         return employeeMapper1.getRequestedInformationOfAppeal(loginId,identifier);
+    }
+
+    @Override
+    public Map<String, String> checkAttendanceInfoExist(String loginId) {
+        Map<String,String> result = employeeMapper1.checkAttendanceInfoExist(loginId);
+        return result;
     }
 }

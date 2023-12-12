@@ -11,8 +11,10 @@ import com.example.bootproject.vo.vo1.response.*;
 import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutPasswordDto;
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface EmployeeService {
 
@@ -80,4 +82,6 @@ public interface EmployeeService {
     VacationRequestDto getSpecificVacationRequestInformation(String loginId, String identifier);
 
     AllAttendanceAppealMediateResponseDto findAppealRequestByIdentifier(String loginId, String identifier);
+
+    Map<String, String> checkAttendanceInfoExist(String loginId);
 }

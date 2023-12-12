@@ -8,9 +8,11 @@ import com.example.bootproject.vo.vo1.response.employee.EmployeeResponseWithoutP
 import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseDto;
 import org.apache.ibatis.annotations.*;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.bootproject.system.StaticString.*;
 
@@ -328,5 +330,6 @@ public interface EmployeeMapper1 {
     private LocalDate attendanceDate; */
     @Select("select start_time,end_time,status,reason,appealed_start_time, appealed_end_time, attendance_appeal_request_time,reason_for_rejection  from attendance_appeal_request join attendance_info using(attendance_info_id) where attendance_appeal_request.attendance_info_id=#{identifier} and attendance_appeal_request.employee_id = #{loginId}")
     AllAttendanceAppealMediateResponseDto getRequestedInformationOfAppeal(String loginId,String identifier);
-
+    @Select("select start_time, end_time from attendance_info where employee_id=#{loginId} and attendance_date=curdate()")
+    Map<String, String> checkAttendanceInfoExist(String loginId);
 }
