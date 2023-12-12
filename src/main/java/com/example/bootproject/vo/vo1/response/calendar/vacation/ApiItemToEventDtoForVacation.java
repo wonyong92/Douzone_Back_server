@@ -27,7 +27,8 @@ public class ApiItemToEventDtoForVacation {
      *
      * */
     public ApiItemToEventDtoForVacation(VacationRequestResponseDto dto) {
-        title = "연차 신청 완료 -" + dto.getVacationStartDate() + "~" + dto.getVacationEndDate();
+
+        title = dto.getVacationRequestStateCategoryKey()+" - " + dto.getVacationStartDate() + "~" + dto.getVacationEndDate();
         date = dto.getVacationStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         extendedProps = new ExtendPropsForVacation("vacationRequested", dto.getVacationQuantity(), dto.getVacationRequestStateCategoryKey(), dto.getVacationRequestKey());
     }

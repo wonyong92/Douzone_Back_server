@@ -19,7 +19,7 @@ values ('연차 요청 중'),('연차 요청 반려'),('연차 요청 승인');
 
 
 insert into vacation_category
-values ('normal', 1);
+values ('normal', 1),('undefined',1);
 
 insert into douzone_test.attendance_appeal_request_status (attendance_appeal_request_status_key)
 values ('조정 요청 반려'),

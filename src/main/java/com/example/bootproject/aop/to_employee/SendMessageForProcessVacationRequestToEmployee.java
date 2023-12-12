@@ -14,7 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
+import static com.example.bootproject.ServletInitializer.REQUEST_LIST;
 import static com.example.bootproject.system.interceptor.SseBroadCastingInterceptorForEmployee.employeeEmitters;
 
 @Aspect
@@ -44,7 +47,14 @@ public class SendMessageForProcessVacationRequestToEmployee {
                         log.info("find employee sseEmitter. will send event");
                         message = "your Vacation Request processed. requestNumber = " + requestId;
                     }
+                    SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
+                    log.info("request insert msg {}", insertDto);
+                    notificationMapper.addUnreadMsgOfEmployee(insertDto);
+                    log.info("inserted msg : {}", insertDto);
+                    emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
+                    break;
                 } catch (Exception e) {
+                    employeeEmitters.remove(emitterDto);
                     for (SseEmitterWithEmployeeInformationDto reRegisteredEmitterDto : employeeEmitters) {
                         if (emitterDto.getEmployeeNumber().equals(reRegisteredEmitterDto.getEmployeeNumber())) {
                             log.info("타임아웃으로 메세지 전송 실패. 재전송 수행!");
@@ -55,12 +65,13 @@ public class SendMessageForProcessVacationRequestToEmployee {
                         }
                     }
                 } finally {
-                    SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
-                    log.info("request insert msg {}", insertDto);
-                    notificationMapper.addUnreadMsgOfEmployee(insertDto);
-                    log.info("inserted msg : {}", insertDto);
-                    emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
-                    break;
+                    HttpSession session = req.getSession();
+                    String loginId = (String) session.getAttribute("loginId");
+                    List<String> processingList = REQUEST_LIST.get(req.getRequestURI());
+                    log.info("작업 큐에 현재 진행 중인 작업 제거 : loginId = {}, queue = {} ", loginId, processingList);
+                    // 작업 완료 후 작업 큐에서 현재 요청 정보를 제거
+                    processingList.remove(loginId);
+                    log.info("작업 제거 후 : loginId = {}, queue = {} ", loginId, processingList);
                 }
             }
         }

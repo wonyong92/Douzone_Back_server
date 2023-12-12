@@ -18,8 +18,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
+import static com.example.bootproject.ServletInitializer.REQUEST_LIST;
 import static com.example.bootproject.system.interceptor.SseBroadCastingInterceptorForManager.managerEmitters;
 import static com.example.bootproject.system.util.ValidationChecker.getLoginIdOrNull;
 
@@ -59,6 +61,12 @@ public class SendMessageForAppealRequestToManager {
                                 reRegisteredEmitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                             }
                         }
+                    }finally{
+                        List<String> processingList = REQUEST_LIST.get(req.getRequestURI());
+                        log.info("작업 큐에 현재 진행 중인 작업 제거 : loginId = {}, queue = {} ", loginId, processingList);
+                        // 작업 완료 후 작업 큐에서 현재 요청 정보를 제거
+                        processingList.remove(loginId);
+                        log.info("작업 제거 후 : loginId = {}, queue = {} ", loginId, processingList);
                     }
                 }
             }
