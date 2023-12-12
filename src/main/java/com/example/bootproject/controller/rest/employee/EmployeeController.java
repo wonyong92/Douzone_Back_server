@@ -74,7 +74,6 @@ public class EmployeeController {
 
     @PostMapping("/employee/attendance")
     public ResponseEntity<AttendanceInfoResponseDto> makeAttendanceInfo(@Valid AttendanceInfoStartRequestDto requestDto, BindingResult br, HttpServletRequest req) {
-        /*TODO : 인터셉터로 뽑아내기 -> 뽑아내면 employeeId를 다음 로직으로 어떻게 전달해 줄껀데?*/
         String employeeId = getLoginIdOrNull(req);
         if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 

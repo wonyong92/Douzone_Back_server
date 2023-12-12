@@ -21,8 +21,8 @@ public interface EmployeeMapper1 {
 
 
     //출근기록
-    @Insert("INSERT INTO attendance_info (employee_id, attendance_date, start_time) " +
-            "VALUES (#{dto.employeeId}, #{dto.attendanceDate}, #{dto.startTime}) " +
+    @Insert("INSERT INTO attendance_info (employee_id, attendance_date, start_time,attendance_status_category) " +
+            "VALUES (#{dto.employeeId}, #{dto.attendanceDate}, #{dto.startTime} ,"+ATTENDANCE_INFO_STATUS_PENDING+" ) " +
             "ON DUPLICATE KEY UPDATE start_time = VALUES (start_time)")
     int startTimeRequest(@Param("dto") AttendanceInfoStartRequestDto dto);
 
