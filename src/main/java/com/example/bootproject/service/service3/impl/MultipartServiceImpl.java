@@ -121,7 +121,7 @@ public class MultipartServiceImpl implements MultipartService {
     public Resource download(String appealRequestId) {
         String filePath = "uploads/";
         AtomicReference<Resource> result = new AtomicReference<>();
-        Long findFileNum = multipartMapper.findByAppealRequestId(appealRequestId);
+        Long findFileNum = multipartMapper.findByEmployeeId(appealRequestId);
         MultipartUploadResponseDto fileData = multipartMapper.findByFileId(findFileNum);
         String fileName = null;
         if (fileData == null) {
