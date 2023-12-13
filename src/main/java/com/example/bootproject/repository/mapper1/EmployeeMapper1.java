@@ -211,20 +211,20 @@ public interface EmployeeMapper1 {
 
     /* result 값이 반려 이면서 본인의 반려된 연차 이력 데이터 중, 매개변수로 받은 정렬 방식, 정렬 기준 컬럼, 출력 게시물 설정값에 맞는 데이터를 반환한다 */
     @Select("SELECT vacation_request_key as vacationRequestKey, vacation_category_key as vacationCategoryKey, employee_id as employeeId, vacation_request_state_category_key as vacationRequestStateCategoryKey, vacation_quantity as vacationQuantity, vacation_start_date as vacationStartDate, vacation_end_date as vacationEndDate, reason, vacation_request_time as vacationRequestTime, reason_for_rejection as reasonForRejection, name " +
-            "FROM VACATION_REQUEST INNER JOIN EMPLOYEE using(employee_id) " +
-            "WHERE vacation_request_state_category_key like CONCAT('%', #{status}, '%') AND EMPLOYEE_ID=#{id} " +
+            "FROM vacation_request INNER JOIN employee using(employee_id) " +
+            "WHERE vacation_request_state_category_key like CONCAT('%', #{status}, '%') AND employee_id=#{id} " +
             "ORDER BY ${orderByCondition} ${sortOrder} " +
             "LIMIT ${size} OFFSET ${startRow};")
     List<VacationRequestDto> getHistoryOfVacationOfMine(int size, String orderByCondition, int startRow, String sortOrder, String id, @Param("status") String status);
 
     /* 특정 사원의 vacation_request_state_category_key 컬럼 값이 매개변수로 전달받은 신청 결과값에 해당하는 모든 데이터를 가져온다 */
     @Select("select count(*) " +
-            "from VACATION_REQUEST V INNER JOIN EMPLOYEE E ON V.employee_id = E.employee_id " +
-            "WHERE V.vacation_request_state_category_key LIKE '%${status}%' AND V.EMPLOYEE_ID=#{id};")
+            "from vacation_request V INNER JOIN employee E ON V.employee_id = E.employee_id " +
+            "WHERE V.vacation_request_state_category_key LIKE '%${status}%' AND V.employee_id=#{id};")
     int getHistoryOfVacationOfMineTotalRow(String id, @Param("status") String status);
 
     // 입사년도 데이터 가져온다
-    @Select("SELECT YEAR(hire_year) FROM EMPLOYEE WHERE employee_id=#{id}; ")
+    @Select("SELECT YEAR(hire_year) FROM employee WHERE employee_id=#{id}; ")
     int getHireYear(String id);
 
 
@@ -257,7 +257,7 @@ public interface EmployeeMapper1 {
 
     @Select("SELECT IFNULL(SUM(vacation_quantity),0)" +
             "FROM vacation_request" +
-            " WHERE EMPLOYEE_ID=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY=" +
+            " WHERE employee_id=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY=" +
             "'" + VACATION_REQUEST_STATUS_CATEGORY_REQUESTED + "'")
     int getRequestedVacationQuantity(String id);
 
@@ -278,7 +278,7 @@ public interface EmployeeMapper1 {
     //TODO : 페이지네이션 적용
     @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" +
             "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " +
-            "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id)\n" +
+            "FROM vacation_request INNER JOIN employee USING(employee_id)\n" +
             "where vacation_request_state_category_key= '"+VACATION_REQUEST_STATUS_CATEGORY_REQUESTED+"'\n" +
             "ORDER BY ${sort} ${desc}\n" +
             "LIMIT #{size} OFFSET #{startRow}")
@@ -311,8 +311,8 @@ public interface EmployeeMapper1 {
     List<AllAttendanceAppealMediateResponseDto> getAllRequestedInformationOfAppeal(int size, String sort, int startRow, String desc);
 
     @Select("SELECT vacation_request_key, vacation_category_key , employee_id, vacation_request_state_category_key , vacation_quantity, vacation_start_date , vacation_end_date, reason, vacation_request_time , reason_for_rejection " +
-            "FROM VACATION_REQUEST " +
-            "WHERE vacation_request_key = #{identifier} AND EMPLOYEE_ID=#{loginId} ")
+            "FROM vacation_request " +
+            "WHERE vacation_request_key = #{identifier} AND employee_id=#{loginId} ")
     VacationRequestDto getSpecificVacationRequestInformation(String loginId, String identifier);
 /*
     private Long attendanceAppealRequestId;

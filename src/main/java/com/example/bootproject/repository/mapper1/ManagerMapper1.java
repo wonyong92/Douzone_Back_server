@@ -83,11 +83,11 @@ public interface ManagerMapper1 {
     int getAllVacationRequestCountByDate(String date);
 
     // result 값이 승인 이면서 타 사원의 연차 사용 이력 데이터를 가져와 반환함
-    @Select("SELECT vacation_request_key as vacationRequestKey, vacation_category_key as vacationCategoryKey, employee_id as employeeId, vacation_request_state_category_key as vacationRequestStateCategoryKey, vacation_quantity as vacationQuantity, vacation_start_date as vacationStartDate, vacation_end_date as vacationEndDate, reason, vacation_request_time as vacationRequestTime, reason_for_rejection as reasonForRejection,name " + "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id) " + "WHERE vacation_request_state_category_key like CONCAT('%', #{status}, '%') AND EMPLOYEE_ID=#{id} " + "ORDER BY ${orderByCondition} ${sortOrder} " + "LIMIT ${size} OFFSET ${startRow} ;")
+    @Select("SELECT vacation_request_key as vacationRequestKey, vacation_category_key as vacationCategoryKey, employee_id as employeeId, vacation_request_state_category_key as vacationRequestStateCategoryKey, vacation_quantity as vacationQuantity, vacation_start_date as vacationStartDate, vacation_end_date as vacationEndDate, reason, vacation_request_time as vacationRequestTime, reason_for_rejection as reasonForRejection,name " + "FROM vacation_request INNER JOIN employee USING(employee_id) " + "WHERE vacation_request_state_category_key like CONCAT('%', #{status}, '%') AND EMPLOYEE_ID=#{id} " + "ORDER BY ${orderByCondition} ${sortOrder} " + "LIMIT ${size} OFFSET ${startRow} ;")
     List<VacationRequestDto> getHistoryOfVacationOfEmployee(int size, String orderByCondition, int startRow, String sortOrder, String id, String status);
 
     // 특정 사원의 신청 결과값이 매개변수로 받아온 값에 일치하는 데이터의 개수를 반환
-    @Select("select count(*) " + "from VACATION_REQUEST V INNER JOIN EMPLOYEE E ON V.employee_id = E.employee_id " + "WHERE V.vacation_request_state_category_key LIKE '%${status}%' AND V.EMPLOYEE_ID=#{id};")
+    @Select("select count(*) " + "from vacation_request V INNER JOIN employee E ON V.employee_id = E.employee_id " + "WHERE V.vacation_request_state_category_key LIKE '%${status}%' AND V.EMPLOYEE_ID=#{id};")
     int getHistoryOfVacationOfEmployeeTotalRow(String id, String status);
 
     //정규 근무시간 조정내역 테이블의 전체 정보를 select 함
@@ -134,7 +134,7 @@ public interface ManagerMapper1 {
     int getVacationAdjustedHistory(String employeeId);
 
     // 올해 연차 승인 받은 데이터의 수
-    @Select("SELECT IFNULL(SUM(vacation_quantity),0)" + "FROM vacation_request" + " WHERE EMPLOYEE_ID=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY=" + "'" + VACATION_REQUEST_STATUS_CATEGORY_APPROVAL + "'")
+    @Select("SELECT IFNULL(SUM(vacation_quantity),0)" + "FROM vacation_request" + " WHERE employee_id=#{employeeId} AND VACATION_REQUEST_STATE_CATEGORY_KEY=" + "'" + VACATION_REQUEST_STATUS_CATEGORY_APPROVAL + "'")
     int getApproveVacationQuantity(String employeeId);
 
     // 매개변수로 받아온 id가 employee 테이블에 존재시 1 반환
@@ -213,10 +213,10 @@ public interface ManagerMapper1 {
     List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedById(String searchParameter);
 
 
-    @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" + "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " + "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id)\n" + "where vacation_request_state_category_key='"+VACATION_REQUEST_STATE_REQUESTED+"' and employee.employee_id LIKE CONCAT('%', #{searchParameter}, '%')")
+    @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" + "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " + "FROM vacation_request INNER JOIN employee USING(employee_id)\n" + "where vacation_request_state_category_key='"+VACATION_REQUEST_STATE_REQUESTED+"' and employee.employee_id LIKE CONCAT('%', #{searchParameter}, '%')")
     List<AllVacationRequestResponseDto> searchVacationAllRequestedById(String searchParameter);
 
-    @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" + "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " + "FROM VACATION_REQUEST INNER JOIN EMPLOYEE USING(employee_id)\n" + "where vacation_request_state_category_key='"+VACATION_REQUEST_STATE_REQUESTED+"' and employee.name LIKE CONCAT('%', #{searchParameter}, '%')")
+    @Select("SELECT name, vacation_request.employee_id as employeeId, vacation_request_key as vacationRequestKey,vacation_category_key as vacationCategoryKey, vacation_start_date as vacationStartDate,\n" + "       vacation_end_date as vacationEndDate, vacation_request_time as vacationRequestTime,reason " + "FROM vacation_request INNER JOIN employee USING(employee_id)\n" + "where vacation_request_state_category_key='"+VACATION_REQUEST_STATE_REQUESTED+"' and employee.name LIKE CONCAT('%', #{searchParameter}, '%')")
     List<AllVacationRequestResponseDto> searchVacationAllRequestedByName(String searchParameter);
 
     @Select("SELECT COUNT(*) " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(ar.attendance_appeal_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(ar.attendance_appeal_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")

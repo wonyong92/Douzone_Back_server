@@ -51,23 +51,23 @@ insert into vacation_category
 values ('a', 2);
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001011', '연차 요청 중', 10, '2023-01-01', '2023-01-10', '2023-01-05 15:00:00', '사유1');
+values ('a', '200001011', '연차 요청 중', 10, '2023-01-16', '2023-01-20', '2023-01-05 15:00:00', '사유1');
 
 -- 연차관리현황데이터
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001012', '연차 요청 승인', 2, '2023-01-01', '2023-01-02', '2023-01-01 16:00:00', '사유1');
+values ('a', '200001012', '연차 요청 승인', 2, '2023-01-26', '2023-01-27', '2023-01-23 16:00:00', '사유1');
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('a', '200001012', '연차 요청 승인', 3, '2023-01-11', '2023-01-13', '2023-01-03 16:00:00', '사유1');
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001012', '연차 요청 중', 8, '2023-01-03', '2023-01-10', '2023-01-04 15:00:00', '사유1');
+values ('a', '200001012', '연차 요청 중', 8, '2023-03-19', '2023-03-29', '2023-01-04 15:00:00', '사유1');
 
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('a', '200001012', '연차 요청 반려', 6, '2023-01-15', '2023-01-20', '2023-01-03 16:00:00', '사유1');
+values ('a', '200001012', '연차 요청 반려', 6, '2023-04-15', '2023-04-20', '2023-01-03 16:00:00', '사유1');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
