@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -186,7 +187,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             return null; // 또는 적절한 예외 처리를 할 수 있습니다.
         }
 
-        Page<List<AttendanceInfoResponseDto>> result = new Page<>(data, // 바로 data를 넘김. List<T> 타입을 만족함.
+        Page<List<AttendanceInfoResponseDto>> result = new Page<>(data,pageSize, // 바로 data를 넘김. List<T> 타입을 만족함.
                 hasNext, // 다음 페이지가 없으면 isLastPage는 true임.
                 sort, desc, page, totalElements);
 
@@ -568,7 +569,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Map<String, String> checkAttendanceInfoExist(String loginId) {
-        Map<String,String> result = employeeMapper1.checkAttendanceInfoExist(loginId);
-        return result;
+        Map<String, Timestamp> result = employeeMapper1.checkAttendanceInfoExist(loginId);
+        log.info("start time : {}", result);
+        if(result!=null)
+            return Map.of("startTime",result.get("startTime")!=null?result.get("startTime").toString():"null","endTime",result.get("endTime")!=null?result.get("endTime").toString():"null");
+        return null;
     }
 }

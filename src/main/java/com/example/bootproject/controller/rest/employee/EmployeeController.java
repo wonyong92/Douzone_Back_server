@@ -167,7 +167,7 @@ public class EmployeeController {
             log.info("유효하지 않은 날짜: {}}", pagedLocalDateDto);
             return ResponseEntity.badRequest().build();
         }
-
+        log.info("getAttendanceInfoOfEmployeeByDay dto : {} ", pagedLocalDateDto);
         // 근태 정보 조회
         Page<List<AttendanceInfoResponseDto>> attendanceInfo;
         if (pagedLocalDateDto.getDay() != null) {

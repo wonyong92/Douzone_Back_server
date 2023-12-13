@@ -9,6 +9,7 @@ import com.example.bootproject.vo.vo1.response.vacation.VacationRequestResponseD
 import org.apache.ibatis.annotations.*;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -330,6 +331,6 @@ public interface EmployeeMapper1 {
     private LocalDate attendanceDate; */
     @Select("select start_time,end_time,status,reason,appealed_start_time, appealed_end_time, attendance_appeal_request_time,reason_for_rejection  from attendance_appeal_request join attendance_info using(attendance_info_id) where attendance_appeal_request.attendance_info_id=#{identifier} and attendance_appeal_request.employee_id = #{loginId}")
     AllAttendanceAppealMediateResponseDto getRequestedInformationOfAppeal(String loginId,String identifier);
-    @Select("select start_time, end_time from attendance_info where employee_id=#{loginId} and attendance_date=curdate()")
-    Map<String, String> checkAttendanceInfoExist(String loginId);
+    @Select("select start_time as 'startTime', end_time as 'endTime' from attendance_info where employee_id=#{loginId} and attendance_date=curdate()")
+    Map<String, Timestamp> checkAttendanceInfoExist(String loginId);
 }
