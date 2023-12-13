@@ -79,7 +79,6 @@ public class CalendarController {
     @GetMapping("/system/calendar/vacation_info")
     public ResponseEntity<List<ApiItemToEventDtoForVacation>> getVacationInfo(@Valid @ModelAttribute CalendarSearchRequestDtoForVacation dto, HttpServletRequest req) throws JsonProcessingException {
         String loginId = getLoginIdOrNull(req);
-
         List<ApiItemToEventDtoForVacation> mappedResult = null;
         mappedResult = calendarService.getVacationInfoEvents(dto, loginId);
         log.info("{}", mappedResult);
