@@ -107,7 +107,10 @@ public class ValidationChecker {
 
     public static boolean isManager(HttpServletRequest req) {
         log.info("manager 여부 확인 수행");
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
+        if(session==null){
+            return false;
+        }
         String loginId = (String) session.getAttribute("loginId");
         String ip = (String) session.getAttribute("ip");
 

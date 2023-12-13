@@ -419,7 +419,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Page<List<VacationRequestDto>> getHistoryOfVacationOfMine(PagedLocalDateDto pagedLocalDateDto, String employeeId, String status) {
         PagingRequestWithIdStatusDto pagingRequestWithIdStatusDto = new PagingRequestWithIdStatusDto(pagedLocalDateDto.getPage(), pagedLocalDateDto.getSort(), pagedLocalDateDto.getDesc(), employeeId, status);
 
-        int size = PAGE_SIZE; // 한 페이지에 출력할 게시물 개수
+        int size = pagedLocalDateDto.getSize(); // 한 페이지에 출력할 게시물 개수
         int startRow = (pagingRequestWithIdStatusDto.getCurrentPage() - 1) * size; // 가져오기 시작할 row의 번호
         String orderByCondition = pagingRequestWithIdStatusDto.getSort(); // 정렬할 컬럼 이름
 
@@ -439,7 +439,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         boolean isLastPage = (pagingRequestWithIdStatusDto.getCurrentPage() < lastPageNumber); // 마지막 페이지 여부
 
         /* 생성자 이용해 Page 객체 생성, 리턴*/
-        Page<List<VacationRequestDto>> result = new Page<>(getData, isLastPage, pagingRequestWithIdStatusDto.getSort(), pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getCurrentPage(), totalRowCount);
+        Page<List<VacationRequestDto>> result = new Page<>(getData,size, isLastPage, pagingRequestWithIdStatusDto.getSort(), pagingRequestWithIdStatusDto.getSortOrder(), pagingRequestWithIdStatusDto.getCurrentPage(), totalRowCount);
         return result;
     }
 
