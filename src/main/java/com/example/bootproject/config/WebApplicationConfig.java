@@ -1,6 +1,7 @@
 package com.example.bootproject.config;
 
 import com.example.bootproject.system.interceptor.CorsInterceptor;
+import com.example.bootproject.system.interceptor.DeleteQueueInterceptor;
 import com.example.bootproject.system.interceptor.LogginInterceptor;
 import com.example.bootproject.system.interceptor.WorkingQueueInterceptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ public class WebApplicationConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LogginInterceptor());
         // TODO : 다른 오쳥에 대해서도 사용할 수 있도록 URI 추가 필요
         registry.addInterceptor(new WorkingQueueInterceptor()).addPathPatterns("/employee/vacation", "/employee/appeal", "/manager/vacation/process", "/manager/vacation/modify");
+        registry.addInterceptor(new DeleteQueueInterceptor()).addPathPatterns("/admin/employee/delete/*");
 //        registry.addInterceptor(new CorsInterceptor());
 //        registry.addInterceptor(new SseBroadCastingInterceptorForManager()).addPathPatterns("/manager/appeal/process","/manager/vacation/process");
         /*

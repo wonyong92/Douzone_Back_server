@@ -12,10 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.bootproject.ServletInitializer.DELETE_PROCESS_LIST;
 
 @Service
 @RequiredArgsConstructor
@@ -71,7 +75,7 @@ public class EmployeeDeleteServiceImpl implements EmployeeDeleteService {
 
         return result;
     }
-
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @Override
     public Page<List<String>> searchEmployeeNumbersAndEmployeeName(PageRequest pageRequest, String searchText,boolean isManager) {
         int page = pageRequest.getPage();
@@ -84,6 +88,7 @@ public class EmployeeDeleteServiceImpl implements EmployeeDeleteService {
             }
             log.info("특정 유저의 사원 번호 찾기 {}", searchText );
             data = employeeListMapper.findEmployeeNumbersAndEmployeeName(searchText,pageRequest,size,isManager);
+            data = data.stream().filter(d -> !DELETE_PROCESS_LIST.contains(d)).toList();
         }else{
             log.info("전체 사원 번호 호출 ");
             if(pageRequest.getSort().trim().isEmpty()){
