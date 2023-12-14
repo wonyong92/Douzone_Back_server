@@ -240,7 +240,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("지각 상태 정보를 가져왔습니다: {}", lateStatus);
 
         // 2. 근태 상태 업데이트
-        AttendanceApprovalUpdateRequestDto updateRequestDto = new AttendanceApprovalUpdateRequestDto(lateStatus.getKey(), attendanceInfoId);
+        AttendanceApprovalUpdateRequestDto updateRequestDto = new AttendanceApprovalUpdateRequestDto("승인|"+lateStatus.getKey(), attendanceInfoId);
         int updatedRows = employeeMapper1.updateAttendanceStatus(updateRequestDto);
         log.info("근태 상태를 업데이트 했습니다. 업데이트된 행의 수: {}", updatedRows);
 

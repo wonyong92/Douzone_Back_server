@@ -7,8 +7,7 @@ import lombok.Data;
 
 import java.time.format.DateTimeFormatter;
 
-import static com.example.bootproject.system.StaticString.ATTENDANCE_INFO_STATUS_ABSENT;
-import static com.example.bootproject.system.StaticString.ATTENDANCE_INFO_STATUS_NORMAL;
+import static com.example.bootproject.system.StaticString.*;
 
 @Data
 public class ApiItemToEventDtoForAttendanceInfo {
@@ -33,13 +32,57 @@ public class ApiItemToEventDtoForAttendanceInfo {
         title = dto.getAttendanceStatusCategory();
         date = dto.getAttendanceDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String status = dto.getAttendanceStatusCategory();
+//        2. 근태 정보
+//        - 근태 판정 중 (민트) #AAFFBC
+//                - 정상 근태 (하늘) #78E8F7
+//                - 이상 근태 (분홍) #FFA6EC
+//
+//        3. 근태 조정
+//        조정 요청 중 (연한 노란색) #FFFF86
+//        조정 요청 승인 (초록) #61F059
+//        조정 요청 반려(주황) #FF9933
         switch (status) {
-            case ATTENDANCE_INFO_STATUS_ABSENT:
-                this.backgroundColor = "red";
-                break;
+            // 정상 근태
             case ATTENDANCE_INFO_STATUS_NORMAL:
-                this.backgroundColor = "blue";
+                this.backgroundColor = "#78E8F7";
                 break;
+            // 근태 판정 중
+            case ATTENDANCE_INFO_STATUS_PENDING:
+                this.backgroundColor = "#AAFFBC";
+                break;
+            // 조정 요청 중
+            case ATTENDANCE_INFO_STATUS_REQUESTED:
+                this.backgroundColor = "#FFFF86";
+                break;
+            // 조정 요청 승인
+            case APPEAL_REQUEST_STATE_PERMITTED:
+                this.backgroundColor = "#61F059";
+                break;
+            // 조정 요청 반려
+            case APPEAL_REQUEST_STATE_REJECTED:
+                this.backgroundColor = "#FF9933";
+                break;
+            ////이상 근태
+            case ATTENDANCE_INFO_STATUS_ABSENT:
+            case ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END:
+            case ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END:
+            case ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END:
+            case ATTENDANCE_INFO_STATUS_LATE_START_NULL_END:
+            case ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END:
+                this.backgroundColor = "#FFA6EC";
+                break;
+            // 승인 이상
+            case ATTENDANCE_INFO_STATUS_ABSENT_APPROVED:
+            case ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END_APPROVED:
+            case ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END_APPROVED:
+            case ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END_APPROVED:
+            case ATTENDANCE_INFO_STATUS_LATE_START_NULL_END_APPROVED:
+            case ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END_APPROVED:
+                this.backgroundColor = "grey";
+                break;
+            //
+
+
             default:
                 this.backgroundColor = "gray";
         }
