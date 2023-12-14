@@ -569,7 +569,7 @@ public class EmployeeController {
 
         result = appealService.makeAppealRequest(dto);
 
-        if (result == null) {
+        if (result != null) {
             return ResponseEntity.ok(result);
         }
 

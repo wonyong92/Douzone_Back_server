@@ -58,9 +58,11 @@ public class AppealServiceImpl implements AppealService {
             return null;
         }
         appealMapper.makeRequest(dto);
-        AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
+
         log.info("해당 근태 정보(id {})의 현재 상태를 조정 요청 중({})으로 변경", dto.getAttendanceInfoId(), APPEAL_REQUEST_STATE_REQUESTED);
         attendanceInfoMapper.updateAttendanceInfoStatus(APPEAL_REQUEST_STATE_REQUESTED, dto.getAttendanceInfoId());
+        AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceInfoId());
+        log.info(" AppealRequestResponseDto result {}",result);
         return result;
     }
 
