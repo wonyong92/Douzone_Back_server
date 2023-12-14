@@ -7,6 +7,8 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import static com.example.bootproject.system.StaticString.*;
+
 @Data
 public class ApiItemToEventDtoForVacation {
     String title;
@@ -30,6 +32,26 @@ public class ApiItemToEventDtoForVacation {
 
         title = dto.getVacationRequestStateCategoryKey()+" - " + dto.getVacationStartDate() + "~" + dto.getVacationEndDate();
         date = dto.getVacationStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String status = dto.getVacationRequestStateCategoryKey();
+        /*
+        * - 연차 요청 중 (노랑) #FFFACD
+        - 연차 요청 승인 (파랑) #ADD8E6
+        - 연차 요청 반려 (빨강) #FFB6C1
+        *
+        * */
+        switch(status){
+            case VACATION_REQUEST_STATE_REQUESTED:
+                this.backgroundColor="#FFFACD";
+                        break;
+            case VACATION_REQUEST_STATE_REJECTED:
+                this.backgroundColor="#FFB6C1";
+                        break;
+            case VACATION_REQUEST_STATE_PERMITTED:
+                this.backgroundColor="#ADD8E6";
+                        break;
+            default:
+                this.backgroundColor="red";
+        }
         extendedProps = new ExtendPropsForVacation("vacationRequested", dto.getVacationQuantity(), dto.getVacationRequestStateCategoryKey(), dto.getVacationRequestKey());
     }
 

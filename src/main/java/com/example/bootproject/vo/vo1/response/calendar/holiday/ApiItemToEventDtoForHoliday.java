@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 public class ApiItemToEventDtoForHoliday {
     String title;
     String date;
-    String backgroundColor = "red";
+    String backgroundColor = " #904016";
     ExtendPropsForHoliday extendedProps = new ExtendPropsForHoliday("holiday");
 
     /*
