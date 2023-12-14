@@ -49,8 +49,6 @@ public class ApiItemToEventDtoForVacation {
             case VACATION_REQUEST_STATE_PERMITTED:
                 this.backgroundColor="#ADD8E6";
                         break;
-            default:
-                this.backgroundColor="red";
         }
         extendedProps = new ExtendPropsForVacation("vacationRequested", dto.getVacationQuantity(), dto.getVacationRequestStateCategoryKey(), dto.getVacationRequestKey());
     }
@@ -59,5 +57,6 @@ public class ApiItemToEventDtoForVacation {
         title = old.getTitle();
         date = (LocalDate.parse(old.date).plusDays(dayOffSet)).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         extendedProps = old.getExtendedProps();
+        backgroundColor=old.getBackgroundColor();
     }
 }
