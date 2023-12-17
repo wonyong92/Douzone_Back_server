@@ -14,21 +14,25 @@ public class IpInsepctInterceptor implements HandlerInterceptor {
         String ip = IpAnalyzer.getClientIp(request);
         log.info("incoming ip : {}", ip);
         String[] ipAddressParts = ip.split("\\.");
-        if (ipAddressParts.length > 7) {
+        if (ipAddressParts.length > 9) {
             log.info("ip v6 filtering");
             return  (Integer.parseInt((ipAddressParts[0]),16) <= 65535) &&
                     (Integer.parseInt((ipAddressParts[1]),16) <= 65535) &&
                     (Integer.parseInt((ipAddressParts[2]),16) <= 65535) &&
                     (Integer.parseInt((ipAddressParts[3]),16) <= 65535) &&
-                    (Integer.parseInt((ipAddressParts[3]),16) <= 65535) &&
-                    (Integer.parseInt((ipAddressParts[3]),16) <= 65535);
-        } else if(ipAddressParts.length <5 && ipAddressParts.length>3){
+                    (Integer.parseInt((ipAddressParts[4]),16) <= 65535) &&
+                    (Integer.parseInt((ipAddressParts[5]),16) <= 65535) &&
+                    (Integer.parseInt((ipAddressParts[6]),16) <= 65535) &&
+                    (Integer.parseInt((ipAddressParts[7]),16) <= 65535);
+        } else if(ipAddressParts.length == 4){
             log.info("ip v4 filtering");
             return (Integer.parseInt(ipAddressParts[0]) <= 192) &&
                     (Integer.parseInt(ipAddressParts[1]) <= 255) &&
                     (Integer.parseInt(ipAddressParts[2]) <= 255) &&
                     (Integer.parseInt(ipAddressParts[3]) <= 255);
+        } else {
+            log.info("invalid ip format {} ",ip);
+            return false;
         }
-        return true;
     }
 }
