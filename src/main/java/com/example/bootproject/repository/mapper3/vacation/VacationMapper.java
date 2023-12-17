@@ -21,7 +21,7 @@ public interface VacationMapper {
     Integer checkDataRegion(@Param("start") LocalDate start, @Param("end") LocalDate end, @Param("id") String employeeId);
 
     @Insert("insert into douzone_test.vacation_request (vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity, vacation_start_date, vacation_end_date, reason, vacation_request_time, reason_for_rejection)\n" +
-            "values  (#{dto.vacationCategoryKey}, #{dto.employeeId}, '"+VACATION_REQUEST_STATE_REQUESTED+"', #{dto.vacationQuantity}, #{dto.vacationStartDate}, #{dto.vacationEndDate}, #{dto.reason}, now(), null)")
+            "values  (#{dto.vacationCategoryKey}, #{dto.employeeId}, '"+VACATION_REQUEST_STATE_REQUESTED+"', #{dto.vacationQuantity}, #{dto.vacationStartDate}, #{dto.vacationEndDate}, #{dto.reason}, now(), '처리 되지 않음')")
     @Options(useGeneratedKeys = true, keyProperty = "vacationRequestKey")
     Long addRequest(@Param("dto") VacationRequestDto dto);
 
