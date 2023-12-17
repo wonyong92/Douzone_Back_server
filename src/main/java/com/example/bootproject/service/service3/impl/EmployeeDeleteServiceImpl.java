@@ -96,6 +96,7 @@ public class EmployeeDeleteServiceImpl implements EmployeeDeleteService {
                 pageRequest.setSort("employee_id");
             }
             data = employeeListMapper.getAllEmployeeNumbersAndEmployeeName(searchText,pageRequest,size,isManager);
+            data = data.stream().filter(d -> !DELETE_PROCESS_LIST.contains(d)).toList();
         }
         int totalElements = Integer.parseInt(data.get(data.size()-1));
 

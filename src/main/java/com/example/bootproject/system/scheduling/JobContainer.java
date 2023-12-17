@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.example.bootproject.ServletInitializer.cache;
 import static com.example.bootproject.system.StaticString.*;
 
 @Component
@@ -31,6 +32,7 @@ public class JobContainer {
     private final AttendanceInfoMapper attendanceInfoMapper;
     private final EmployeeMapper1 employeeMapper;
     private final CalendarService calendarService;
+
     //공휴일에는 동작을 안하게 막아야한다
     public boolean checkIsTodayHoliday() throws JSONException, IOException, URISyntaxException, ParseException {
         //TODO:Test 코드이므로 반드시 삭제 - now()로 변경 필요
@@ -42,18 +44,19 @@ public class JobContainer {
         List<ApiItemToEventDtoForHoliday> holidays = calendarService.getHolidayEvents(dto);
 
         log.info("checkIsTodayHoliday");
-        log.info("holidays {}",holidays);
+        log.info("holidays {}", holidays);
         return holidays.stream().anyMatch((holiday) -> {
             if (holiday.getDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))) {
                 return true;
-            } return false;
+            }
+            return false;
         });
     }
 
 
     @Scheduled(cron = "0 4 23 * * *")
     public void autoInsertAttedanceInfo() throws JSONException, IOException, URISyntaxException, ParseException {
-        if(checkIsTodayHoliday()){
+        if (checkIsTodayHoliday()) {
             return;
         }
         int affected = attendanceInfoMapper.insertAttendanceInfo();
@@ -72,7 +75,6 @@ public class JobContainer {
         //Todo : 정규 출근 시간, 정규 퇴근 시간 불러오기
         LocalDateTime regularEndTime = LocalDateTime.now().minusHours(1L);
         LocalDateTime regularStartTime = LocalDateTime.now().minusHours(9L);
-
 
 
         infos.stream().forEach(info -> {
@@ -122,4 +124,27 @@ public class JobContainer {
         log.info("auto check attendance information affected result {} ", affected[0].get());
     }
 
+    @Scheduled(cron = "0 46 17 * * *")
+    public void createHolidayCache() throws JSONException, IOException, URISyntaxException, ParseException {
+        int retry = 0;
+        for (int month = 1; month < 13; month++) {
+            if (cache.get(LocalDate.now().getYear() + "-" + month) == null) {
+                try {
+                    List<ApiItemToEventDtoForHoliday> data = calendarService.getHolidayEvents(new CalendarSearchRequestDtoForHoliday(LocalDate.now().getYear(), month));
+                    cache.put(LocalDate.now().getYear() + "-" + month, data);
+
+                } catch (Exception e) {
+                    log.info("공휴일 cache 생성 도중 예외 발생 - 재시도 수행");
+                    month--;
+                    retry++;
+                    if (retry > 5) {
+                        log.info("{}월 에 대해 재시도 5회를 수행했으나 실패", month);
+                        month++;
+                        retry = 0;
+                    }
+                }
+            }
+        }
+        log.info("캐싱 결과 : {}",cache);
+    }
 }

@@ -14,14 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.example.bootproject.ServletInitializer.cache;
+
 @Component
 @Aspect
 @Slf4j
 public class CalendarCaching {
 
-    private static final Map<String, List<ApiItemToEventDtoForHoliday>> cache = new ConcurrentHashMap<>();
 
-    @Pointcut("execution(* com.example.bootproject.controller.rest.calendar.CalendarController.getHoliday(..)) && args(dto, ..)")
+
+    @Pointcut("execution(* com.example.bootproject.service.service3.impl.CalendarServiceImpl.getHolidayEvents(..)) && args(dto, ..)")
     public void getHolidayMethod(CalendarSearchRequestDtoForHoliday dto) {
     }
 
@@ -31,13 +33,13 @@ public class CalendarCaching {
         log.info("cacheHolidayResponse key : {} ",cacheKey);
         if (cache.containsKey(cacheKey)) {
         log.info("cache matched!! : {} ",cache.get(cacheKey));
-            return ResponseEntity.ok(cache.get(cacheKey));
+            return cache.get(cacheKey);
         }
         log.info("no cache matched!! : {} ",cache.get(cacheKey));
-        ResponseEntity<List<ApiItemToEventDtoForHoliday>> result = (ResponseEntity<List<ApiItemToEventDtoForHoliday>>) joinPoint.proceed();
-            cache.put(cacheKey, result.getBody());
+        List<ApiItemToEventDtoForHoliday> result = (List<ApiItemToEventDtoForHoliday>) joinPoint.proceed();
+            cache.put(cacheKey, result);
             log.info("cache saved : {}",cache)  ;
-            return ResponseEntity.ok(result);
+            return result;
     }
 
     private String generateCacheKey(CalendarSearchRequestDtoForHoliday dto) {
