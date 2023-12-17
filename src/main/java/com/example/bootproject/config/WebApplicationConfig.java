@@ -1,9 +1,6 @@
 package com.example.bootproject.config;
 
-import com.example.bootproject.system.interceptor.CorsInterceptor;
-import com.example.bootproject.system.interceptor.DeleteQueueInterceptor;
-import com.example.bootproject.system.interceptor.LogginInterceptor;
-import com.example.bootproject.system.interceptor.WorkingQueueInterceptor;
+import com.example.bootproject.system.interceptor.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +28,7 @@ public class WebApplicationConfig implements WebMvcConfigurer {
          * /manager/appeal/process -> dto에서 찾아야함
          * /manager/vacation/process -> dto에서 찾아야함
          * */
+        registry.addInterceptor(new IpInsepctInterceptor());
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

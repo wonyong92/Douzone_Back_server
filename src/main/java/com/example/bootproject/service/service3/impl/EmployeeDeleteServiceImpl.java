@@ -90,6 +90,7 @@ public class EmployeeDeleteServiceImpl implements EmployeeDeleteService {
             data = employeeListMapper.findEmployeeNumbersAndEmployeeName(searchText,pageRequest,size,isManager);
             data = data.stream().filter(d -> !DELETE_PROCESS_LIST.contains(d)).toList();
         }else{
+
             log.info("전체 사원 번호 호출 ");
             if(pageRequest.getSort().trim().isEmpty()){
                 pageRequest.setSort("employee_id");
