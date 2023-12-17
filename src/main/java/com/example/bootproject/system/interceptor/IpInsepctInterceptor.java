@@ -13,8 +13,8 @@ public class IpInsepctInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ip = IpAnalyzer.getClientIp(request);
         log.info("incoming ip : {}", ip);
-        String[] ipAddressParts = ip.split("\\.");
-        if (ipAddressParts.length > 9) {
+        String[] ipAddressParts = ip.split("\\.|:");
+        if (ipAddressParts.length == 8) {
             log.info("ip v6 filtering");
             return  (Integer.parseInt((ipAddressParts[0]),16) <= 65535) &&
                     (Integer.parseInt((ipAddressParts[1]),16) <= 65535) &&
