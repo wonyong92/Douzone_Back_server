@@ -56,7 +56,7 @@ public interface EmployeeService {
 
 
     //사원이름이나사번검색
-    List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter);
+    List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter, boolean isManager);
 
     boolean employeeExists(String employeeId);
 

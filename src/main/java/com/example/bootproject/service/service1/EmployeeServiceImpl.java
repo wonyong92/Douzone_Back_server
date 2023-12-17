@@ -353,16 +353,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     //사원검색
     @Override
-    public List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter) {
+    public List<EmployeeSearchResponseDto> searchByEmployeeIdOrName(String searchParameter, boolean isManager) {
         // 숫자만 있는지 검사합니다.
         if (searchParameter.matches("^[a-zA-Z0-9가-힣]+$")) {
             // 숫자나 문자(한글 포함)만 포함되어 있을 경우, 더 세부적인 검색을 진행
             if (searchParameter.matches("\\d+")) {
                 // 숫자일 경우, employeeId로 검색
-                return employeeMapper1.searchEmployeeEmployeeId(searchParameter);
+                return employeeMapper1.searchEmployeeEmployeeId(searchParameter,isManager);
             } else {
                 // 문자열(한글 포함)일 경우, name으로 검색
-                return employeeMapper1.searchEmployeeName(searchParameter);
+                return employeeMapper1.searchEmployeeName(searchParameter,isManager);
             }
         } else {
             log.info("특수문자가 포함되어있습니다");

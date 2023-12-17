@@ -333,9 +333,9 @@ public class EmployeeController {
      */
 
     @GetMapping("/employee/search")
-    public ResponseEntity<List<EmployeeSearchResponseDto>> searchEmployeeByIdOrNumber(@RequestParam String searchParameter) {
+    public ResponseEntity<List<EmployeeSearchResponseDto>> searchEmployeeByIdOrNumber(@RequestParam String searchParameter, @RequestParam boolean isManager) {
 
-        List<EmployeeSearchResponseDto> searchResults = employeeService.searchByEmployeeIdOrName(searchParameter);
+        List<EmployeeSearchResponseDto> searchResults = employeeService.searchByEmployeeIdOrName(searchParameter,isManager);
 
         if (searchParameter.isEmpty()) {
             log.info("검색요청데이터가 안들어왔습니다");
