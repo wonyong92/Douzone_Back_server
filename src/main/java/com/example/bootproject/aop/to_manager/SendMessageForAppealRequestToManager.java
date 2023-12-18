@@ -56,7 +56,6 @@ public class SendMessageForAppealRequestToManager {
                         manager.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                     } catch (IOException e) {
                         log.info("{} 로 메세지 전송 실패", manager.getEmployeeNumber());
-                        throw new RuntimeException(e);
                     }
                 });
             }
