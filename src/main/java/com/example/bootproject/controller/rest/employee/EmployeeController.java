@@ -333,7 +333,7 @@ public class EmployeeController {
      */
 
     @GetMapping("/employee/search")
-    public ResponseEntity<List<EmployeeSearchResponseDto>> searchEmployeeByIdOrNumber(@RequestParam String searchParameter, @RequestParam boolean isManager) {
+    public ResponseEntity<List<EmployeeSearchResponseDto>> searchEmployeeByIdOrNumber(@RequestParam String searchParameter, @RequestParam(defaultValue = "false") boolean isManager) {
 
         List<EmployeeSearchResponseDto> searchResults = employeeService.searchByEmployeeIdOrName(searchParameter,isManager);
 

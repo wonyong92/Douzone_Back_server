@@ -169,11 +169,11 @@ public interface EmployeeMapper1 {
 
 
     //이름검색
-    @Select("SELECT * FROM employee WHERE name LIKE CONCAT('%', #{searchParameter}, '%') and attendance_manager=#{isManager}")
+    @Select("SELECT * FROM employee WHERE name LIKE CONCAT('%', #{searchParameter}, '%') ")
     List<EmployeeSearchResponseDto> searchEmployeeName(String searchParameter,boolean isManager);
 
     //사원id검색
-    @Select("SELECT * FROM employee WHERE employee_id LIKE CONCAT('%', #{searchParameter}, '%') and attendance_manager=#{isManager}")
+    @Select("SELECT * FROM employee WHERE employee_id LIKE CONCAT('%', #{searchParameter}, '%') ")
     List<EmployeeSearchResponseDto> searchEmployeeEmployeeId(String searchParameter, boolean isManger);
 
 
