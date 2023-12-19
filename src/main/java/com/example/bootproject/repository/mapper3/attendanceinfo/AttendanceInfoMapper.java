@@ -1,5 +1,6 @@
 package com.example.bootproject.repository.mapper3.attendanceinfo;
 
+import com.example.bootproject.vo.vo1.response.AttendanceInfoResponseDto;
 import com.example.bootproject.vo.vo1.response.attendance.AttendanceCheckResponse;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,4 +27,6 @@ public interface AttendanceInfoMapper {
     //공휴일 체크하여 근태 판정 막기
     @Update("update attendance_info set attendance_status_category = #{status} where attendance_info_id=#{attendanceInfoId}")
     int updateAttendanceInfoStatus(String status, Long attendanceInfoId);
+    @Select("select * from attendance_info where attendance_info_id=#{attendanceInfoId}")
+    AttendanceInfoResponseDto findAttendanceInfoById(Long attendanceInfoId);
 }

@@ -3,6 +3,7 @@ package com.example.bootproject.service.service1;
 
 import com.example.bootproject.entity.Employee;
 import com.example.bootproject.repository.mapper1.EmployeeMapper1;
+import com.example.bootproject.repository.mapper3.attendanceinfo.AttendanceInfoMapper;
 import com.example.bootproject.vo.vo1.request.*;
 import com.example.bootproject.vo.vo1.request.employee.EmployeeInformationUpdateDto;
 import com.example.bootproject.vo.vo1.response.*;
@@ -30,7 +31,7 @@ import static com.example.bootproject.vo.vo1.response.Page.PAGE_SIZE;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper1 employeeMapper1;
-
+    private final AttendanceInfoMapper attendanceInfoMapper;
  /*
 - 사원 ID로 사원의 존재 여부를 확인한다.
 - 사원 ID가 없을 경우, 로그를 남기고 null을 반환하여 204 No Content 응답을 나타낸다.
@@ -236,11 +237,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             return null;
         }
 
-        AttendanceStatusCategoryRequestDto lateStatus = employeeMapper1.findLateStatus();
-        log.info("지각 상태 정보를 가져왔습니다: {}", lateStatus);
+        AttendanceInfoResponseDto old = attendanceInfoMapper.findAttendanceInfoById(attendanceInfoId);
+        log.info("근태 이상 정보를 가져왔습니다: {}", old);
 
         // 2. 근태 상태 업데이트
-        AttendanceApprovalUpdateRequestDto updateRequestDto = new AttendanceApprovalUpdateRequestDto("승인|"+lateStatus.getKey(), attendanceInfoId);
+        AttendanceApprovalUpdateRequestDto updateRequestDto = new AttendanceApprovalUpdateRequestDto("승인|"+old.getAttendanceStatusCategory(), attendanceInfoId);
         int updatedRows = employeeMapper1.updateAttendanceStatus(updateRequestDto);
         log.info("근태 상태를 업데이트 했습니다. 업데이트된 행의 수: {}", updatedRows);
 
