@@ -37,7 +37,7 @@ public class ChartContoller {
     ) {
         String employeeId = getLoginIdOrNull(req);
         if (employeeId == null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
@@ -56,9 +56,7 @@ public class ChartContoller {
 
         String employeeId=getLoginIdOrNull(req);
 
-        if(employeeId == null){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        //if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         int approvalVacationDays = chartService.getApprovalMonthUseVacation(year, month, employeeId);
         log.info("연과 월에 대한 연차 승인 개수",approvalVacationDays);
         return ResponseEntity.ok(approvalVacationDays);
@@ -68,9 +66,9 @@ public class ChartContoller {
     public ResponseEntity<Integer>getRequetedMonthUseVacation(@RequestParam int year, @RequestParam int month, HttpServletRequest req
     ){
         String employeeId = getLoginIdOrNull(req);
-        if(employeeId == null){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+//        if(employeeId == null){
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
         int requestedVacationDays = chartService.getRequestedMonthUseVacation(year,month,employeeId);
         log.info("연과 월에 대한 연차 요청 개수",requestedVacationDays);
         return ResponseEntity.ok(requestedVacationDays);
@@ -80,9 +78,7 @@ public class ChartContoller {
     public ResponseEntity<Integer>getRejectedMonthUseVacation(@RequestParam int year, @RequestParam int month , HttpServletRequest req
     ){
         String employeeId = getLoginIdOrNull(req);
-        if(employeeId == null){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        //if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         int rejectedVacationDays = chartService.getRejectedMonthUseVacation(year,month,employeeId);
         log.info("연과 월에 대한 연차 거부 개수",rejectedVacationDays);
         return ResponseEntity.ok(rejectedVacationDays);
@@ -93,7 +89,7 @@ public class ChartContoller {
     ){
         String employeeId = getLoginIdOrNull(req);
         if(employeeId == null){
-            return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         int abnormalAttendance = chartService.getApprovalMonthUseAttendance(year,month,employeeId);
@@ -105,7 +101,7 @@ public class ChartContoller {
     ){
         String employeeId = getLoginIdOrNull(req);
         if(employeeId == null){
-            return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         int normalAttendance = chartService.getNoApprovalMonthUseAttendance(year,month,employeeId);
@@ -116,9 +112,7 @@ public class ChartContoller {
     public ResponseEntity<Integer>getRequestedAttendance(@RequestParam int year , @RequestParam int month , HttpServletRequest req)
     {
         String employeeId = getLoginIdOrNull(req);
-        if(employeeId == null){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        //if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         int requstedAttendance = chartService.getApprovalRequestedAttendance(year,month,employeeId);
         return ResponseEntity.ok(requstedAttendance);

@@ -202,7 +202,7 @@ public class EmployeeController {
     @PostMapping("/employee/approve/{attendanceInfoId}")
     public ResponseEntity<AttendanceApprovalResponseDto> makeApproveRequest(@PathVariable("attendanceInfoId") Long attendanceInfoId, HttpServletRequest req) {
         String employeeId = getLoginIdOrNull(req);
-        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         if (attendanceInfoId == null || employeeId == null) {
             log.info("근태 정보 ID 또는 사원 ID가 누락되었습니다.");
@@ -227,7 +227,7 @@ public class EmployeeController {
     @GetMapping("/employee/approve")
     public ResponseEntity<Page<List<AttendanceApprovalUpdateResponseDto>>> getHistoryOfApproveOfMine(@Valid PageRequest pageRequest, BindingResult br, HttpServletRequest req) {
         String employeeId = getLoginIdOrNull(req);
-        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         if (br.hasErrors()) {
             AttendanceApprovalUpdateResponseDto body = new AttendanceApprovalUpdateResponseDto();
@@ -297,7 +297,7 @@ public class EmployeeController {
         }
 
         String employeeId = getLoginIdOrNull(req); // Assume this is retrieved from session or security context
-        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         try {
             // 승인 내역 검색 시도
@@ -360,7 +360,8 @@ public class EmployeeController {
         if (loginId != null) {
             result = employeeService.getSpecificVacationRequestInformation(loginId, identifier);
         } else {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+//            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            result=null;
         }
         return ResponseEntity.ok(result);
     }
@@ -405,7 +406,7 @@ public class EmployeeController {
         //status validation check 추가 필요
         //TODO : 로그인 정보를 가져오기
         String employeeId = getLoginIdOrNull(req);
-        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         if (employeeId != null) {
 //            int currentPage = validationPageNum(String.valueOf(pagedLocalDateDto.getPage())); //페이지 번호에 대한 validation 체크
@@ -443,7 +444,7 @@ public class EmployeeController {
     public ResponseEntity<Integer> getRemainOfVacationOfMine(HttpServletRequest req) {
         String id = getLoginIdOrNull(req);
         if (id == null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
         }
         int setting = employeeService.getRemainOfVacationOfMine(id); //본인의 잔여 연차 개수 반환 받음
         log.info("남은 연차 수 : {}", setting);
@@ -463,7 +464,7 @@ public class EmployeeController {
     public ResponseEntity<Integer> getRemainOfVacationOfMineForRequest(HttpServletRequest req) {
         String id = getLoginIdOrNull(req);
         if (id == null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Error
         }
         int setting = employeeService.getRemainOfVacationOfMineForRequest(id); //본인의 잔여 연차 개수 반환 받음
         log.info("남은 연차 수 : {}", setting);
@@ -483,7 +484,7 @@ public class EmployeeController {
     @GetMapping("/employee/information")
     public ResponseEntity<Employee> getInformationOfMine(HttpServletRequest req) {
         String loginId = getLoginIdOrNull(req);
-        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        //if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         Employee result = employeeService.findEmployeeInfoById(loginId);
         if (result != null) {
@@ -496,7 +497,7 @@ public class EmployeeController {
     @PostMapping("/employee/information")
     public ResponseEntity<EmployeeResponseWithoutPasswordDto> modifyEmployeeInformationOfMine(HttpServletRequest req, @ModelAttribute EmployeeInformationUpdateDto dto) {
         String loginId = getLoginIdOrNull(req);
-        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        //if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         EmployeeResponseWithoutPasswordDto result = employeeService.updateInformation(loginId, dto);
         if (result != null) {
@@ -561,7 +562,7 @@ public class EmployeeController {
     @PostMapping("/employee/appeal")
     public ResponseEntity<AppealRequestResponseDto> makeAppealRequest(@ModelAttribute AppealRequestDto dto, HttpServletRequest req) {
         String loginId = getLoginIdOrNull(req);
-        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        //if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         dto.setEmployeeId(loginId);
 
         log.info("정상 작업 진행");
@@ -580,7 +581,7 @@ public class EmployeeController {
     public ResponseEntity<VacationRequestResponseDto> requestVacation(@ModelAttribute com.example.bootproject.vo.vo1.request.vacation.VacationRequestDto dto, @SessionAttribute(name = "loginId", required = false) String employeeId, HttpServletRequest req) {
         log.info("/employee/vacation");
         String loginId = getLoginIdOrNull(req);
-        if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        //if (loginId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         dto.setEmployeeId(loginId);
 
         log.info("정상 작업 진행");
