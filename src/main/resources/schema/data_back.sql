@@ -28,7 +28,7 @@ values ('조정 요청 반려'),
 
 insert into attendance_status_category
 values ('근태 판정 중'),
-
+       ('조정 요청 승인'),
        ('정상 근태'),
        ('조정 요청 중'),
        ('이상 근태(조기 퇴근)'),
@@ -41,7 +41,8 @@ values ('근태 판정 중'),
        ('승인|이상 근태(결근)'),
        ('승인|이상 근태(지각, 조기 퇴근)'),
        ('승인|이상 근태(지각)'),
-       ('승인|이상 근태(지각, 퇴근 정보 없음)'),
+       ('승인|이상 근태(지각, 퇴근 정보 없음)'),('연차 요청 중'),('연차 요청 반려'),('연차 요청 승인'),
+
        ('승인|이상 근태(퇴근 정보 없음)');
 insert into douzone_test.attendance_info (attendance_info_id, attendance_status_category, employee_id, start_time,
                                           end_time, attendance_date)

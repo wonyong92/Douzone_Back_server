@@ -41,13 +41,13 @@ public class ApiItemToEventDtoForVacation {
         * */
         switch(status){
             case VACATION_REQUEST_STATE_REQUESTED:
-                this.backgroundColor="#FFFACD";
+                this.backgroundColor="#B3A62C";
                         break;
             case VACATION_REQUEST_STATE_REJECTED:
-                this.backgroundColor="#FFB6C1";
+                this.backgroundColor="#F74F4F";
                         break;
             case VACATION_REQUEST_STATE_PERMITTED:
-                this.backgroundColor="#ADD8E6";
+                this.backgroundColor="#4F5DF8";
                         break;
         }
         extendedProps = new ExtendPropsForVacation("vacationRequested", dto.getVacationQuantity(), dto.getVacationRequestStateCategoryKey(), dto.getVacationRequestKey());

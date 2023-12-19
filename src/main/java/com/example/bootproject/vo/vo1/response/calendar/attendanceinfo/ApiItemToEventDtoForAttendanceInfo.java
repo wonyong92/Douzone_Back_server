@@ -44,23 +44,23 @@ public class ApiItemToEventDtoForAttendanceInfo {
         switch (status) {
             // 정상 근태
             case ATTENDANCE_INFO_STATUS_NORMAL:
-                this.backgroundColor = "#78E8F7";
+                this.backgroundColor = "#1B46C6";
                 break;
             // 근태 판정 중
             case ATTENDANCE_INFO_STATUS_PENDING:
-                this.backgroundColor = "#AAFFBC";
+                this.backgroundColor = "#33CC4C";
                 break;
             // 조정 요청 중
             case ATTENDANCE_INFO_STATUS_REQUESTED:
-                this.backgroundColor = "#FFFF86";
+                this.backgroundColor = "#A4A07E";
                 break;
             // 조정 요청 승인
             case APPEAL_REQUEST_STATE_PERMITTED:
-                this.backgroundColor = "#61F059";
+                this.backgroundColor = "#41755C";
                 break;
             // 조정 요청 반려
             case APPEAL_REQUEST_STATE_REJECTED:
-                this.backgroundColor = "#FF9933";
+                this.backgroundColor = "#FF8800";
                 break;
             ////이상 근태
             case ATTENDANCE_INFO_STATUS_ABSENT:
