@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.bootproject.system.StaticString.*;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -97,8 +99,11 @@ public class CalendarServiceImpl implements CalendarService {
     public List<ApiItemToEventDtoForAttendanceInfo> getAttendanceInfoEvents(CalendarSearchRequestDtoForAttendanceInfo dto, String loginId) {
         log.info("getAttendanceInfoEvents - employeeId = {}", loginId);
         List<AttendanceInfoResponseDto> attendanceInfoResponseDtos = employeeService.findAllAttendanceInfoOfMineByYearAndMonth(loginId, dto.getYear(), dto.getMonth());
-        List<ApiItemToEventDtoForAttendanceInfo> mappedResult = attendanceInfoResponseDtos.stream().map(entity ->
-                new ApiItemToEventDtoForAttendanceInfo(entity)).collect(Collectors.toList());
+        List<ApiItemToEventDtoForAttendanceInfo> mappedResult = attendanceInfoResponseDtos.stream().filter(entity -> !entity.getAttendanceStatusCategory().equals(VACATION_REQUEST_STATE_REQUESTED) && !entity.getAttendanceStatusCategory().equals(VACATION_REQUEST_STATE_PERMITTED) && !entity.getAttendanceStatusCategory().equals(VACATION_REQUEST_STATE_REJECTED)).map(entity ->
+        {
+                return new ApiItemToEventDtoForAttendanceInfo(entity);
+
+        }).collect(Collectors.toList());
         return mappedResult;
     }
 

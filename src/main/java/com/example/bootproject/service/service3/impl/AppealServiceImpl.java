@@ -132,10 +132,11 @@ public class AppealServiceImpl implements AppealService {
                 log.info("attendanceInfoId = {}, startTime = {} endTime = {} result = {}", old.getAttendanceInfoId(), startTime, endTime, "지각 출근 + 야근 상태");
             }
 
-
-            appealMapper.process(dto);
             if (dto.getStatus().equals(APPEAL_REQUEST_STATE_PERMITTED))
-                dto.setReasonForRejection("permitted");
+                dto.setReasonForRejection("승인 됨");
+            appealMapper.process(dto);
+            appealMapper.changeAttendanceInfo(dto);
+
             AppealRequestResponseDto result = appealMapper.findById(dto.getAttendanceAppealRequestId());
             log.info("요청 처리 쓰기 수행 결과 {}", result);
             return result;

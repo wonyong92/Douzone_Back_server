@@ -55,7 +55,6 @@ public class SendMessageForProcessAppealRequestToEmployee {
                     }
                 }
             } catch (Exception e) {
-
                 for (SseEmitterWithEmployeeInformationDto reRegisteredEmitterDto : employeeEmitters) {
                     if (employeeId.equals(reRegisteredEmitterDto.getEmployeeNumber())) {
                         log.info("타임아웃으로 메세지 전송 실패. 재전송 수행!");

@@ -1,4 +1,6 @@
+create database if not exists douzon_test;
 use douzone_test;
+
 drop table if exists notification_message;
 drop table if exists auth;
 drop table if exists attendance_appeal_request;

@@ -54,8 +54,9 @@ public class SendMessageForAppealRequestToManager {
                 managerEmitters.stream().filter(managerEmitter -> managerEmitter.getEmployeeNumber().equals(managerId)).findFirst().ifPresent((manager) -> {
                     try {
                         manager.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         log.info("{} 로 메세지 전송 실패", manager.getEmployeeNumber());
+                        throw new RuntimeException(e);
                     }
                 });
             }

@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_PERMITTED;
-import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REQUESTED;
+import static com.example.bootproject.system.StaticString.*;
 
 @Service
 @Transactional
@@ -53,6 +52,10 @@ public class VacationServiceImpl implements VacationService {
                 // 입력 데이터를 insert
                 log.info("정상 연차 생성 요청 처리 진행");
                 vacationMapper.addRequest(dto);
+                for(int i = 0; i<dto.getVacationQuantity() ; i++){
+                    dto.setVacationStartDate(dto.getVacationStartDate().plusDays(1));
+                    vacationMapper.addAttendanceInfo(dto);
+                }
                 long generatedKey = dto.getVacationRequestKey();
                 VacationRequestResponseDto result = vacationMapper.findByVacationRequestKey(generatedKey);
                 return result;
@@ -84,9 +87,17 @@ public class VacationServiceImpl implements VacationService {
         /*요청 번호에 문제가 있는 경우 null 반환*/
         if (old != null) {
             log.info("요청 처리 쓰기 수행 - 기존 데이터 {}", old);
-            vacationMapper.process(dto);
             if (dto.getVacationRequestStateCategoryKey().equals(VACATION_REQUEST_STATE_PERMITTED))
-                dto.setReasonForRejection("permitted");
+                dto.setReasonForRejection("승인됨");
+            vacationMapper.process(dto);
+
+            if(dto.getVacationRequestStateCategoryKey().equals(VACATION_REQUEST_STATUS_CATEGORY_REJECTED))
+            {
+                for(int i = 0; i<old.getVacationQuantity() ; i++){
+                    old.setVacationStartDate(old.getVacationStartDate().plusDays(1));
+                    vacationMapper.removeAttendanceInfo(old);
+                }
+            }
             VacationRequestResponseDto result = vacationMapper.findByVacationRequestKey(dto.getVacationRequestKey());
             log.info("요청 처리 쓰기 수행 결과 {}", result);
             return result;

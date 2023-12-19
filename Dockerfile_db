@@ -1,0 +1,11 @@
+# Use the official MariaDB base image
+FROM mariadb:latest
+
+# Set the root password (change it to a secure password)
+ENV MYSQL_ROOT_PASSWORD=1234
+# Create a database and user
+# Expose MariaDB port
+EXPOSE 3306
+
+# Set the entry point to run the MariaDB server
+CMD ["mysqld"]

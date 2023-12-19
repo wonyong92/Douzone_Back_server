@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDate;
 
+import static com.example.bootproject.system.StaticString.ATTENDANCE_INFO_STATUS_PENDING;
 import static com.example.bootproject.system.StaticString.VACATION_REQUEST_STATE_REQUESTED;
 
 @Mapper
@@ -39,4 +40,11 @@ public interface VacationMapper {
 
     @Select("select * from vacation_adjusted_history where vacation_adjusted_history_id = #{generatedKey}")
     VacationAdjustResponseDto getModifyVacationOfEmployee(Long generatedKey);
+    @Insert("INSERT INTO attendance_info (employee_id, attendance_date,attendance_status_category) " +
+            "VALUES (#{dto.employeeId}, #{dto.vacationStartDate} , '"+VACATION_REQUEST_STATE_REQUESTED+"' ) " +
+            "ON DUPLICATE KEY UPDATE attendance_status_category = '"+VACATION_REQUEST_STATE_REQUESTED+"'")
+    void addAttendanceInfo(@Param(value = "dto")VacationRequestDto dto);
+
+    @Delete("delete from attendance_info where employee_id=#{dto.employeeId} and attendance_date=#{dto.vacationStartDate} and attendance_status_category=' " +VACATION_REQUEST_STATE_REQUESTED+"'")
+    void removeAttendanceInfo(VacationRequestResponseDto dto);
 }
