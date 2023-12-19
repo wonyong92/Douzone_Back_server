@@ -41,6 +41,6 @@ public interface AppealMapper {
     @Update("update attendance_appeal_request set status=#{dto.status}, reason_for_rejection=#{dto.reasonForRejection} where attendance_appeal_request_id =  #{dto.attendanceAppealRequestId}")
     @Options(useGeneratedKeys = true, keyProperty = "attendanceAppealRequestId")
     void process(@Param("dto") AppealProcessRequestDto dto);
-    @Update("update attendance_info set attendance_status_category=${dto.status}")
-    void changeAttendanceInfo(AppealProcessRequestDto dto);
+    @Update("update attendance_info set attendance_status_category='${dto.status}'")
+    void changeAttendanceInfo(@Param(value = "dto")AppealProcessRequestDto dto);
 }

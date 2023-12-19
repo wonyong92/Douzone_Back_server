@@ -28,7 +28,7 @@ values ('조정 요청 반려'),
 
 insert into attendance_status_category
 values ('근태 판정 중'),
-
+        ('조정 요청 승인'),
        ('정상 근태'),
        ('조정 요청 중'),
        ('이상 근태(조기 퇴근)'),
