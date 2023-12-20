@@ -51,12 +51,16 @@ public interface ManagerService1 {
 
     Page<List<VacationResponseDto>> getVacationHistory(PagingRequsetWithDateSearchDto requestDto);
 
+    Page<List<VacationResponseDto>>getAllVacationHistorys(int page, String sort, String desc,String searchParameter);
+
 
     Page<List<EmployeeResponseWithoutPasswordDto>> getEmployeeList(int currentPage, String sortColumn, String descCheck);
 
     int getVacationDefaultLatestCount(String info);
 
     Page<List<AttendanceAppealHistory>> getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto);
+
+    Page<List<AttendanceAppealHistory>>getAllAttendanceHistory(int page, String sort, String desc,String searchParameter);
 
     List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedByIdOrNumber(@RequestParam String searchParameter);
 

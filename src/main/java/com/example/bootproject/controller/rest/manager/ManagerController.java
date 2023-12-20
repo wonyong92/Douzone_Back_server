@@ -712,4 +712,18 @@ public class ManagerController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN); //403 ERROR
     }
 
+
+    @GetMapping("/manager/vacation/alls")
+    public ResponseEntity<Page<List<VacationResponseDto>>> getAllVacationHistorys(@RequestParam int page , @RequestParam String sort , @RequestParam String desc, @RequestParam String searchParameter) {
+        Page<List<VacationResponseDto>> vacatiosnHistoryPage = managerService1.getAllVacationHistorys(page,sort,desc,searchParameter);
+        return ResponseEntity.ok(vacatiosnHistoryPage);
+    }
+
+
+    @GetMapping("/manager/attendance/alls")
+    public ResponseEntity<Page<List<AttendanceAppealHistory>>> getAllAttendanceHistorys(@RequestParam int page , @RequestParam String sort , @RequestParam String desc, @RequestParam String searchParameter) {
+        Page<List<AttendanceAppealHistory>> allAttendanceHistory = managerService1.getAllAttendanceHistory(page,sort,desc,searchParameter);
+        return ResponseEntity.ok(allAttendanceHistory);
+    }
+
 }

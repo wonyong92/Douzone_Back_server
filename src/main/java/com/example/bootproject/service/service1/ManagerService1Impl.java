@@ -384,6 +384,53 @@ public class ManagerService1Impl implements ManagerService1 {
         return result;
     }
 
+
+    @Override
+    public Page<List<VacationResponseDto>> getAllVacationHistorys(int page, String sort, String desc, String searchParameter) {
+        int size = PAGE_SIZE;
+        int startRow = (page - 1) * size;
+        List<VacationResponseDto> vacationHistory;
+        int totalRowCount;
+
+        if (isNumeric(searchParameter)) {
+            vacationHistory = managerMapper1.getAllVacationHistorysById(size, startRow, sort, desc, searchParameter);
+            totalRowCount = managerMapper1.countAllVacationHistoryById(searchParameter);
+        } else {
+            vacationHistory = managerMapper1.getAllVacationHistorysByName(size, startRow, sort, desc, searchParameter);
+            totalRowCount = managerMapper1.countAllVacationHistoryByName(searchParameter);
+        }
+
+        if (vacationHistory.isEmpty()) {
+            return new Page<>(new ArrayList<>(), false, sort, desc, page, 0);
+        }
+
+        int lastPageNumber = (int)Math.ceil((double) totalRowCount / size);
+        return new Page<>(vacationHistory, page < lastPageNumber, sort, desc, page, totalRowCount);
+    }
+
+    @Override
+    public Page<List<AttendanceAppealHistory>> getAllAttendanceHistory(int page, String sort, String desc, String searchParameter) {
+        int size = PAGE_SIZE;
+        int startRow = (page - 1) * size;
+        List<AttendanceAppealHistory> attendanceAppealHistory;
+        int totalRowCount;
+
+        if (isNumeric(searchParameter)) {
+            attendanceAppealHistory = managerMapper1.getAllAttendanceHistorysById(size, startRow, sort, desc, searchParameter);
+            totalRowCount = managerMapper1.countAllAttendanceHistoryById(searchParameter);
+        } else {
+            attendanceAppealHistory = managerMapper1.getAllAttendanceHistorysByName(size, startRow, sort, desc, searchParameter);
+            totalRowCount = managerMapper1.countAllAttendanceHistoryByName(searchParameter);
+        }
+
+        if (attendanceAppealHistory.isEmpty()) {
+            return new Page<>(new ArrayList<>(), false, sort, desc, page, 0);
+        }
+
+        int lastPageNumber = (int)Math.ceil((double) totalRowCount / size);
+        return new Page<>(attendanceAppealHistory, page < lastPageNumber, sort, desc, page, totalRowCount);
+    }
+
     @Override
     public int getVacationDefaultLatestCount(String info) {
         log.info("getVacationDefaultLatestCount : {}", info);
@@ -439,6 +486,29 @@ public class ManagerService1Impl implements ManagerService1 {
         return new Page<>(vacationHistory, isLastPage, sort, desc, currentPage, totalElement);
     }
 
+
+
+//    @Override
+//    public Page<List<VacationRequestDto>> getAllVacationHistory(PagingRequestDto pagingRequestDto) {
+//        int size = PAGE_SIZE; // 한 페이지에 출력할 게시물 개수
+//        int currentPage = pagingRequestDto.getCurrentPage(); // 현재 페이지
+//        int startRow = (currentPage - 1) * size; // 가져오기 시작할 row의 번호
+//        String orderByCondition = pagingRequestDto.getSort(); // 정렬할 컬럼 이름
+//        String sortOrder = pagingRequestDto.getSortOrder(); // 정렬 순서
+//
+//        // 전체 데이터 개수 조회
+//        int totalElements = managerMapper1.getVacationAdjustedHistory(); // myMapper는 예시이며, 실제 매퍼를 사용해야 함
+//
+//        // 현재 페이지 데이터 조회
+//        List<VacationRequestDto> vacationRequests = managerMapper1.findAllVacationRequests(startRow, size, orderByCondition, sortOrder); // myMapper는 예시이며, 실제 매퍼를 사용해야 함
+//
+//        // 총 페이지 수 계산
+//        int totalPages = (int) Math.ceil((double) totalElements / size);
+//
+//        // Page 객체 생성 및 반환
+//        return new Page<>(vacationRequests, currentPage, totalPages, totalElements);
+//    }
+
     @Override
     public Page<List<AttendanceAppealHistory>> getAttendanceHistory(PagingRequsetWithDateSearchDto requestDto) {
         int size = Page.PAGE_SIZE;
@@ -484,6 +554,13 @@ public class ManagerService1Impl implements ManagerService1 {
         return new Page<>(attendanceAppealHistory, isLastPage, sort, desc, currentPage, totalElement);
 
     }
+
+
+
+
+
+
+
 
     @Override
     public List<AllAttendanceAppealMediateResponseDto> searchAppealAllRequestedByIdOrNumber(String searchParameter) {

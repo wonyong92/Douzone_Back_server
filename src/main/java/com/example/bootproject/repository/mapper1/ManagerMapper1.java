@@ -152,50 +152,84 @@ public interface ManagerMapper1 {
     int countVacationRequestByEmployeeAndDate(String date, String searchParameter);
 
 
+
+
     //사원에대한 검색과년월일 검색
-    @Select("SELECT vr.employee_id as employeeId, " + "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " + "vr.vacation_start_date as vacationStartDate, " + "vr.vacation_end_date as vacationEndDate, " + "vr.reason, " + "vr.vacation_request_time as vacationRequestTime, " + "vr.reason_for_rejection as reasonForRejection, " + "e.name " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(vr.vacation_request_time) = #{date} " + "LIMIT #{size} OFFSET #{startRow}")
+    @Select("SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as vacationRequestStateCategoryKey,vr.vacation_start_date as vacationStartDate, vr.vacation_end_date as vacationEndDate, vr.reason, vr.vacation_request_time as vacationRequestTime, vr.reason_for_rejection as reasonForRejection, e.name FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) AND DATE(vr.vacation_start_date) = #{date} " + "LIMIT #{size} OFFSET #{startRow}")
     List<VacationResponseDto> getVacationHistoryByDate(int size, int startRow, String date, String searchParameter);
 
 
-    @Select("SELECT vr.employee_id as employeeId, " + "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " + "vr.vacation_start_date as vacationStartDate, " + "vr.vacation_end_date as vacationEndDate, " + "vr.reason, " + "vr.vacation_request_time as vacationRequestTime, " + "vr.reason_for_rejection as reasonForRejection, " + "e.name " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "LIMIT #{size} OFFSET #{startRow}")
+    @Select("SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as vacationRequestStateCategoryKey,vr.vacation_start_date as vacationStartDate,vr.vacation_end_date as vacationEndDate, vr.reason, vr.vacation_request_time as vacationRequestTime, vr.reason_for_rejection as reasonForRejection, e.name FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) AND YEAR(vr.vacation_start_date) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(vr.vacation_start_date) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "LIMIT #{size} OFFSET #{startRow}")
     List<VacationResponseDto> getVacationHistoryByMonth(int size, int startRow, String yearMonth, String searchParameter);
 
-    @Select("SELECT COUNT(*) " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(vr.vacation_request_time) = #{date}")
+    @Select("SELECT COUNT(*) FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) AND DATE(vr.vacation_start_date) = #{date}")
     int countVacationRequestByDate(String date, String searchParameter);
 
     //사원검색에 대한 총갯수
-    @Select("SELECT COUNT(*) " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")
+    @Select("SELECT COUNT(*) FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) AND YEAR(vr.vacation_start_date) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) AND MONTH(vr.vacation_start_date) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")
     int countVacationRequestByMonth(String yearMonth, String searchParameter);
 
-    @Select("SELECT vr.employee_id as employeeId, " + "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " + "vr.vacation_start_date as vacationStartDate, " + "vr.vacation_end_date as vacationEndDate, " + "vr.reason, " + "vr.vacation_request_time as vacationRequestTime, " + "vr.reason_for_rejection as reasonForRejection, " + "e.name " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(vr.vacation_request_time) = #{date} " + "LIMIT #{size} OFFSET #{startRow}")
+
+
+    @Select("SELECT vr.employee_id as employeeId, " + "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " + "vr.vacation_start_date as vacationStartDate, " + "vr.vacation_end_date as vacationEndDate, " + "vr.reason, " + "vr.vacation_request_time as vacationRequestTime, " + "vr.reason_for_rejection as reasonForRejection, " + "e.name " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(vr.vacation_start_date) = #{date} " + "LIMIT #{size} OFFSET #{startRow}")
     List<VacationResponseDto> getVacationHistoryByDateAndId(int size, int startRow, String date, String searchParameter);
 
 
-    @Select("SELECT vr.employee_id as employeeId, " + "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " + "vr.vacation_start_date as vacationStartDate, " + "vr.vacation_end_date as vacationEndDate, " + "vr.reason, " + "vr.vacation_request_time as vacationRequestTime, " + "vr.reason_for_rejection as reasonForRejection, " + "e.name " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "LIMIT #{size} OFFSET #{startRow}")
+    @Select("SELECT vr.employee_id as employeeId, " + "vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, " + "vr.vacation_start_date as vacationStartDate, " + "vr.vacation_end_date as vacationEndDate, " + "vr.reason, " + "vr.vacation_request_time as vacationRequestTime, " + "vr.reason_for_rejection as reasonForRejection, " + "e.name " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(vr.vacation_start_date) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(vr.vacation_start_date) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "LIMIT #{size} OFFSET #{startRow}")
     List<VacationResponseDto> getVacationHistoryByMonthAndId(int size, int startRow, String yearMonth, String searchParameter);
 
 
-    @Select("SELECT COUNT(*) " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(vr.vacation_request_time) = #{date}")
+    @Select("SELECT COUNT(*) " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(vr.vacation_start_date) = #{date}")
     int countVacationRequestByDateAndId(String date, String searchParameter);
 
 
     //사원검색에 대한 총갯수
-    @Select("SELECT COUNT(*) " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(vr.vacation_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(vr.vacation_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")
+    @Select("SELECT COUNT(*) " + "FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(vr.vacation_start_date) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(vr.vacation_start_date) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")
     int countVacationRequestByMonthAndId(String yearMonth, String searchParameter);
 
 
-    @Select("SELECT ar.employee_id as employeeId, " + "ar.attendance_appeal_request_id as attendanceAppealRequestId, " + "ar.status as status, " + "ar.reason, " + "ar.attendance_info_id as attendanceInfoId, " + "ar.appealed_start_time as appealedStartTime," + "ar.appealed_end_time as appealedEndTime, " + "ar.attendance_appeal_request_time as attendanceAppealRequestTime, " + "ar.reason_for_rejection as  reasonForRejection, " + "e.name " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(ar.attendance_appeal_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(ar.attendance_appeal_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "LIMIT #{size} OFFSET #{startRow}")
+    @Select("SELECT COUNT(*) FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) ")
+    int countAllVacationHistoryById(String searchParameter);
+
+    @Select("SELECT COUNT(*) FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai ON ar.attendance_info_id = ai.attendance_info_id WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) ")
+    int countAllAttendanceHistoryById(String searchParameter);
+
+    @Select("SELECT COUNT(*) FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) ")
+    int countAllVacationHistoryByName(String searchParameter);
+
+    @Select("SELECT COUNT(*) FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai ON ar.attendance_info_id = ai.attendance_info_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) ")
+    int countAllAttendanceHistoryByName(String searchParameter);
+
+    @Select("SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, vr.vacation_start_date as vacationStartDate, vr.vacation_end_date as vacationEndDate, vr.reason, vr.vacation_request_time as vacationRequestTime, vr.reason_for_rejection as reasonForRejection, e.name FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
+    List<VacationResponseDto> getAllVacationHistorysById(int size, int startRow, String sort, String desc , String searchParameter);
+    @Select("SELECT ar.employee_id as employeeId, ar.attendance_appeal_request_id as attendanceAppealRequestId, ar.status as status, ar.reason, ar.attendance_info_id as attendanceInfoId, ar.appealed_start_time as appealedStartTime, ar.appealed_end_time as appealedEndTime, ar.attendance_appeal_request_time as attendanceAppealRequestTime, ar.reason_for_rejection as reasonForRejection, e.name FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai ON ar.attendance_info_id = ai.attendance_info_id WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%'))  ORDER BY ar.attendance_appeal_request_time DESC LIMIT #{size} OFFSET #{startRow}")
+    List<AttendanceAppealHistory> getAllAttendanceHistorysById(int size, int startRow , String sort , String desc ,String searchParameter);
+
+    @Select("SELECT vr.employee_id as employeeId, vr.vacation_request_state_category_key as vacationRequestStateCategoryKey, vr.vacation_start_date as vacationStartDate, vr.vacation_end_date as vacationEndDate, vr.reason, vr.vacation_request_time as vacationRequestTime, vr.reason_for_rejection as reasonForRejection, e.name FROM vacation_request vr INNER JOIN employee e ON vr.employee_id = e.employee_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) ORDER BY ${sort} ${desc} LIMIT #{size} OFFSET #{startRow}")
+    List<VacationResponseDto> getAllVacationHistorysByName(int size, int startRow, String sort, String desc , String searchParameter);
+    @Select("SELECT ar.employee_id as employeeId, ar.attendance_appeal_request_id as attendanceAppealRequestId, ar.status as status, ar.reason, ar.attendance_info_id as attendanceInfoId, ar.appealed_start_time as appealedStartTime, ar.appealed_end_time as appealedEndTime, ar.attendance_appeal_request_time as attendanceAppealRequestTime, ar.reason_for_rejection as reasonForRejection, e.name FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai ON ar.attendance_info_id = ai.attendance_info_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%'))  ORDER BY ar.attendance_appeal_request_time DESC LIMIT #{size} OFFSET #{startRow}")
+    List<AttendanceAppealHistory> getAllAttendanceHistorysByName(int size, int startRow , String sort , String desc ,String searchParameter);
+
+
+
+    @Select("SELECT ar.employee_id as employeeId, ar.attendance_appeal_request_id as attendanceAppealRequestId, ar.status as status, ar.reason, ar.attendance_info_id as attendanceInfoId, ar.appealed_start_time as appealedStartTime, ar.appealed_end_time as appealedEndTime, ar.attendance_appeal_request_time as attendanceAppealRequestTime, ar.reason_for_rejection as reasonForRejection, e.name FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai ON ar.attendance_info_id = ai.attendance_info_id WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) AND YEAR(ai.attendance_date) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) AND MONTH(ai.attendance_date) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) LIMIT #{size} OFFSET #{startRow}")
     List<AttendanceAppealHistory> getAttendanceHistoryByMonthAndId(int size, int startRow, String yearMonth, String searchParameter);
 
 
-    @Select("SELECT ar.employee_id as employeeId, " + "ar.attendance_appeal_request_id as attendanceAppealRequestId, " + "ar.status as status, " + "ar.reason, " + "ar.attendance_info_id as attendanceInfoId, " + "ar.appealed_start_time as appealedStartTime," + "ar.appealed_end_time as appealedEndTime, " + "ar.attendance_appeal_request_time as attendanceAppealRequestTime, " + "ar.reason_for_rejection as  reasonForRejection, " + "e.name " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(ar.attendance_appeal_request_time) = #{date} " + "LIMIT #{size} OFFSET #{startRow}")
+
+
+    @Select("SELECT ar.employee_id as employeeId, ar.attendance_appeal_request_id as attendanceAppealRequestId, ar.status as status, ar.reason, ar.attendance_info_id as attendanceInfoId, ar.appealed_start_time as appealedStartTime, ar.appealed_end_time as appealedEndTime, ar.attendance_appeal_request_time as attendanceAppealRequestTime, ar.reason_for_rejection as reasonForRejection, e.name FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai ON ar.attendance_info_id = ai.attendance_info_id WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) AND DATE(ai.attendance_date) = #{date} LIMIT #{size} OFFSET #{startRow}")
     List<AttendanceAppealHistory> getAttendanceHistoryByDateAndId(int size, int startRow, String date, String searchParameter);
 
     @Select("SELECT COUNT(*) " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(ar.attendance_appeal_request_time)= #{date}")
     int countAttendanceRequestByDateAndId(String date, String searchParameter);
 
-    @Select("SELECT ar.employee_id as employeeId, " + "ar.attendance_appeal_request_id as attendanceAppealRequestId, " + "ar.status as status, " + "ar.reason, " + "ar.attendance_info_id as attendanceInfoId, " + "ar.appealed_start_time as appealedStartTime," + "ar.appealed_end_time as appealedEndTime, " + "ar.attendance_appeal_request_time as attendanceAppealRequestTime, " + "ar.reason_for_rejection as  reasonForRejection, " + "e.name " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id " + "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(ar.attendance_appeal_request_time) = #{date} " + "LIMIT #{size} OFFSET #{startRow}")
+    @Select("SELECT ar.employee_id as employeeId, ar.attendance_appeal_request_id as attendanceAppealRequestId, ar.status as status, ar.reason, ar.attendance_info_id as attendanceInfoId, ar.appealed_start_time as appealedStartTime,ar.appealed_end_time as appealedEndTime, ar.attendance_appeal_request_time as attendanceAppealRequestTime, ar.reason_for_rejection as  reasonForRejection, e.name FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai on ar.attendance_info_id = ai.attendance_info_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) AND DATE(ai.attendance_date) = #{date} LIMIT #{size} OFFSET #{startRow}")
     List<AttendanceAppealHistory> getAttendanceHistoryByDatename(int size, int startRow, String date, String searchParameter);
+
+    @Select("SELECT ar.employee_id as employeeId, ar.attendance_appeal_request_id as attendanceAppealRequestId, ar.status as status, ar.reason, ar.attendance_info_id as attendanceInfoId, ar.appealed_start_time as appealedStartTime, ar.appealed_end_time as appealedEndTime, ar.attendance_appeal_request_time as attendanceAppealRequestTime, ar.reason_for_rejection as reasonForRejection, e.name FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id JOIN attendance_info ai ON ar.attendance_info_id = ai.attendance_info_id WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) AND YEAR(ai.attendance_date) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) AND MONTH(ai.attendance_date) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) LIMIT #{size} OFFSET #{startRow}")
+    List<AttendanceAppealHistory> getAttendanceHistoryByMonthname(int size, int startRow, String yearMonth, String searchParameter);
+
 
     @Select("SELECT COUNT(*) " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id " + "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND DATE(ar.attendance_appeal_request_time) = #{date}")
     int countAttendanceRequestByDate(String date, String searchParameter);
@@ -222,8 +256,6 @@ public interface ManagerMapper1 {
     @Select("SELECT COUNT(*) " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id join attendance_info using(attendance_info_id) " + "WHERE (e.employee_id LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(attendance_date) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(attendance_date) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m'))")
     int countAttendanceRequestByMonthAndId(String yearMonth, String searchParameter);
 
-    @Select("SELECT ar.employee_id as employeeId, " + "ar.attendance_appeal_request_id as attendanceAppealRequestId, " + "ar.status as status, " + "ar.reason, " + "ar.attendance_info_id as attendanceInfoId, " + "ar.appealed_start_time as appealedStartTime," + "ar.appealed_end_time as appealedEndTime, " + "ar.attendance_appeal_request_time as attendanceAppealRequestTime, " + "ar.reason_for_rejection as  reasonForRejection, " + "e.name " + "FROM attendance_appeal_request ar INNER JOIN employee e ON ar.employee_id = e.employee_id " + "WHERE (e.name LIKE CONCAT('%', #{searchParameter}, '%')) " + "AND YEAR(ar.attendance_appeal_request_time) = YEAR(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "AND MONTH(ar.attendance_appeal_request_time) = MONTH(STR_TO_DATE(#{yearMonth}, '%Y-%m')) " + "LIMIT #{size} OFFSET #{startRow}")
-    List<AttendanceAppealHistory> getAttendanceHistoryByMonthname(int size, int startRow, String yearMonth, String searchParameter);
 
     @Select("select employee_id from vacation_request where vacation_request_key = ${requestId}")
     String getEmployeeIdAttendanceAppealByVacationRequestId(Long requestId);
