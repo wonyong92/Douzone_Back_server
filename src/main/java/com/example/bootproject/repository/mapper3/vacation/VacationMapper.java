@@ -46,5 +46,5 @@ public interface VacationMapper {
     void addAttendanceInfo(@Param(value = "dto")VacationRequestDto dto);
 
     @Delete("delete from attendance_info where employee_id=#{dto.employeeId} and attendance_date=#{dto.vacationStartDate} and attendance_status_category=' " +VACATION_REQUEST_STATE_REQUESTED+"'")
-    void removeAttendanceInfo(VacationRequestResponseDto dto);
+    void removeAttendanceInfo(@Param (value = "dto")VacationRequestResponseDto dto);
 }
