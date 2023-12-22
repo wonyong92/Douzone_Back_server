@@ -56,12 +56,12 @@ public class ChartServiceImpl implements  ChartService{
 
     @Override
     public int getApprovalMonthUseAttendance(int year, int month, String employeeId) {
-        return chartMapper.countAbnormalAttendance(employeeId,year,month);
+        return chartMapper.countNormalAttendance(employeeId,year,month);
     }
 
     @Override
     public int getNoApprovalMonthUseAttendance(int year, int month, String employeeId) {
-        return chartMapper.countNormalAttendance(employeeId,year,month);
+        return chartMapper.countAbnormalAttendance(employeeId,year,month);
     }
 
     @Override

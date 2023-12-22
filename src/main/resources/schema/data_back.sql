@@ -29,7 +29,6 @@ values ('조정 요청 반려'),
 insert into attendance_status_category
 values ('근태 판정 중'),
        ('조정 요청 승인'),
-       ('조정 요청 반려'),
        ('정상 근태'),
        ('조정 요청 중'),
        ('이상 근태(조기 퇴근)'),
@@ -71,6 +70,14 @@ values ('undefined', '200001012', '연차 요청 승인', 2, '2023-11-02', '2023
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
 values ('undefined', '200001012', '연차 요청 승인', 2, '2023-11-06', '2023-11-07', '2023-07-01 15:00:00', '사유1');
+
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('undefined', '200001012', '연차 요청 승인', 1, '2023-12-01', '2023-12-01', '2023-10-01 15:00:00', '사유1');
+
+insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
+                             vacation_start_date, vacation_end_date, vacation_request_time, reason)
+values ('undefined', '200001012', '연차 요청 승인', 1, '2023-12-04', '2023-12-04', '2023-10-01 15:00:00', '사유1');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason,reason_for_rejection)
@@ -190,7 +197,6 @@ VALUES ('승인|이상 근태(지각, 퇴근 정보 없음)', '200001012', '2023
        ('이상 근태(결근)', '200001012', '2023-11-28 09:00:00', '2023-11-28 18:00:00', '2023-11-28'),
        ('이상 근태(결근)', '200001012', '2023-11-29 09:00:00', '2023-11-29 18:00:00', '2023-11-29'),
        ('승인|이상 근태(결근)', '200001012', '2023-11-30 09:00:00', '2023-11-30 18:00:00', '2023-11-30'),
-       ('정상 근태', '200001012', '2023-12-01 09:00:00', '2023-12-01 18:00:00', '2023-12-01'),
        ('이상 근태(결근)', '200001012', '2023-12-05 09:00:00', '2023-12-05 18:00:00', '2023-12-05'),
        ('정상 근태', '200001012', '2023-12-06 09:00:00', '2023-12-06 18:00:00', '2023-12-06'),
        ('정상 근태', '200001012', '2023-12-07 09:00:00', '2023-12-07 18:00:00', '2023-12-07'),
@@ -200,6 +206,10 @@ VALUES ('승인|이상 근태(지각, 퇴근 정보 없음)', '200001012', '2023
        ('정상 근태', '200001012', '2023-12-13 09:00:00', '2023-12-13 18:00:00', '2023-12-13'),
        ('정상 근태', '200001012', '2023-12-14 09:00:00', '2023-12-14 18:00:00', '2023-12-14'),
        ('정상 근태', '200001012', '2023-12-15 09:00:00', '2023-12-15 18:00:00', '2023-12-15'),
+       ('정상 근태', '200001012', '2023-12-18 09:00:00', '2023-12-18 18:00:00', '2023-12-18'),
+       ('정상 근태', '200001012', '2023-12-19 09:00:00', '2023-12-19 18:00:00', '2023-12-19'),
+       ('정상 근태', '200001012', '2023-12-20 09:00:00', '2023-12-20 18:00:00', '2023-12-20'),
+       ('정상 근태', '200001012', '2023-12-21 09:00:00', '2023-12-21 18:00:00', '2023-12-21'),
 
 
 

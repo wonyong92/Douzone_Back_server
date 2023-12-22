@@ -92,7 +92,7 @@ public class ChartContoller {
 //            return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        int abnormalAttendance = chartService.getApprovalMonthUseAttendance(year,month,employeeId);
+        int abnormalAttendance = chartService.getNoApprovalMonthUseAttendance(year,month,employeeId);
         return ResponseEntity.ok(abnormalAttendance);
     }
 
@@ -104,7 +104,7 @@ public class ChartContoller {
 //            return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        int normalAttendance = chartService.getNoApprovalMonthUseAttendance(year,month,employeeId);
+        int normalAttendance = chartService.getApprovalMonthUseAttendance(year,month,employeeId);
         return ResponseEntity.ok(normalAttendance);
     }
 

@@ -27,7 +27,14 @@ public interface ChartMapper {
             "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END + "' OR " +
             "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NULL_END + "' OR " +
             "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NULL_END + "' OR " +
-            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END + "') AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_ABSENT_APPROVED  + "' OR " +
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END_APPROVED +"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END_APPROVED+"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END_APPROVED +"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_NULL_END_APPROVED+"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_LATE_START_NULL_END_APPROVED +"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END_APPROVED+"')"+" AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
     int countAbnormalAttendance( String employeeId,  int year,  int month);
 
     @Select("SELECT COUNT(*) FROM attendance_info WHERE employee_id = #{employeeId} AND attendance_status_category = '"+  ATTENDANCE_INFO_STATUS_NORMAL+"' AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
@@ -68,7 +75,14 @@ public interface ChartMapper {
             "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END + "' OR " +
             "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NULL_END + "' OR " +
             "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_LATE_START_NULL_END + "' OR " +
-            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END + "')"+ "AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END + "' OR " +
+            "attendance_status_category = '" + ATTENDANCE_INFO_STATUS_ABSENT_APPROVED  + "' OR " +
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_NORMAL_START_EARLY_END_APPROVED +"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_LATE_START_EARLY_END_APPROVED+"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_LATE_START_NORMAL_END_APPROVED +"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_NULL_END_APPROVED+"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_LATE_START_NULL_END_APPROVED +"' OR "+
+            "attendance_status_category = '"+ATTENDANCE_INFO_STATUS_NORMAL_START_NULL_END_APPROVED+"')"+"AND YEAR(attendance_date) = #{year} AND MONTH(attendance_date) = #{month}")
     int getAllEmployeesAttendanceAbnormal(int year, int month);
 
     @Select("select count(*) from attendance_appeal_request where status ='"+APPEAL_REQUEST_STATE_REQUESTED+"'")
