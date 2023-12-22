@@ -42,7 +42,6 @@ public class SendMessageForProcessAppealRequestToEmployee {
             try {
                 //emitter 목록에서 해당 사원의 emitter 찾기
                 for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {
-
                     if (emitterDto.getEmployeeNumber().equals(employeeId)) {
                         message = "your Appeal Request processed. requestNumber = " + requestId;
                         SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "Appeal", String.valueOf(requestId));

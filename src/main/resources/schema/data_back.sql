@@ -29,6 +29,7 @@ values ('조정 요청 반려'),
 insert into attendance_status_category
 values ('근태 판정 중'),
        ('조정 요청 승인'),
+       ('조정 요청 반려'),
        ('정상 근태'),
        ('조정 요청 중'),
        ('이상 근태(조기 퇴근)'),
@@ -360,8 +361,8 @@ VALUES ('조정 요청 중', '이상 근태(지각)으로 인한 근태 조정 �
        ('조정 요청 중', '외출로 인한 근태 조정 요청', 4, '2023-11-06 08:30:00', '2023-11-06 15:30:00', '200001014', NOW(), NULL),
        ('조정 요청 중', '야근으로 인한 다음날 이상 근태(지각) 요청', 24, '2023-11-12 10:00:00', '2023-11-12 18:00:00', '200001011', '2023-11-1 18:05:00',
         NULL);
-
-INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (1, '200001011', '1st', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
-INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (2, '200001011', '2nd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
-INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (3, '200001011', '3rd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
-INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (4, '200001011', '4th', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+#
+# INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (1, '200001011', '1st', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+# INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (2, '200001011', '2nd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+# INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (3, '200001011', '3rd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
+# INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (4, '200001011', '4th', '2023-11-23 20:17:45', null, 'appeal', '1', 0);

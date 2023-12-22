@@ -141,7 +141,7 @@ public class EmployeeController {
     public ResponseEntity<Page<List<AttendanceInfoResponseDto>>> getAttendanceInfoOfEmployeeByDay(@Valid PagedLocalDateDto pagedLocalDateDto, BindingResult br, HttpServletRequest req) {
 
         String employeeId = getLoginIdOrNull(req); // 실제 어플리케이션에서는 세션에서 가져오거나 인증 메커니즘을 사용해야 함
-        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        if (employeeId == null) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         if (br.hasErrors()) {
             AttendanceInfoResponseDto body = new AttendanceInfoResponseDto();

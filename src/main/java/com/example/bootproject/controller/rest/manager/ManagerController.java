@@ -541,6 +541,7 @@ public class ManagerController {
             return ResponseEntity.ok(result);
         } else {
 
+
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
@@ -589,7 +590,7 @@ public class ManagerController {
 
     @PostMapping("/manager/appeal/process") //39
     public ResponseEntity<AppealRequestResponseDto> processAppealRequest(@ModelAttribute AppealProcessRequestDto dto, HttpServletRequest req) {
-        if (isManager(req)) {
+
             String status = dto.getStatus();
             if (status.equals(VACATION_REQUEST_STATE_REJECTED)) {
                 if (dto.getReasonForRejection().equals(null) || dto.getReasonForRejection().trim().equals("")) {
@@ -604,10 +605,6 @@ public class ManagerController {
                 return ResponseEntity.badRequest().build();
             }
             return ResponseEntity.ok(result);
-        } else {
-
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
     }
 
     //TODO : 매니저 권한 확인 로직 작성 필요
