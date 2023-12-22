@@ -38,11 +38,10 @@ public class SendMessageForProcessVacationRequestToEmployee {
 
             String employeeId = managerMapper1.getEmployeeIdAttendanceAppealByVacationRequestId(requestId);
             log.info("current employeeEmitters {}", employeeEmitters);
-            log.info("Before processing appeal request. Employee ID: {}", employeeId);
+            log.info("Before processing vacation request. Employee ID: {}", employeeId);
             String message = "";
             try {
                 for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {
-
                     if (emitterDto.getEmployeeNumber().equals(employeeId)) {
                         log.info("find employee sseEmitter. will send event");
                         message = "your Vacation Request processed. requestNumber = " + requestId;

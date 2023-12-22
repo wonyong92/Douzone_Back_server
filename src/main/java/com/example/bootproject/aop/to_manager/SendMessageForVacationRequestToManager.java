@@ -48,7 +48,8 @@ public class SendMessageForVacationRequestToManager {
                 SseMessageInsertDto insertDto = new SseMessageInsertDto(managerId, message, "Vacation", String.valueOf(requestId));
                 notificationMapper.addUnreadMsgOfManager(insertDto);
                 log.info("inserted msg : {}", insertDto);
-                managerEmitters.stream().filter(managerEmitter -> !managerEmitter.getEmployeeNumber().equals(dto.getEmployeeId())).findFirst().ifPresent(
+
+                managerEmitters.stream().filter(managerEmitter -> managerEmitter.getEmployeeNumber().equals(managerId)).findFirst().ifPresent(
                         (manager) -> {
                             try {
                                 manager.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));

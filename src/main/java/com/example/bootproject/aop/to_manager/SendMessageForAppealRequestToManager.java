@@ -51,9 +51,9 @@ public class SendMessageForAppealRequestToManager {
                 SseMessageInsertDto insertDto = new SseMessageInsertDto(managerId, message, "Appeal", String.valueOf(requestId));
                 notificationMapper.addUnreadMsgOfManager(insertDto);
                 log.info("inserted msg : {}", insertDto);
-                managerEmitters.stream().filter(managerEmitter -> !managerEmitter.getEmployeeNumber().equals(dto.getEmployeeId())).findFirst().ifPresent((manager) -> {
+                managerEmitters.stream().filter(managerEmitter -> managerEmitter.getEmployeeNumber().equals(managerId)).findFirst().ifPresent((manager) -> {
                     try {
-                        manager.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
+                        manager.getSseEmitter().send(SseEmitter.event().data(message+" "+managerId).name("message").id(String.valueOf(insertDto.getMessageId())));
                     } catch (Exception e) {
                         log.info("{} 로 메세지 전송 실패", manager.getEmployeeNumber());
 //                        throw new RuntimeException(e);
