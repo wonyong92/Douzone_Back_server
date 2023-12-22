@@ -40,30 +40,42 @@ public class SendMessageForProcessVacationRequestToEmployee {
             log.info("current employeeEmitters {}", employeeEmitters);
             log.info("Before processing vacation request. Employee ID: {}", employeeId);
             String message = "";
-            try {
-                for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {
+            SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
+
+            for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {
+                try {
                     if (emitterDto.getEmployeeNumber().equals(employeeId)) {
+
                         log.info("find employee sseEmitter. will send event");
                         message = "your Vacation Request processed. requestNumber = " + requestId;
-                        SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
+
                         log.info("request insert msg {}", insertDto);
-                        notificationMapper.addUnreadMsgOfEmployee(insertDto);
+
                         log.info("inserted msg : {}", insertDto);
                         emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                         break;
                     }
-                }
-            } catch (Exception e) {
-                for (SseEmitterWithEmployeeInformationDto reRegisteredEmitterDto : employeeEmitters) {
-                    if (employeeId.equals(reRegisteredEmitterDto.getEmployeeNumber())) {
-                        log.info("타임아웃으로 메세지 전송 실패. 재전송 수행!");
-                        if (reRegisteredEmitterDto.getEmployeeNumber().equals(employeeId)) {
-                            log.info("find employee sseEmitter. will send event");
-                            message = "your Appeal Request processed. requestNumber = " + requestId;
+                } catch (Exception e) {
+                    for (SseEmitterWithEmployeeInformationDto reRegisteredEmitterDto : employeeEmitters) {
+                        if (employeeId.equals(reRegisteredEmitterDto.getEmployeeNumber())) {
+                            log.info("타임아웃으로 메세지 전송 실패. 재전송 수행!");
+                            if (reRegisteredEmitterDto.getEmployeeNumber().equals(employeeId)) {
+                                log.info("find employee sseEmitter. will send event");
+                                message = "your Appeal Request processed. requestNumber = " + requestId;
+                            }
                         }
+                        try {
+                            emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
+                        } catch (Exception e1) {
+                            log.info("메세지 전송 실패.");
+                        }
+                        break;
                     }
+                    break;
                 }
-            } finally {
+            }
+            {
+                notificationMapper.addUnreadMsgOfEmployee(insertDto);
                 HttpSession session = req.getSession();
                 String loginId = (String) session.getAttribute("loginId");
                 List<String> processingList = REQUEST_LIST.get(req.getRequestURI());

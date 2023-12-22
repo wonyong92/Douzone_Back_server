@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,19 +45,21 @@ public class SendMessageForVacationRequestToManager {
             List<SseMessageInsertDto> insertDataList = new ArrayList<>();
             for (String managerId : managerEmployeeIds) {
                 SseMessageInsertDto insertDto = new SseMessageInsertDto(managerId, message, "Vacation", String.valueOf(requestId));
-                notificationMapper.addUnreadMsgOfManager(insertDto);
+
                 log.info("inserted msg : {}", insertDto);
 
-                managerEmitters.stream().filter(managerEmitter -> managerEmitter.getEmployeeNumber().equals(managerId)).findFirst().ifPresent(
-                        (manager) -> {
-                            try {
-                                manager.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
-                            } catch (Exception e) {
-                                log.info("{} 로 메세지 전송 실패", manager.getEmployeeNumber());
+                managerEmitters.stream().filter(managerEmitter -> managerEmitter.getEmployeeNumber().equals(managerId) && !managerEmitter.getEmployeeNumber().equals(dto.getEmployeeId())).findFirst().ifPresent((manager) -> {
+                    try {
+                        manager.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
+
+                    } catch (Exception e) {
+                        log.info("{} 로 메세지 전송 실패", manager.getEmployeeNumber());
 //                                throw new RuntimeException(e);
-                            }
-                        }
-                );
+                    }
+                    notificationMapper.addUnreadMsgOfManager(insertDto);
+
+                });
+
             }
             //모든 접속한 매니저에 대해 메세지 전송
 
