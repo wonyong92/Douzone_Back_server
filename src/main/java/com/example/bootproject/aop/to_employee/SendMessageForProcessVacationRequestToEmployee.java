@@ -43,7 +43,7 @@ public class SendMessageForProcessVacationRequestToEmployee {
             LocalDate startDate = vacationMapper.findByVacationRequestKey(dto.getVacationRequestKey()).getVacationStartDate();
             log.info("current employeeEmitters {}", employeeEmitters);
             log.info("Before processing vacation request. Employee ID: {}", employeeId);
-            String message = "연차 신청이 처리 되었습니다. = " + startDate;
+            String message = "연차 신청이 처리 되었습니다. 대상 연차 시작일 : " + startDate;
             SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
 
             for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {

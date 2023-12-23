@@ -40,9 +40,9 @@ public class SendMessageForProcessAppealRequestToEmployee {
         if (requestId != null) {
             // 수신 대상 찾기
             String employeeId = notificationMapper.findEmployeeIdByAttendanceAppealRequestId(requestId);
-            LocalDate startDate = attendanceInfoMapper.findAttendanceInfoByAppealId(requestId);
+            LocalDate targetDate = attendanceInfoMapper.findAttendanceInfoByAppealId(requestId);
             log.info("Before processing Appeal request. Employee ID: {}", employeeId);
-            String message = "연차 요청이 처리 되었습니다 = " + startDate;
+            String message = "조정 요청이 처리 되었습니다. 대상일 : " + targetDate;
             SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "Appeal", String.valueOf(requestId));
 
             //emitter 목록에서 해당 사원의 emitter 찾기
