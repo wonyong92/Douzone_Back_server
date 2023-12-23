@@ -38,7 +38,7 @@ public class SendMessageForProcessAppealRequestToEmployee {
             // 수신 대상 찾기
             String employeeId = notificationMapper.findEmployeeIdByAttendanceAppealRequestId(requestId);
             log.info("Before processing Appeal request. Employee ID: {}", employeeId);
-            String message = "";
+            String message = "your Appeal Request processed. requestNumber = " + requestId;
             SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "Appeal", String.valueOf(requestId));
 
             //emitter 목록에서 해당 사원의 emitter 찾기
@@ -46,11 +46,9 @@ public class SendMessageForProcessAppealRequestToEmployee {
                 try {
                     if (emitterDto.getEmployeeNumber().equals(employeeId)) {
 
-                        message = "your Appeal Request processed. requestNumber = " + requestId;
-
                         log.info("request insert msg {}", insertDto);
 
-                        log.info("inserted msg : {}", insertDto);
+
                         log.info("find employee sseEmitter. will send event");
                         emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                         break;
@@ -61,7 +59,7 @@ public class SendMessageForProcessAppealRequestToEmployee {
                             log.info("타임아웃으로 메세지 전송 실패. 재전송 수행!");
                             if (reRegisteredEmitterDto.getEmployeeNumber().equals(employeeId)) {
                                 log.info("find employee sseEmitter. will send event");
-                                message = "your Appeal Request processed. requestNumber = " + requestId;
+
                             }
                         }
                         try {
@@ -75,6 +73,7 @@ public class SendMessageForProcessAppealRequestToEmployee {
                 }
             }
             notificationMapper.addUnreadMsgOfEmployee(insertDto);
+            log.info("inserted msg : {}", insertDto);
 
         }
 

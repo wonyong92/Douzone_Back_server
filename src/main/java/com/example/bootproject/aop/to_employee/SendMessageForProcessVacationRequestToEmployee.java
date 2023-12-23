@@ -39,7 +39,7 @@ public class SendMessageForProcessVacationRequestToEmployee {
             String employeeId = managerMapper1.getEmployeeIdAttendanceAppealByVacationRequestId(requestId);
             log.info("current employeeEmitters {}", employeeEmitters);
             log.info("Before processing vacation request. Employee ID: {}", employeeId);
-            String message = "";
+            String message = "your Appeal Request processed. requestNumber = " + requestId;
             SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
 
             for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {
@@ -47,11 +47,10 @@ public class SendMessageForProcessVacationRequestToEmployee {
                     if (emitterDto.getEmployeeNumber().equals(employeeId)) {
 
                         log.info("find employee sseEmitter. will send event");
-                        message = "your Vacation Request processed. requestNumber = " + requestId;
 
                         log.info("request insert msg {}", insertDto);
 
-                        log.info("inserted msg : {}", insertDto);
+
                         emitterDto.getSseEmitter().send(SseEmitter.event().data(message).name("message").id(String.valueOf(insertDto.getMessageId())));
                         break;
                     }
@@ -61,7 +60,7 @@ public class SendMessageForProcessVacationRequestToEmployee {
                             log.info("타임아웃으로 메세지 전송 실패. 재전송 수행!");
                             if (reRegisteredEmitterDto.getEmployeeNumber().equals(employeeId)) {
                                 log.info("find employee sseEmitter. will send event");
-                                message = "your Appeal Request processed. requestNumber = " + requestId;
+
                             }
                         }
                         try {
@@ -76,6 +75,7 @@ public class SendMessageForProcessVacationRequestToEmployee {
             }
             {
                 notificationMapper.addUnreadMsgOfEmployee(insertDto);
+                log.info("inserted msg : {}", insertDto);
                 HttpSession session = req.getSession();
                 String loginId = (String) session.getAttribute("loginId");
                 List<String> processingList = REQUEST_LIST.get(req.getRequestURI());
