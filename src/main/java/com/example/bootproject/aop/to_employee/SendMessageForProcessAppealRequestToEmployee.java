@@ -1,6 +1,7 @@
 package com.example.bootproject.aop.to_employee;
 
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
+import com.example.bootproject.repository.mapper3.attendanceinfo.AttendanceInfoMapper;
 import com.example.bootproject.repository.mapper3.notification.NotificationMapper;
 import com.example.bootproject.vo.vo1.request.appeal.AppealProcessRequestDto;
 import com.example.bootproject.vo.vo1.request.notification.SseEmitterWithEmployeeInformationDto;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.bootproject.ServletInitializer.REQUEST_LIST;
@@ -27,6 +29,7 @@ import static com.example.bootproject.system.interceptor.SseBroadCastingIntercep
 public class SendMessageForProcessAppealRequestToEmployee {
     private final ManagerMapper1 managerMapper1;
     private final NotificationMapper notificationMapper;
+    private final AttendanceInfoMapper attendanceInfoMapper;
 
     @Around("execution(* com.example.bootproject.controller.rest.manager.ManagerController.processAppealRequest(..)) && args(dto, req)")
     public Object sendMessageForProcessAppealRequestMessageToEmployee(ProceedingJoinPoint joinPoint, AppealProcessRequestDto dto, HttpServletRequest req) throws Throwable {
@@ -37,8 +40,9 @@ public class SendMessageForProcessAppealRequestToEmployee {
         if (requestId != null) {
             // 수신 대상 찾기
             String employeeId = notificationMapper.findEmployeeIdByAttendanceAppealRequestId(requestId);
+            LocalDate startDate = attendanceInfoMapper.findAttendanceInfoByAppealId(requestId);
             log.info("Before processing Appeal request. Employee ID: {}", employeeId);
-            String message = "your Appeal Request processed. requestNumber = " + requestId;
+            String message = "연차 요청이 처리 되었습니다 = " + startDate;
             SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "Appeal", String.valueOf(requestId));
 
             //emitter 목록에서 해당 사원의 emitter 찾기

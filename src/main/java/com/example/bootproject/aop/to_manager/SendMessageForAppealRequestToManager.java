@@ -42,7 +42,7 @@ public class SendMessageForAppealRequestToManager {
         log.info("appeal request occur - reuqestId {}", requestId);
 
         if (result.getStatusCode() == HttpStatus.OK) {
-            String message = "New Appeal Request from " + loginId;
+            String message = "새로운 조정 요청을 수신하였습니다 : " + loginId;
             //일단 DB에 메세지는 저장하고,
             List<String> managerEmployeeIds = notificationMapper.getManagerId();
             List<SseMessageInsertDto> insertDataList = new ArrayList<>();

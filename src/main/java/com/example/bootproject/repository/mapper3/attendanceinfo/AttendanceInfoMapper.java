@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.bootproject.system.StaticString.ATTENDANCE_INFO_STATUS_PENDING;
@@ -29,4 +30,6 @@ public interface AttendanceInfoMapper {
     int updateAttendanceInfoStatus(String status, Long attendanceInfoId);
     @Select("select * from attendance_info where attendance_info_id=#{attendanceInfoId}")
     AttendanceInfoResponseDto findAttendanceInfoById(Long attendanceInfoId);
+    @Select("select attendance_date from attendance_info join attendance_appeal_request using(attendance_info_id) where attendance_appeal_request_id=#{requestId}")
+    LocalDate findAttendanceInfoByAppealId(Long requestId);
 }

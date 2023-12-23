@@ -2,6 +2,7 @@ package com.example.bootproject.aop.to_employee;
 
 import com.example.bootproject.repository.mapper1.ManagerMapper1;
 import com.example.bootproject.repository.mapper3.notification.NotificationMapper;
+import com.example.bootproject.repository.mapper3.vacation.VacationMapper;
 import com.example.bootproject.vo.vo1.request.notification.SseEmitterWithEmployeeInformationDto;
 import com.example.bootproject.vo.vo1.request.sse.SseMessageInsertDto;
 import com.example.bootproject.vo.vo1.request.vacation.VacationProcessRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.example.bootproject.ServletInitializer.REQUEST_LIST;
@@ -27,6 +29,7 @@ import static com.example.bootproject.system.interceptor.SseBroadCastingIntercep
 public class SendMessageForProcessVacationRequestToEmployee {
     private final ManagerMapper1 managerMapper1;
     private final NotificationMapper notificationMapper;
+    private final VacationMapper vacationMapper;
 
     @Around("execution(* com.example.bootproject.controller.rest.manager.ManagerController.processVacationRequest(..)) && args(dto, req)")
     public Object sendMessageForProcessVacationRequestMessageToEmployee(ProceedingJoinPoint joinPoint, VacationProcessRequestDto dto, HttpServletRequest req) throws Throwable {
@@ -37,9 +40,10 @@ public class SendMessageForProcessVacationRequestToEmployee {
         if (requestId != null) {
 
             String employeeId = managerMapper1.getEmployeeIdAttendanceAppealByVacationRequestId(requestId);
+            LocalDate startDate = vacationMapper.findByVacationRequestKey(dto.getVacationRequestKey()).getVacationStartDate();
             log.info("current employeeEmitters {}", employeeEmitters);
             log.info("Before processing vacation request. Employee ID: {}", employeeId);
-            String message = "your Appeal Request processed. requestNumber = " + requestId;
+            String message = "연차 신청이 처리 되었습니다. = " + startDate;
             SseMessageInsertDto insertDto = new SseMessageInsertDto(employeeId, message, "vacation", String.valueOf(requestId));
 
             for (SseEmitterWithEmployeeInformationDto emitterDto : employeeEmitters) {
