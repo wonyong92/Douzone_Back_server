@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,7 +24,7 @@ public class AttendanceAppealHistory {
 
     private Time appealedEndTime;
 
-    private LocalDateTime attendanceAppealRequestTime;
+    private LocalDate attendanceDate;
 
     private String reasonForRejection;
 
