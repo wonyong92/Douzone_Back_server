@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -33,18 +34,27 @@ public class JobContainer {
     private final EmployeeMapper1 employeeMapper;
     private final CalendarService calendarService;
 
-    //공휴일에는 동작을 안하게 막아야한다
+
     public boolean checkIsTodayHoliday() throws JSONException, IOException, URISyntaxException, ParseException {
-        //TODO:Test 코드이므로 반드시 삭제 - now()로 변경 필요
-//        LocalDate today = LocalDate.of(2023,12,25);
+        //TODO: Test 코드이므로 반드시 삭제 - now()로 변경 필요
+        // LocalDate today = LocalDate.of(2023,12,25);
         LocalDate today = LocalDate.now();
+
+        // 주말 여부 확인
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return true;
+        }
+
         CalendarSearchRequestDtoForHoliday dto = new CalendarSearchRequestDtoForHoliday();
-        //TODO:Test 코드이므로 반드시 삭제
-//        dto.setMonth(12);
+        // TODO: Test 코드이므로 반드시 삭제
+        // dto.setMonth(12);
+
         List<ApiItemToEventDtoForHoliday> holidays = calendarService.getHolidayEvents(dto);
 
         log.info("checkIsTodayHoliday");
         log.info("holidays {}", holidays);
+
         return holidays.stream().anyMatch((holiday) -> {
             if (holiday.getDate().equals(today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))) {
                 return true;
@@ -52,6 +62,7 @@ public class JobContainer {
             return false;
         });
     }
+
 
 
     @Scheduled(cron = "0 4 23 * * *")

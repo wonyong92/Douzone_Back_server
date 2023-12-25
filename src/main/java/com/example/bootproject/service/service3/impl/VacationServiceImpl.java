@@ -52,8 +52,12 @@ public class VacationServiceImpl implements VacationService {
                 // 입력 데이터를 insert
                 log.info("정상 연차 생성 요청 처리 진행");
                 vacationMapper.addRequest(dto);
-                for(int i = 0; i<dto.getVacationQuantity() ; i++){
-                    dto.setVacationStartDate(dto.getVacationStartDate().plusDays(1));
+                if(dto.getVacationQuantity()>1)
+                    for(int i = 1; i<dto.getVacationQuantity() ; i++){
+                        dto.setVacationStartDate(dto.getVacationStartDate().plusDays(1));
+                        vacationMapper.addAttendanceInfo(dto);
+                    }
+                else{
                     vacationMapper.addAttendanceInfo(dto);
                 }
                 long generatedKey = dto.getVacationRequestKey();
