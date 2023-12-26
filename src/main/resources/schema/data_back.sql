@@ -58,39 +58,39 @@ values ('조정 요청 중', 'dddd', 1, '14:17:49', '16:17:58', '200001011', '20
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('undefined', '200001011', '연차 요청 승인', 3, '2023-11-01', '2023-11-03', '2023-10-01 15:00:00', '사유1');
+values ('undefined', '200001011', '연차 요청 승인', 3, '2023-11-01', '2023-11-03', '2023-10-01 15:00:00', '개인 사정');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('undefined', '200001011', '연차 요청 승인', 2, '2023-11-06', '2023-11-07', '2023-10-01 15:00:00', '사유1');
+values ('undefined', '200001011', '연차 요청 승인', 2, '2023-11-06', '2023-11-07', '2023-10-01 15:00:00', '개인 사정');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('undefined', '200001012', '연차 요청 승인', 2, '2023-11-02', '2023-11-03', '2023-07-01 15:00:00', '사유1');
+values ('undefined', '200001012', '연차 요청 승인', 2, '2023-11-02', '2023-11-03', '2023-07-01 15:00:00', '개인 사정');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('undefined', '200001012', '연차 요청 승인', 2, '2023-11-06', '2023-11-07', '2023-07-01 15:00:00', '사유1');
+values ('undefined', '200001012', '연차 요청 승인', 2, '2023-11-06', '2023-11-07', '2023-07-01 15:00:00', '개인 사정');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('undefined', '200001012', '연차 요청 승인', 1, '2023-12-01', '2023-12-01', '2023-10-01 15:00:00', '사유1');
+values ('undefined', '200001012', '연차 요청 승인', 1, '2023-12-01', '2023-12-01', '2023-10-01 15:00:00', '개인 사정');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
-values ('undefined', '200001012', '연차 요청 승인', 1, '2023-12-04', '2023-12-04', '2023-10-01 15:00:00', '사유1');
+values ('undefined', '200001012', '연차 요청 승인', 1, '2023-12-04', '2023-12-04', '2023-10-01 15:00:00', '개인 사정');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason,reason_for_rejection)
-values ('undefined', '200001012', '연차 요청 반려', 1, '2023-11-08', '2023-11-08', '2023-07-01 15:00:00', '사유1','업무 있음');
+values ('undefined', '200001012', '연차 요청 반려', 1, '2023-11-08', '2023-11-08', '2023-07-01 15:00:00', '개인 사정','업무 있음');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason , reason_for_rejection)
-values ('undefined', '200001012', '연차 요청 반려', 1, '2023-12-12', '2023-12-12', '2023-07-01 15:00:00', '사유1' , '업무 있음');
+values ('undefined', '200001012', '연차 요청 반려', 1, '2023-12-12', '2023-12-12', '2023-07-01 15:00:00', '개인 사정' , '업무 있음');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason , reason_for_rejection)
-values ('undefined', '200001012', '연차 요청 반려', 1, '2023-12-18', '2023-12-18', '2023-07-01 15:00:00', '사유1','업무 있음');
+values ('undefined', '200001012', '연차 요청 반려', 1, '2023-12-18', '2023-12-18', '2023-07-01 15:00:00', '개인 사정','업무 있음');
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason , reason_for_rejection)
@@ -361,15 +361,13 @@ VALUES (10, NOW(), '200001021');
 # VALUES (19, NOW(), '200001013');
 
 
-INSERT INTO attendance_appeal_request
-(status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id,
- attendance_appeal_request_time, reason_for_rejection)
-VALUES ('조정 요청 반려', '조기 퇴근에 대한 조정 요청', 2, '2023-11-04 08:50:00', '2023-11-04 16:00:00', '200001012', NOW(),
-        '정당한 이유 없음'),
-       ('조정 요청 승인', '병가로 인한 전일 근무시간 조정', 3, '2023-11-05 00:00:00', '2023-11-05 00:00:00', '200001013', NOW(), 'permitted'),
-       ('조정 요청 중', '외출로 인한 근태 조정 요청', 4, '2023-11-06 08:30:00', '2023-11-06 15:30:00', '200001014', NOW(), '처리 되지 않음'),
-       ('조정 요청 중', '야근으로 인한 다음날 이상 근태(지각) 요청', 24, '2023-11-12 10:00:00', '2023-11-12 18:00:00', '200001011', '2023-11-1 18:05:00',
-        '처리 되지 않음');
+# INSERT INTO attendance_appeal_request
+# (status, reason, attendance_info_id, appealed_start_time, appealed_end_time, employee_id,
+#  attendance_appeal_request_time, reason_for_rejection)
+# VALUES ('조정 요청 승인', '병가로 인한 전일 근무시간 조정', 3, '2023-11-05 00:00:00', '2023-11-05 00:00:00', '200001013', NOW(), 'permitted'),
+#        ('조정 요청 중', '외출로 인한 근태 조정 요청', 4, '2023-11-06 08:30:00', '2023-11-06 15:30:00', '200001014', NOW(), '처리 되지 않음'),
+#        ('조정 요청 중', '야근으로 인한 다음날 이상 근태(지각) 요청', 24, '2023-11-12 10:00:00', '2023-11-12 18:00:00', '200001011', '2023-11-1 18:05:00',
+#         '처리 되지 않음');
 #
 # INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (1, '200001011', '1st', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
 # INSERT INTO douzone_test.notification_message (message_id, receiver, message, receive_time, read_time, link_to, identifier, for_manager) VALUES (2, '200001011', '2nd', '2023-11-23 20:17:45', null, 'appeal', '1', 0);
