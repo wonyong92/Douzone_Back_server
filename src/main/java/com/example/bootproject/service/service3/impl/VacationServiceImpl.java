@@ -32,6 +32,11 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     public VacationRequestResponseDto makeVacationRequest(VacationRequestDto dto) {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         // 시작 날짜부터 종료 날짜까지 하루 단위로 튜블 삽입하도록하여 쿼리를 작성하기 편하게
         Integer remain = getVacationRemain(dto.getEmployeeId());
         Integer requestQuantity = dto.getVacationQuantity();
