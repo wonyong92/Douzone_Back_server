@@ -48,13 +48,7 @@ values ('근태 판정 중'),
 insert into douzone_test.attendance_info (attendance_info_id, attendance_status_category, employee_id, start_time,
                                           end_time, attendance_date)
 values (1, '이상 근태(지각)', '200001011', '2023-10-31 09:24:57', '2023-10-31 16:24:59', '2023-10-31');
-insert into douzone_test.attendance_appeal_request (status, reason, attendance_info_id, appealed_start_time,
-                                                    appealed_end_time, employee_id, attendance_appeal_request_time,
-                                                    reason_for_rejection, attendance_appeal_request_id)
-values ('조정 요청 중', 'dddd', 1, '14:17:49', '16:17:58', '200001011', '2023-10-31 16:18:10', '처리 되지 않음', 1);
 
-# insert into vacation_category
-# values ('a', 2);
 
 insert into vacation_request(vacation_category_key, employee_id, vacation_request_state_category_key, vacation_quantity,
                              vacation_start_date, vacation_end_date, vacation_request_time, reason)
